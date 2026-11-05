@@ -26,6 +26,7 @@ export const Programs: React.FC = () => {
   const [programs, setPrograms] = useState<any[]>([]);
   const [selectedCat, setSelectedCat] = useState(routeCategory);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     setSelectedCat(routeCategory);
@@ -34,6 +35,7 @@ export const Programs: React.FC = () => {
       .then(res => setPrograms(res))
       .catch(err => {
         console.error('Gagal memuat daftar program:', err);
+        setLoadError('Daftar program belum dapat dimuat. Silakan coba beberapa saat lagi.');
         setPrograms([]);
       })
       .finally(() => setLoading(false));
@@ -89,6 +91,10 @@ export const Programs: React.FC = () => {
         {/* Grid of Programs */}
         {loading ? (
           <div className="py-16 text-center text-sm text-[#7A827B]">Memuat daftar program...</div>
+        ) : loadError ? (
+          <div role="alert" className="py-12 text-center text-sm text-amber-800">{loadError}</div>
+        ) : filtered.length === 0 ? (
+          <div className="py-16 text-center text-sm text-[#7A827B]">Belum ada data untuk kategori ini.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map((item, idx) => (
