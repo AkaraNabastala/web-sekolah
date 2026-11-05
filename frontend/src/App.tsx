@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { SchoolProvider } from './context/SchoolContext';
@@ -91,7 +92,8 @@ export const App: React.FC = () => {
             <Route path="/berita" element={<PublicLayout><NewsList /></PublicLayout>} />
             <Route path="/berita/:slug" element={<PublicLayout><NewsDetail /></PublicLayout>} />
             <Route path="/agenda" element={<PublicLayout><AgendaList /></PublicLayout>} />
-            <Route path="/pengumuman" element={<PublicLayout><AgendaList /></PublicLayout>} />
+            <Route path="/kegiatan" element={<PublicLayout><AgendaList /></PublicLayout>} />
+            <Route path="/pengumuman" element={<Navigate to="/berita?kategori=pengumuman-resmi" replace />} />
             <Route path="/program" element={<PublicLayout><Programs /></PublicLayout>} />
             <Route path="/kurikulum" element={<PublicLayout><Programs /></PublicLayout>} />
             <Route path="/ekstrakurikuler" element={<PublicLayout><Programs /></PublicLayout>} />
