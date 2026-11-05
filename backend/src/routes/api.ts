@@ -362,6 +362,7 @@ apiRouter.get('/admin/dashboard/statistics', requireAdmin, async (_req: Request,
       }
     });
   } catch (err: any) {
+    logger.error('DashboardAPI', 'Gagal memuat statistik dashboard.', { code: err.code });
     res.status(500).json({ success: false, message: 'Gagal memuat statistik dashboard.' });
   }
 });
@@ -394,6 +395,7 @@ apiRouter.get('/admin/dashboard/activities', requireAdmin, async (_req: Request,
 
     res.json({ success: true, data: rows });
   } catch (err: any) {
+    logger.error('DashboardAPI', 'Gagal memuat riwayat aktivitas administrator.', { code: err.code });
     res.status(500).json({ success: false, message: 'Gagal memuat riwayat aktivitas administrator.' });
   }
 });
