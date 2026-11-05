@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getPool, checkConnection } from '../config/database.js';
+import { getPool, checkConnection, getStatus } from '../config/database.js';
 import { JWT_SECRET, requireAdmin, requireSuperadmin, AuthenticatedRequest } from '../middleware/auth.js';
 import { hashVisitor, parseDeviceAndBrowser, getClientIp } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
@@ -12,6 +12,25 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 export const apiRouter = Router();
+
+const dbFallback = new Proxy(db, {
+  get(target, property, receiver) {
+    const value = Reflect.get(target, property, receiver);
+    if (typeof value !== 'function') return value;
+
+    return (...args: any[]) => {
+      const mysqlConnected = getStatus().connected;
+      const fallbackEnabled = process.env.ALLOW_JSON_FALLBACK === 'true';
+      if (process.env.NODE_ENV === 'production' || mysqlConnected || !fallbackEnabled) {
+        throw new Error(
+          'JSON fallback tidak diizinkan. Periksa koneksi dan skema MySQL; MySQL adalah sumber data utama.'
+        );
+      }
+      return value.apply(target, args);
+    };
+  }
+});
+
 
 // Konfigurasi Multer
 const routeDir = path.dirname(fileURLToPath(import.meta.url));
@@ -55,7 +74,7 @@ apiRouter.get('/setup/status', async (_req: Request, res: Response) => {
       const [rows]: any = await pool.query('SELECT COUNT(*) as cnt FROM admins');
       hasAdmin = rows[0]?.cnt > 0;
     } catch {
-      hasAdmin = db.getAdmins().length > 0;
+      hasAdmin = dbFallback.getAdmins().length > 0;
     }
     res.json({
       success: true,
@@ -93,7 +112,7 @@ apiRouter.post('/setup/first-admin', async (req: Request, res: Response) => {
       const [rows]: any = await pool.query('SELECT COUNT(*) as cnt FROM admins');
       hasAdmin = rows[0]?.cnt > 0;
     } catch {
-      hasAdmin = db.getAdmins().length > 0;
+      hasAdmin = dbFallback.getAdmins().length > 0;
     }
 
     if (hasAdmin) {
@@ -113,7 +132,7 @@ apiRouter.post('/setup/first-admin', async (req: Request, res: Response) => {
       );
     } catch {
       // Fallback
-      db.createAdminUser({
+      dbFallback.createAdminUser({
         username,
         email,
         full_name,
@@ -151,7 +170,7 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
       ]);
       adminUser = rows[0];
     } catch {
-      adminUser = db.findAdminByUsername(username);
+      adminUser = dbFallback.findAdminByUsername(username);
     }
 
     if (!adminUser) {
@@ -171,7 +190,7 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
     try {
       await pool.query('UPDATE admins SET last_login = NOW() WHERE id = ?', [adminUser.id]);
     } catch {
-      db.updateAdmin(adminUser.id, { last_login: new Date().toISOString() });
+      dbFallback.updateAdmin(adminUser.id, { last_login: new Date().toISOString() });
     }
 
     const token = jwt.sign(
@@ -200,7 +219,7 @@ apiRouter.get('/auth/me', requireAdmin, async (req: AuthenticatedRequest, res: R
       const [rows]: any = await pool.query('SELECT id, username, email, full_name, avatar, role, is_active, last_login, created_at FROM admins WHERE id = ?', [req.user?.id]);
       admin = rows[0];
     } catch {
-      const a = db.findAdminById(req.user!.id);
+      const a = dbFallback.findAdminById(req.user!.id);
       if (a) {
         const { password, ...safe } = a;
         admin = safe;
@@ -230,7 +249,7 @@ apiRouter.put('/auth/password', requireAdmin, async (req: AuthenticatedRequest, 
       const [rows]: any = await pool.query('SELECT * FROM admins WHERE id = ?', [req.user?.id]);
       currentAdmin = rows[0];
     } catch {
-      currentAdmin = db.findAdminById(req.user!.id);
+      currentAdmin = dbFallback.findAdminById(req.user!.id);
     }
 
     if (!currentAdmin) return res.status(404).json({ success: false, message: 'Admin tidak ditemukan.' });
@@ -244,7 +263,7 @@ apiRouter.put('/auth/password', requireAdmin, async (req: AuthenticatedRequest, 
     try {
       await pool.query('UPDATE admins SET password = ? WHERE id = ?', [hashed, req.user?.id]);
     } catch {
-      db.updateAdmin(req.user!.id, { password: hashed });
+      dbFallback.updateAdmin(req.user!.id, { password: hashed });
     }
 
     res.json({ success: true, message: 'Password berhasil diperbarui.' });
@@ -430,7 +449,7 @@ apiRouter.get('/school-profile', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM school_profile LIMIT 1');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
   } catch {}
-  res.json({ success: true, data: db.getSchoolProfile() });
+  res.json({ success: true, data: dbFallback.getSchoolProfile() });
 });
 
 apiRouter.get('/school-history', async (_req: Request, res: Response) => {
@@ -439,7 +458,7 @@ apiRouter.get('/school-history', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM school_history LIMIT 1');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
   } catch {}
-  res.json({ success: true, data: db.getSchoolHistory() });
+  res.json({ success: true, data: dbFallback.getSchoolHistory() });
 });
 
 apiRouter.get('/vision-mission', async (_req: Request, res: Response) => {
@@ -448,7 +467,7 @@ apiRouter.get('/vision-mission', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM school_vision_mission LIMIT 1');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
   } catch {}
-  res.json({ success: true, data: db.getVisionMission() });
+  res.json({ success: true, data: dbFallback.getVisionMission() });
 });
 
 apiRouter.get('/organization', async (_req: Request, res: Response) => {
@@ -457,7 +476,7 @@ apiRouter.get('/organization', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM school_organization ORDER BY display_order ASC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getOrganization() });
+  res.json({ success: true, data: dbFallback.getOrganization() });
 });
 
 apiRouter.get('/teachers', async (_req: Request, res: Response) => {
@@ -466,7 +485,7 @@ apiRouter.get('/teachers', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM teachers WHERE is_active = 1 ORDER BY display_order ASC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getTeachers() });
+  res.json({ success: true, data: dbFallback.getTeachers() });
 });
 
 apiRouter.get('/staff', async (_req: Request, res: Response) => {
@@ -475,7 +494,7 @@ apiRouter.get('/staff', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM staff WHERE is_active = 1 ORDER BY display_order ASC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getStaff() });
+  res.json({ success: true, data: dbFallback.getStaff() });
 });
 
 apiRouter.get('/news', async (req: Request, res: Response) => {
@@ -491,7 +510,7 @@ apiRouter.get('/news', async (req: Request, res: Response) => {
     const [rows]: any = await pool.query(sql, params);
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getNews() });
+  res.json({ success: true, data: dbFallback.getNews() });
 });
 
 apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
@@ -500,7 +519,7 @@ apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM news_categories ORDER BY name ASC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getNewsCategories() });
+  res.json({ success: true, data: dbFallback.getNewsCategories() });
 });
 
 apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
@@ -513,7 +532,7 @@ apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
       return res.json({ success: true, data: rows[0] });
     }
   } catch {}
-  const n = db.getNewsBySlug(slug);
+  const n = dbFallback.getNewsBySlug(slug);
   if (!n) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan.' });
   res.json({ success: true, data: n });
 });
@@ -524,7 +543,7 @@ apiRouter.get('/achievements', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM achievements ORDER BY year DESC, id DESC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getAchievements() });
+  res.json({ success: true, data: dbFallback.getAchievements() });
 });
 
 apiRouter.get('/facilities', async (_req: Request, res: Response) => {
@@ -533,7 +552,7 @@ apiRouter.get('/facilities', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM facilities ORDER BY display_order ASC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getFacilities() });
+  res.json({ success: true, data: dbFallback.getFacilities() });
 });
 
 apiRouter.get('/gallery', async (req: Request, res: Response) => {
@@ -549,7 +568,7 @@ apiRouter.get('/gallery', async (req: Request, res: Response) => {
     const [rows]: any = await pool.query(sql, params);
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getGalleryMedia(category) });
+  res.json({ success: true, data: dbFallback.getGalleryMedia(category) });
 });
 
 apiRouter.get('/gallery/albums', async (_req: Request, res: Response) => {
@@ -558,7 +577,7 @@ apiRouter.get('/gallery/albums', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM gallery_albums ORDER BY id DESC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getGalleryAlbums() });
+  res.json({ success: true, data: dbFallback.getGalleryAlbums() });
 });
 
 apiRouter.get('/ppdb', async (_req: Request, res: Response) => {
@@ -567,7 +586,7 @@ apiRouter.get('/ppdb', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM ppdb_information LIMIT 1');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
   } catch {}
-  res.json({ success: true, data: db.getPPDB() });
+  res.json({ success: true, data: dbFallback.getPPDB() });
 });
 
 // Agendas Public Route
@@ -577,7 +596,7 @@ apiRouter.get('/agendas', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM agendas WHERE is_published = 1 ORDER BY event_date ASC');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getAgendas().filter((a: any) => a.is_published !== 0) });
+  res.json({ success: true, data: dbFallback.getAgendas().filter((a: any) => a.is_published !== 0) });
 });
 
 // Programs & Extracurricular Public Route
@@ -594,7 +613,7 @@ apiRouter.get('/programs', async (req: Request, res: Response) => {
     const [rows]: any = await pool.query(sql, params);
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  let progs = db.getPrograms().filter((p: any) => p.is_active !== 0);
+  let progs = dbFallback.getPrograms().filter((p: any) => p.is_active !== 0);
   if (category) progs = progs.filter((p: any) => p.category === category);
   res.json({ success: true, data: progs });
 });
@@ -605,7 +624,7 @@ apiRouter.get('/settings', async (_req: Request, res: Response) => {
     const [rows]: any = await pool.query('SELECT * FROM website_settings LIMIT 1');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
   } catch {}
-  res.json({ success: true, data: db.getSettings() });
+  res.json({ success: true, data: dbFallback.getSettings() });
 });
 
 apiRouter.post('/contact', async (req: Request, res: Response) => {
@@ -628,7 +647,7 @@ apiRouter.post('/contact', async (req: Request, res: Response) => {
     });
   } catch {}
 
-  const saved = db.createContactMessage({ name, email, phone, subject, message });
+  const saved = dbFallback.createContactMessage({ name, email, phone, subject, message });
   res.json({ success: true, message: 'Pesan berhasil terkirim ke pihak SMP Islam Caruy.', data: saved });
 });
 
@@ -663,7 +682,7 @@ apiRouter.get('/admin/news', requireAdmin, async (_req: Request, res: Response) 
     const [rows]: any = await pool.query('SELECT * FROM news ORDER BY id DESC');
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getNews(true) });
+  res.json({ success: true, data: dbFallback.getNews(true) });
 });
 
 apiRouter.post('/admin/news', requireAdmin, async (req: Request, res: Response) => {
@@ -680,7 +699,7 @@ apiRouter.post('/admin/news', requireAdmin, async (req: Request, res: Response) 
     return res.json({ success: true, message: 'Berita berhasil disimpan.', data: { id: result.insertId, slug, title } });
   } catch {}
 
-  const saved = db.createNews(req.body);
+  const saved = dbFallback.createNews(req.body);
   res.json({ success: true, message: 'Berita berhasil disimpan.', data: saved });
 });
 
@@ -696,7 +715,7 @@ apiRouter.put('/admin/news/:id', requireAdmin, async (req: Request, res: Respons
     return res.json({ success: true, message: 'Berita berhasil diperbarui.' });
   } catch {}
 
-  const updated = db.updateNews(id, req.body);
+  const updated = dbFallback.updateNews(id, req.body);
   res.json({ success: true, message: 'Berita berhasil diperbarui.', data: updated });
 });
 
@@ -708,7 +727,7 @@ apiRouter.delete('/admin/news/:id', requireAdmin, async (req: Request, res: Resp
     return res.json({ success: true, message: 'Berita berhasil dihapus.' });
   } catch {}
 
-  db.deleteNews(id);
+  dbFallback.deleteNews(id);
   res.json({ success: true, message: 'Berita berhasil dihapus.' });
 });
 
@@ -725,7 +744,7 @@ apiRouter.put('/admin/school-profile', requireAdmin, async (req: Request, res: R
       ]
     );
   } catch {}
-  const prof = db.updateSchoolProfile(req.body);
+  const prof = dbFallback.updateSchoolProfile(req.body);
   res.json({ success: true, message: 'Profil sekolah berhasil disimpan.', data: prof });
 });
 
@@ -736,7 +755,7 @@ apiRouter.get('/admin/messages', requireAdmin, async (_req: Request, res: Respon
     const [rows]: any = await pool.query('SELECT * FROM contact_messages ORDER BY id DESC');
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getContactMessages() });
+  res.json({ success: true, data: dbFallback.getContactMessages() });
 });
 
 apiRouter.put('/admin/messages/:id/read', requireAdmin, async (req: Request, res: Response) => {
@@ -746,7 +765,7 @@ apiRouter.put('/admin/messages/:id/read', requireAdmin, async (req: Request, res
   try {
     await pool.query('UPDATE contact_messages SET is_read = ? WHERE id = ?', [is_read ? 1 : 0, id]);
   } catch {}
-  const upd = db.markMessageRead(id, is_read);
+  const upd = dbFallback.markMessageRead(id, is_read);
   res.json({ success: true, message: 'Status pesan diperbarui.', data: upd });
 });
 
@@ -756,7 +775,7 @@ apiRouter.delete('/admin/messages/:id', requireAdmin, async (req: Request, res: 
   try {
     await pool.query('DELETE FROM contact_messages WHERE id = ?', [id]);
   } catch {}
-  db.deleteMessage(id);
+  dbFallback.deleteMessage(id);
   res.json({ success: true, message: 'Pesan berhasil dihapus.' });
 });
 
@@ -771,7 +790,7 @@ apiRouter.post('/admin/teachers', requireAdmin, async (req: Request, res: Respon
     );
     return res.json({ success: true, message: 'Data guru berhasil ditambahkan.', data: { id: ins.insertId, ...req.body } });
   } catch {}
-  const saved = db.createTeacher(req.body);
+  const saved = dbFallback.createTeacher(req.body);
   res.json({ success: true, message: 'Data guru berhasil ditambahkan.', data: saved });
 });
 
@@ -785,7 +804,7 @@ apiRouter.put('/admin/teachers/:id', requireAdmin, async (req: Request, res: Res
     );
     return res.json({ success: true, message: 'Data guru berhasil diperbarui.' });
   } catch {}
-  const upd = db.updateTeacher(id, req.body);
+  const upd = dbFallback.updateTeacher(id, req.body);
   res.json({ success: true, message: 'Data guru berhasil diperbarui.', data: upd });
 });
 
@@ -796,7 +815,7 @@ apiRouter.delete('/admin/teachers/:id', requireAdmin, async (req: Request, res: 
     await pool.query('DELETE FROM teachers WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Data guru berhasil dihapus.' });
   } catch {}
-  db.deleteTeacher(id);
+  dbFallback.deleteTeacher(id);
   res.json({ success: true, message: 'Data guru berhasil dihapus.' });
 });
 
@@ -807,7 +826,7 @@ apiRouter.get('/admin/users', requireSuperadmin, async (_req: Request, res: Resp
     const [rows]: any = await pool.query('SELECT id, username, email, full_name, role, is_active, last_login, created_at FROM admins');
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getAdmins() });
+  res.json({ success: true, data: dbFallback.getAdmins() });
 });
 
 apiRouter.post('/admin/users', requireSuperadmin, async (req: Request, res: Response) => {
@@ -825,7 +844,7 @@ apiRouter.post('/admin/users', requireSuperadmin, async (req: Request, res: Resp
     );
     return res.json({ success: true, message: 'Pengguna admin berhasil ditambahkan.', data: { id: ins.insertId, username, full_name, role } });
   } catch {}
-  const saved = db.createAdminUser(req.body);
+  const saved = dbFallback.createAdminUser(req.body);
   res.json({ success: true, message: 'Pengguna admin berhasil ditambahkan.', data: saved });
 });
 
@@ -838,7 +857,7 @@ apiRouter.delete('/admin/users/:id', requireSuperadmin, async (req: Request, res
     await pool.query('DELETE FROM admins WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Akun admin berhasil dihapus.' });
   } catch {}
-  db.deleteAdminUser(id);
+  dbFallback.deleteAdminUser(id);
   res.json({ success: true, message: 'Akun admin berhasil dihapus.' });
 });
 
@@ -853,7 +872,7 @@ apiRouter.post('/admin/facilities', requireAdmin, async (req: Request, res: Resp
     );
     return res.json({ success: true, message: 'Fasilitas berhasil ditambahkan.', data: { id: ins.insertId, ...req.body } });
   } catch {}
-  const saved = db.createFacility(req.body);
+  const saved = dbFallback.createFacility(req.body);
   res.json({ success: true, message: 'Fasilitas berhasil ditambahkan.', data: saved });
 });
 
@@ -867,7 +886,7 @@ apiRouter.put('/admin/facilities/:id', requireAdmin, async (req: Request, res: R
     );
     return res.json({ success: true, message: 'Fasilitas berhasil diperbarui.' });
   } catch {}
-  const upd = db.updateFacility(id, req.body);
+  const upd = dbFallback.updateFacility(id, req.body);
   res.json({ success: true, message: 'Fasilitas berhasil diperbarui.', data: upd });
 });
 
@@ -878,7 +897,7 @@ apiRouter.delete('/admin/facilities/:id', requireAdmin, async (req: Request, res
     await pool.query('DELETE FROM facilities WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Fasilitas berhasil dihapus.' });
   } catch {}
-  db.deleteFacility(id);
+  dbFallback.deleteFacility(id);
   res.json({ success: true, message: 'Fasilitas berhasil dihapus.' });
 });
 
@@ -893,7 +912,7 @@ apiRouter.post('/admin/achievements', requireAdmin, async (req: Request, res: Re
     );
     return res.json({ success: true, message: 'Prestasi berhasil disimpan.', data: { id: ins.insertId, ...req.body } });
   } catch {}
-  const saved = db.createAchievement(req.body);
+  const saved = dbFallback.createAchievement(req.body);
   res.json({ success: true, message: 'Prestasi berhasil disimpan.', data: saved });
 });
 
@@ -907,7 +926,7 @@ apiRouter.put('/admin/achievements/:id', requireAdmin, async (req: Request, res:
     );
     return res.json({ success: true, message: 'Prestasi berhasil diperbarui.' });
   } catch {}
-  const upd = db.updateAchievement(id, req.body);
+  const upd = dbFallback.updateAchievement(id, req.body);
   res.json({ success: true, message: 'Prestasi berhasil diperbarui.', data: upd });
 });
 
@@ -918,7 +937,7 @@ apiRouter.delete('/admin/achievements/:id', requireAdmin, async (req: Request, r
     await pool.query('DELETE FROM achievements WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Prestasi berhasil dihapus.' });
   } catch {}
-  db.deleteAchievement(id);
+  dbFallback.deleteAchievement(id);
   res.json({ success: true, message: 'Prestasi berhasil dihapus.' });
 });
 
@@ -933,7 +952,7 @@ apiRouter.post('/admin/gallery', requireAdmin, async (req: Request, res: Respons
     );
     return res.json({ success: true, message: 'Foto galeri berhasil disimpan.', data: { id: ins.insertId, ...req.body } });
   } catch {}
-  const saved = db.createGalleryMedia(req.body);
+  const saved = dbFallback.createGalleryMedia(req.body);
   res.json({ success: true, message: 'Foto galeri berhasil disimpan.', data: saved });
 });
 
@@ -944,7 +963,7 @@ apiRouter.delete('/admin/gallery/:id', requireAdmin, async (req: Request, res: R
     await pool.query('DELETE FROM gallery_media WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Foto galeri berhasil dihapus.' });
   } catch {}
-  db.deleteGalleryMedia(id);
+  dbFallback.deleteGalleryMedia(id);
   res.json({ success: true, message: 'Foto galeri berhasil dihapus.' });
 });
 
@@ -955,7 +974,7 @@ apiRouter.get('/admin/agendas', requireAdmin, async (_req: Request, res: Respons
     const [rows]: any = await pool.query('SELECT * FROM agendas ORDER BY event_date DESC');
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getAgendas() });
+  res.json({ success: true, data: dbFallback.getAgendas() });
 });
 
 apiRouter.post('/admin/agendas', requireAdmin, async (req: Request, res: Response) => {
@@ -969,7 +988,7 @@ apiRouter.post('/admin/agendas', requireAdmin, async (req: Request, res: Respons
     );
     return res.json({ success: true, message: 'Agenda berhasil ditambahkan.', data: { id: ins.insertId, ...req.body, slug } });
   } catch {}
-  const saved = db.createAgenda(req.body);
+  const saved = dbFallback.createAgenda(req.body);
   res.json({ success: true, message: 'Agenda berhasil ditambahkan.', data: saved });
 });
 
@@ -983,7 +1002,7 @@ apiRouter.put('/admin/agendas/:id', requireAdmin, async (req: Request, res: Resp
     );
     return res.json({ success: true, message: 'Agenda berhasil diperbarui.' });
   } catch {}
-  const upd = db.updateAgenda(id, req.body);
+  const upd = dbFallback.updateAgenda(id, req.body);
   res.json({ success: true, message: 'Agenda berhasil diperbarui.', data: upd });
 });
 
@@ -994,7 +1013,7 @@ apiRouter.delete('/admin/agendas/:id', requireAdmin, async (req: Request, res: R
     await pool.query('DELETE FROM agendas WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Agenda berhasil dihapus.' });
   } catch {}
-  db.deleteAgenda(id);
+  dbFallback.deleteAgenda(id);
   res.json({ success: true, message: 'Agenda berhasil dihapus.' });
 });
 
@@ -1005,7 +1024,7 @@ apiRouter.get('/admin/programs', requireAdmin, async (_req: Request, res: Respon
     const [rows]: any = await pool.query('SELECT * FROM programs ORDER BY display_order ASC');
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getPrograms() });
+  res.json({ success: true, data: dbFallback.getPrograms() });
 });
 
 apiRouter.post('/admin/programs', requireAdmin, async (req: Request, res: Response) => {
@@ -1019,7 +1038,7 @@ apiRouter.post('/admin/programs', requireAdmin, async (req: Request, res: Respon
     );
     return res.json({ success: true, message: 'Program berhasil disimpan.', data: { id: ins.insertId, ...req.body, slug } });
   } catch {}
-  const saved = db.createProgram(req.body);
+  const saved = dbFallback.createProgram(req.body);
   res.json({ success: true, message: 'Program berhasil disimpan.', data: saved });
 });
 
@@ -1033,7 +1052,7 @@ apiRouter.put('/admin/programs/:id', requireAdmin, async (req: Request, res: Res
     );
     return res.json({ success: true, message: 'Program berhasil diperbarui.' });
   } catch {}
-  const upd = db.updateProgram(id, req.body);
+  const upd = dbFallback.updateProgram(id, req.body);
   res.json({ success: true, message: 'Program berhasil diperbarui.', data: upd });
 });
 
@@ -1044,7 +1063,7 @@ apiRouter.delete('/admin/programs/:id', requireAdmin, async (req: Request, res: 
     await pool.query('DELETE FROM programs WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Program berhasil dihapus.' });
   } catch {}
-  db.deleteProgram(id);
+  dbFallback.deleteProgram(id);
   res.json({ success: true, message: 'Program berhasil dihapus.' });
 });
 
@@ -1057,7 +1076,7 @@ apiRouter.put('/admin/ppdb', requireAdmin, async (req: Request, res: Response) =
       [req.body.academic_year, req.body.is_open ? 1 : 0, req.body.start_date || null, req.body.end_date || null, req.body.overview, req.body.contact_person || '', req.body.contact_phone || '', req.body.contact_whatsapp || '']
     );
   } catch {}
-  const upd = db.updatePPDB(req.body);
+  const upd = dbFallback.updatePPDB(req.body);
   res.json({ success: true, message: 'Informasi PPDB berhasil diperbarui.', data: upd });
 });
 
@@ -1069,6 +1088,6 @@ apiRouter.put('/admin/settings', requireAdmin, async (req: Request, res: Respons
       [req.body.school_name, req.body.tagline || '', req.body.hero_title || '', req.body.hero_subtitle || '', req.body.facebook_url || '', req.body.instagram_url || '', req.body.youtube_url || '', req.body.footer_text || '']
     );
   } catch {}
-  const upd = db.updateSettings(req.body);
+  const upd = dbFallback.updateSettings(req.body);
   res.json({ success: true, message: 'Pengaturan website berhasil disimpan.', data: upd });
 });
