@@ -49,3 +49,6 @@ Thumbs.db
 
 # Generated production package
 deployment/
+
+# Local offline JSON store (MySQL remains the primary database)
+backend/database/data.json
