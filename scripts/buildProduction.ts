@@ -61,10 +61,10 @@ async function buildProduction() {
     copyRecursive(path.join(ROOT_DIR, 'frontend', 'dist'), path.join(DEPLOY_DIR, 'public'));
     // Salin backend dist ke deployment/backend
     copyRecursive(path.join(ROOT_DIR, 'backend', 'dist'), path.join(DEPLOY_DIR, 'backend'));
-    // Salin schema, seed SQL & fallback data.json dari backend/database
+    // Salin hanya skema dan seed SQL. Data fallback JSON hanya untuk development
+    // dan tidak boleh ikut masuk ke paket produksi.
     copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'schema.sql'), path.join(DEPLOY_DIR, 'database', 'schema.sql'));
     copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'seeds'), path.join(DEPLOY_DIR, 'database', 'seeds'));
-    copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'data.json'), path.join(DEPLOY_DIR, 'database', 'data.json'));
 
     // 5. Generate package.json dan server entry point khusus deployment
     logStep('5/6: Menyiapkan Production Server Runner & Ketergantungan Bersih');
@@ -105,7 +105,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './backend/routes/api.js';
-import { testMySQLConnection, getMySQLStatus } from './backend/config/database.js';
+import { testMySQLConnection } from './backend/config/database.js';
 import { logger } from './backend/utils/logger.js';
 import { runMigrations } from './backend/scripts/migrate.js';
 
@@ -120,7 +120,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static uploads directory
-const uploadsDir = process.env.UPLOAD_DIR || path.resolve(process.cwd(), 'uploads');
+const uploadsDir = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -128,19 +128,6 @@ app.use('/uploads', express.static(uploadsDir));
 
 // Mount API router
 app.use('/api', apiRouter);
-
-app.use((err, req, res, next) => {
-  logger.error('ApiError', 'Permintaan API gagal diproses.', {
-    method: req.method,
-    path: req.path,
-    code: err?.code
-  });
-  if (res.headersSent) return next(err);
-  res.status(500).json({
-    success: false,
-    message: 'Terjadi kesalahan pada server. Silakan periksa log backend.'
-  });
-});
 
 // Health check endpoint
 app.get('/api/health', (_req, res) => {
@@ -155,17 +142,11 @@ app.get('/api/health', (_req, res) => {
 // Database & System status
 app.get('/api/system/database-status', async (_req, res) => {
   const test = await testMySQLConnection();
-  const config = getMySQLStatus();
   res.json({
     success: true,
     environment: 'production',
     mysql: {
-      configured: config.configured,
-      connected: test.connected,
-      message: test.message,
-      host: config.host,
-      port: config.port,
-      database: config.database
+      connected: test.connected
     },
     fallback_storage: {
       enabled: process.env.ALLOW_JSON_FALLBACK === 'true' && process.env.NODE_ENV !== 'production',
@@ -184,6 +165,19 @@ app.get('{*path}', (req, res, next) => {
     return next();
   }
   res.sendFile(path.join(publicDir, 'index.html'));
+});
+
+app.use((err, req, res, next) => {
+  logger.error('ApiError', 'Permintaan API gagal diproses.', {
+    method: req.method,
+    path: req.path,
+    code: err?.code
+  });
+  if (res.headersSent) return next(err);
+  res.status(500).json({
+    success: false,
+    message: 'Terjadi kesalahan pada server. Silakan periksa log backend.'
+  });
 });
 
 // Boot & Lifecycle
@@ -272,6 +266,9 @@ npm run setup-admin
       if (fs.existsSync(path.join(DEPLOY_DIR, forbidden))) {
         throw new Error(`PERINGATAN KEAMANAN: Ditemukan berkas terlarang ${forbidden} pada paket deployment!`);
       }
+    }
+    if (fs.existsSync(path.join(DEPLOY_DIR, 'database', 'data.json'))) {
+      throw new Error('PERINGATAN KEAMANAN: database/data.json tidak boleh masuk ke paket produksi.');
     }
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
