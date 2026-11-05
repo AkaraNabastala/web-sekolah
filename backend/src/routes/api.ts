@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url';
 import { logger } from '../utils/logger.js';
 
 import { dashboardRouter } from './dashboardRoutes.js';
+import { adminActivityLogger } from '../middleware/adminActivityLogger.js';
 
 export const apiRouter = Router();
 
@@ -578,28 +579,7 @@ apiRouter.post('/upload', requireAdmin, upload.single('file'), (req: Request, re
   });
 });
 
-// Catat aktivitas mutasi admin setelah respons sukses. Tidak menyimpan isi form, password, atau token.
-apiRouter.use('/admin', (req: AuthenticatedRequest, res: Response, next) => {
-  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
-    return next();
-  }
-
-  res.once('finish', () => {
-    if (res.statusCode < 400 && req.user?.id) {
-      const description = `${req.method} ${req.originalUrl}`.slice(0, 1000);
-      getPool().query(
-        'INSERT INTO admin_activities (admin_id, action, description, ip_hash) VALUES (?, ?, ?, NULL)',
-        [req.user.id, req.method, description]
-      ).catch((error: any) => {
-        logger.error('AdminActivity', 'Gagal menyimpan log aktivitas administrator.', {
-          code: error.code
-        });
-      });
-    }
-  });
-
-  next();
-});
+apiRouter.use('/admin', adminActivityLogger);
 
 // ==========================================
 // 6. ADMIN CRUD OPERATIONS (DASHBOARD)
