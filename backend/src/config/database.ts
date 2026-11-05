@@ -1,7 +1,6 @@
 import mysql, { Pool, PoolOptions } from 'mysql2/promise';
-import dotenv from 'dotenv';
+import './env.js';
 import { logger } from '../utils/logger.js';
-dotenv.config();
 
 export const dbConfig: PoolOptions = {
   host: process.env.DB_HOST || '127.0.0.1',
