@@ -164,7 +164,7 @@ export const DashboardHome: React.FC = () => {
     {
       label: 'Pengunjung Hari Ini',
       value: stats?.visitorsToday ?? null,
-      sub: 'Trafik unik 24 jam terakhir',
+      sub: 'Pengunjung unik hari ini',
       icon: Calendar,
       color: 'emerald',
       link: '/admin/statistik'
@@ -175,7 +175,7 @@ export const DashboardHome: React.FC = () => {
       sub: 'Akumulasi seluruh kunjungan',
       icon: Eye,
       color: 'sky',
-      link: '#'
+      link: '/admin/statistik'
     }
   ];
 
@@ -304,7 +304,7 @@ export const DashboardHome: React.FC = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-stone-900">Ringkasan Entitas & Trafik</h2>
-          <span className="text-[11px] text-stone-500 font-medium">Update realtime</span>
+          <span className="text-[11px] text-stone-500 font-medium">{loading ? "Memuat data..." : "Data terbaru"}</span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
