@@ -41,6 +41,7 @@ web-sekolah/
 │
 ├── .env.example                  # Template variabel lingkungan
 ├── .gitignore                    # Rule pengabaian file sensitif
+├── scripts/                      # Skrip orkestrasi dev dan build produksi
 └── README.md                     # Dokumentasi panduan
 ```
 
@@ -79,7 +80,7 @@ Sesuaikan konfigurasi koneksi MySQL (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NA
 ### 3. Migrasi Database MySQL
 Jalankan skema basis data pada server MySQL Anda:
 ```bash
-mysql -u root -p < database/schema.sql
+mysql -u root -p < backend/database/schema.sql
 mysql -u root -p < database/seeds/seed.sql
 ```
 
