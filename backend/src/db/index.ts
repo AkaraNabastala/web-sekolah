@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
+import { fileURLToPath } from 'url';
 
-const DATA_DIR = path.resolve(process.cwd(), 'database');
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+const BACKEND_ROOT = path.resolve(moduleDir, '../../');
+const DATA_DIR = path.join(BACKEND_ROOT, 'database');
 const DATA_FILE = path.join(DATA_DIR, 'data.json');
 
 // Ensure database directory exists
