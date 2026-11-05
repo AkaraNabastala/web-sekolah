@@ -13,11 +13,16 @@ export const AgendaList: React.FC = () => {
   const [agendas, setAgendas] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     schoolApi.getAgendas()
       .then(res => setAgendas(res))
-      .catch(() => setAgendas([]))
+      .catch(error => {
+        console.error('Gagal memuat agenda kegiatan:', error);
+        setLoadError('Informasi kegiatan belum dapat dimuat. Silakan coba beberapa saat lagi.');
+        setAgendas([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -70,6 +75,10 @@ export const AgendaList: React.FC = () => {
         <div className="space-y-6 max-w-4xl mx-auto">
           {loading ? (
             <div className="py-16 text-center text-sm text-[#7A827B]">Memuat informasi kegiatan...</div>
+          ) : loadError ? (
+            <div role="alert" className="bg-white rounded-3xl p-8 text-center border border-amber-200 text-sm text-amber-800">
+              {loadError}
+            </div>
           ) : filtered.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-[#ECE7DD] space-y-3">
               <Calendar className="w-12 h-12 text-[#2A5C40]/40 mx-auto" />
