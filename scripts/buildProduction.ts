@@ -178,11 +178,14 @@ async function startProductionServer() {
   logger.info('ProductionServer', 'Memulai Server Produksi SMP Islam Caruy...');
 
   const dbCheck = await testMySQLConnection();
-  if (dbCheck.connected) {
-    logger.info('ProductionServer', dbCheck.message);
-    await runMigrations();
-  } else {
-    logger.warn('ProductionServer', \`MySQL: \${dbCheck.message}. Fallback data.json aktif.\`);
+  if (!dbCheck.connected) {
+    throw new Error(`MySQL wajib tersedia pada production: ${dbCheck.message}`);
+  }
+
+  logger.info('ProductionServer', dbCheck.message);
+  const migration = await runMigrations();
+  if (!migration.success) {
+    throw new Error(`Database migration gagal: ${migration.message}`);
   }
 
   const server = app.listen(PORT, '0.0.0.0', () => {
