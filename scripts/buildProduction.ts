@@ -61,9 +61,10 @@ async function buildProduction() {
     copyRecursive(path.join(ROOT_DIR, 'frontend', 'dist'), path.join(DEPLOY_DIR, 'public'));
     // Salin backend dist ke deployment/backend
     copyRecursive(path.join(ROOT_DIR, 'backend', 'dist'), path.join(DEPLOY_DIR, 'backend'));
-    // Salin schema database & fallback data.json (tanpa credential)
-    copyRecursive(path.join(ROOT_DIR, 'database', 'schema.sql'), path.join(DEPLOY_DIR, 'database', 'schema.sql'));
-    copyRecursive(path.join(ROOT_DIR, 'database', 'data.json'), path.join(DEPLOY_DIR, 'database', 'data.json'));
+    // Salin schema, seed SQL & fallback data.json dari backend/database
+    copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'schema.sql'), path.join(DEPLOY_DIR, 'database', 'schema.sql'));
+    copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'seeds'), path.join(DEPLOY_DIR, 'database', 'seeds'));
+    copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'data.json'), path.join(DEPLOY_DIR, 'database', 'data.json'));
 
     // 5. Generate package.json dan server entry point khusus deployment
     logStep('5/6: Menyiapkan Production Server Runner & Ketergantungan Bersih');
