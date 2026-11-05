@@ -331,7 +331,7 @@ export const Navbar: React.FC = () => {
                     : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
                 }`}
               >
-                <span>Prestasi & Galeri</span>
+                <span>Prestasi & Kegiatan</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'prestasi' ? 'rotate-180 text-[#1B3B2B]' : 'text-stone-400'}`} />
               </button>
 
@@ -348,6 +348,14 @@ export const Navbar: React.FC = () => {
                   >
                     <span className="text-xs font-bold">Prestasi Santri</span>
                     <span className="text-[11px] text-[#7A827B] font-normal">Kejuaraan sains, seni & tahfidz</span>
+                  </Link>
+                  <Link
+                    to="/kegiatan"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Kegiatan Sekolah</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Catatan kegiatan yang telah berlangsung</span>
                   </Link>
                   <Link
                     to="/galeri"
@@ -493,6 +501,9 @@ export const Navbar: React.FC = () => {
               <div className="pl-6 space-y-1 mt-1 border-l-2 border-[#1B3B2B] ml-3">
                 <Link to="/prestasi" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
                   Prestasi Santri
+                </Link>
+                <Link to="/kegiatan" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Kegiatan Sekolah
                 </Link>
                 <Link to="/galeri" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
                   Galeri Foto & Video
