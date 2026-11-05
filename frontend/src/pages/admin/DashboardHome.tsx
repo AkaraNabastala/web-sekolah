@@ -405,7 +405,9 @@ export const DashboardHome: React.FC = () => {
 
           <div className="pt-2 border-t border-stone-100 flex justify-between text-xs text-stone-500">
             <span>Sinkronisasi database</span>
-            <span className="font-bold text-emerald-700">Terhubung</span>
+            <span className={`font-bold ${dbStatus?.mysql?.connected ? 'text-emerald-700' : 'text-amber-700'}`}>
+              {dbStatus?.mysql?.connected ? 'Terhubung' : dbStatus ? 'Tidak terhubung' : 'Belum diketahui'}
+            </span>
           </div>
         </div>
       </div>
