@@ -237,7 +237,7 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Kurikulum Terpadu</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Kurikulum Nasional & Diniyyah</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Informasi pembelajaran yang dikelola sekolah</span>
                   </Link>
                   <Link
                     to="/program"
@@ -245,7 +245,7 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Program Unggulan</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Tahfidzul Quran & Sains Terpadu</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Program yang ditetapkan dan dikelola sekolah</span>
                   </Link>
                   <Link
                     to="/ekstrakurikuler"
@@ -253,7 +253,7 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Ekstrakurikuler</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Pramuka, kaligrafi, dan olahraga</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Kegiatan pengembangan minat dan bakat siswa</span>
                   </Link>
                 </div>
               )}
@@ -326,7 +326,7 @@ export const Navbar: React.FC = () => {
                 aria-haspopup="true"
                 onClick={() => setActiveDropdown(activeDropdown === 'prestasi' ? null : 'prestasi')}
                 className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
-                  location.pathname === '/prestasi' || location.pathname === '/galeri'
+                  location.pathname === '/prestasi' || location.pathname === '/kegiatan' || location.pathname === '/galeri'
                     ? 'bg-[#E8EFEA] text-[#1B3B2B]'
                     : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
                 }`}
@@ -347,7 +347,7 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Prestasi Santri</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Kejuaraan sains, seni & tahfidz</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Capaian yang telah diverifikasi dan dipublikasikan</span>
                   </Link>
                   <Link
                     to="/kegiatan"
