@@ -401,6 +401,12 @@ class Database {
   }
 
   private loadData(): DbState {
+    // JSON fallback hanya untuk development. Production tidak membaca atau membuat
+    // database/data.json; seluruh operasi data wajib melalui MySQL.
+    if (process.env.NODE_ENV === 'production') {
+      return getInitialData();
+    }
+
     try {
       if (fs.existsSync(DATA_FILE)) {
         const raw = fs.readFileSync(DATA_FILE, 'utf-8');
@@ -415,6 +421,7 @@ class Database {
   }
 
   private saveData(data: DbState) {
+    if (process.env.NODE_ENV === 'production') return;
     try {
       fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
     } catch (err) {
