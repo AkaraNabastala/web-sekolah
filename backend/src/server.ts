@@ -5,7 +5,7 @@ import fs from 'fs';
 import './config/env.js';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './routes/api.js';
-import { checkConnection, getStatus } from './config/database.js';
+import { checkConnection } from './config/database.js';
 import { logger } from './utils/logger.js';
 import { runMigrations } from './scripts/migrate.js';
 
@@ -34,20 +34,6 @@ app.use('/uploads', express.static(uploadsDir));
 // API routes
 app.use('/api', apiRouter);
 
-// Centralized API error handling: async route failures are logged and returned as JSON.
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  logger.error('ApiError', 'Permintaan API gagal diproses.', {
-    method: req.method,
-    path: req.path,
-    code: err?.code
-  });
-  if (res.headersSent) return next(err);
-  res.status(500).json({
-    success: false,
-    message: 'Terjadi kesalahan pada server. Silakan periksa log backend.'
-  });
-});
-
 // Health check
 app.get('/api/health', (_req, res) => {
   res.json({
@@ -59,16 +45,11 @@ app.get('/api/health', (_req, res) => {
 
 app.get('/api/system/database-status', async (_req, res) => {
   const check = await checkConnection();
-  const st = getStatus();
+  // Jangan bocorkan host, port, nama database, atau detail koneksi internal.
   res.json({
     success: true,
     mysql: {
-      configured: st.configured,
-      connected: check.connected,
-      message: check.message,
-      host: st.host,
-      port: st.port,
-      database: st.database
+      connected: check.connected
     }
   });
 });
@@ -84,6 +65,20 @@ if (fs.existsSync(clientDist)) {
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 }
+
+// Centralized API error handling: async route failures are logged and returned as JSON.
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  logger.error('ApiError', 'Permintaan API gagal diproses.', {
+    method: req.method,
+    path: req.path,
+    code: err?.code
+  });
+  if (res.headersSent) return next(err);
+  res.status(500).json({
+    success: false,
+    message: 'Terjadi kesalahan pada server. Silakan periksa log backend.'
+  });
+});
 
 async function start() {
   logger.info('ServerBootstrap', 'Starting SMP Islam Caruy Backend Service...');
