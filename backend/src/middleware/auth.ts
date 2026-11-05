@@ -1,7 +1,12 @@
+import '../config/env.js';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'caruy_islamic_school_production_secret_key_2026';
+const configuredJwtSecret = process.env.JWT_SECRET;
+if (!configuredJwtSecret || configuredJwtSecret.length < 32) {
+  throw new Error('JWT_SECRET wajib diatur dan minimal 32 karakter. Gunakan secret acak yang baru.');
+}
+export const JWT_SECRET: string = configuredJwtSecret;
 
 export interface AuthenticatedUser {
   id: number;
