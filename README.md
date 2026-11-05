@@ -19,6 +19,7 @@ web-sekolah/
 │   ├── src/
 │   │   ├── config/
 │   │   ├── db/
+│   │   ├── controllers/
 │   │   ├── middleware/
 │   │   ├── routes/
 │   │   ├── services/
@@ -69,6 +70,7 @@ Sesuaikan konfigurasi koneksi MySQL (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NA
 ### 3. Migrasi Database MySQL
 Jalankan skema basis data pada server MySQL Anda:
 ```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS \`web-sekolah\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 mysql -u root -p web-sekolah < backend/database/schema.sql
 mysql -u root -p web-sekolah < backend/database/seeds/seed.sql
 ```
