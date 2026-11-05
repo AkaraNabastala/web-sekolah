@@ -10,6 +10,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { logger } from '../utils/logger.js';
 
 export const apiRouter = Router();
 
@@ -670,6 +671,29 @@ apiRouter.post('/upload', requireAdmin, upload.single('file'), (req: Request, re
       mimetype: req.file.mimetype
     }
   });
+});
+
+// Catat aktivitas mutasi admin setelah respons sukses. Tidak menyimpan isi form, password, atau token.
+apiRouter.use('/admin', (req: AuthenticatedRequest, res: Response, next) => {
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    return next();
+  }
+
+  res.once('finish', () => {
+    if (res.statusCode < 400 && req.user?.id) {
+      const description = `${req.method} ${req.originalUrl}`.slice(0, 1000);
+      getPool().query(
+        'INSERT INTO admin_activities (admin_id, action, description, ip_hash) VALUES (?, ?, ?, NULL)',
+        [req.user.id, req.method, description]
+      ).catch((error: any) => {
+        logger.error('AdminActivity', 'Gagal menyimpan log aktivitas administrator.', {
+          code: error.code
+        });
+      });
+    }
+  });
+
+  next();
 });
 
 // ==========================================
