@@ -120,7 +120,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static uploads directory
-const uploadsDir = path.resolve(process.cwd(), 'uploads');
+const uploadsDir = process.env.UPLOAD_DIR || path.resolve(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -128,6 +128,19 @@ app.use('/uploads', express.static(uploadsDir));
 
 // Mount API router
 app.use('/api', apiRouter);
+
+app.use((err, req, res, next) => {
+  logger.error('ApiError', 'Permintaan API gagal diproses.', {
+    method: req.method,
+    path: req.path,
+    code: err?.code
+  });
+  if (res.headersSent) return next(err);
+  res.status(500).json({
+    success: false,
+    message: 'Terjadi kesalahan pada server. Silakan periksa log backend.'
+  });
+});
 
 // Health check endpoint
 app.get('/api/health', (_req, res) => {
