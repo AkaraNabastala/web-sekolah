@@ -9,11 +9,14 @@ import { db } from '../db/index.js'; // Fallback sync jika MySQL standalone belu
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 export const apiRouter = Router();
 
 // Konfigurasi Multer
-const UPLOAD_DIR = path.resolve(process.cwd(), 'uploads');
+const routeDir = path.dirname(fileURLToPath(import.meta.url));
+const backendRoot = path.resolve(routeDir, '../../');
+const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(backendRoot, 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
