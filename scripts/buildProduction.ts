@@ -155,9 +155,8 @@ app.get('/api/system/database-status', async (_req, res) => {
       database: config.database
     },
     fallback_storage: {
-      engine: 'Atomic Persistent JSON Relational Store',
-      status: 'Active & Synchronized',
-      file: 'database/data.json'
+      enabled: process.env.ALLOW_JSON_FALLBACK === 'true' && process.env.NODE_ENV !== 'production',
+      status: 'Development offline only'
     }
   });
 });
