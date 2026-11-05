@@ -18,15 +18,14 @@ web-sekolah/
 ├── backend/                    # API Express + TypeScript
 │   ├── src/
 │   │   ├── config/
-│   │   ├── controllers/
+│   │   ├── db/
 │   │   ├── middleware/
 │   │   ├── routes/
 │   │   ├── services/
-│   │   ├── models/
 │   │   ├── utils/
 │   │   ├── scripts/
 │   │   └── server.ts
-│   ├── database/               # schema, seed, migration, offline store
+│   ├── database/               # schema, seed, dan offline store
 │   ├── uploads/
 │   └── package.json
 ├── scripts/                    # Orkestrasi development dan build produksi
