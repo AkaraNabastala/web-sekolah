@@ -34,6 +34,20 @@ app.use('/uploads', express.static(uploadsDir));
 // API routes
 app.use('/api', apiRouter);
 
+// Centralized API error handling: async route failures are logged and returned as JSON.
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  logger.error('ApiError', 'Permintaan API gagal diproses.', {
+    method: req.method,
+    path: req.path,
+    code: err?.code
+  });
+  if (res.headersSent) return next(err);
+  res.status(500).json({
+    success: false,
+    message: 'Terjadi kesalahan pada server. Silakan periksa log backend.'
+  });
+});
+
 // Health check
 app.get('/api/health', (_req, res) => {
   res.json({
