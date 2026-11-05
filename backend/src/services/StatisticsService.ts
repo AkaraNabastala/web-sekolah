@@ -4,6 +4,9 @@ import { logger } from '../utils/logger.js';
 import { RowDataPacket } from 'mysql2';
 import ExcelJS from 'exceljs';
 
+const isJsonFallbackAllowed = () =>
+  process.env.NODE_ENV !== 'production' && process.env.ALLOW_JSON_FALLBACK === 'true';
+
 export interface StatsFilter {
   startDate?: string;
   endDate?: string;
@@ -61,7 +64,11 @@ export class StatisticsService {
       }
     }
 
-    // Jika MySQL tidak terhubung (offline standalone mode)
+    // Fallback JSON hanya boleh digunakan secara eksplisit pada development offline.
+    if (!isJsonFallbackAllowed()) {
+      logger.warn('StatisticsService', 'Kunjungan tidak disimpan karena MySQL offline dan fallback JSON tidak diaktifkan.');
+      return;
+    }
     try {
       db.logVisitor(
         params.visitorHash,
@@ -139,7 +146,10 @@ export class StatisticsService {
       }
     }
 
-    // Fallback jika MySQL offline
+    // Fallback jika MySQL offline dan secara eksplisit diizinkan.
+    if (!isJsonFallbackAllowed()) {
+      throw new Error('Statistik tidak tersedia karena koneksi MySQL tidak aktif.');
+    }
     const jsonStats = db.getDashboardStats();
     return {
       today: {
@@ -232,7 +242,10 @@ export class StatisticsService {
       }
     }
 
-    // Fallback jika MySQL offline
+    // Fallback jika MySQL offline dan secara eksplisit diizinkan.
+    if (!isJsonFallbackAllowed()) {
+      throw new Error('Analitik tidak tersedia karena koneksi MySQL tidak aktif.');
+    }
     const jsonStats = db.getDashboardStats();
     return {
       trends: jsonStats.visitorTraffic.map((t: any) => ({
