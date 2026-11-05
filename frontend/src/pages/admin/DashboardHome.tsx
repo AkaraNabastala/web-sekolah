@@ -44,24 +44,69 @@ export const DashboardHome: React.FC = () => {
   const [recentNews, setRecentNews] = useState<NewsArticle[]>([]);
   const [dbStatus, setDbStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [statsError, setStatsError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      schoolApi.getDashboardStats(),
-      schoolApi.getAdminActivities(),
-      schoolApi.getAdminMessages(),
-      schoolApi.getAdminNews().catch(() => []),
-      schoolApi.getDatabaseStatus().catch(() => null)
-    ])
-      .then(([stRes, actRes, msgRes, newsRes, dbRes]) => {
-        setStats(stRes);
-        setActivities(actRes.slice(0, 8));
-        setRecentMessages(msgRes.slice(0, 5));
-        setRecentNews(newsRes.slice(0, 5));
-        if (dbRes) setDbStatus(dbRes);
-      })
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
+    let mounted = true;
+
+    const loadDashboard = async () => {
+      const results = await Promise.allSettled([
+        schoolApi.getDashboardStats(),
+        schoolApi.getAdminActivities(),
+        schoolApi.getAdminMessages(),
+        schoolApi.getAdminNews(),
+        schoolApi.getDatabaseStatus()
+      ]);
+
+      if (!mounted) return;
+
+      const [statsResult, activitiesResult, messagesResult, newsResult, databaseResult] = results;
+
+      if (statsResult.status === 'fulfilled') {
+        setStats(statsResult.value);
+      } else {
+        console.error('Dashboard statistics failed:', statsResult.reason);
+        setStatsError('Statistik belum dapat dimuat. Periksa koneksi MySQL dan endpoint dashboard.');
+      }
+
+      if (activitiesResult.status === 'fulfilled') {
+        setActivities(activitiesResult.value.slice(0, 8));
+      } else {
+        console.error('Dashboard activities failed:', activitiesResult.reason);
+      }
+
+      if (messagesResult.status === 'fulfilled') {
+        setRecentMessages(messagesResult.value.slice(0, 5));
+      } else {
+        console.error('Dashboard messages failed:', messagesResult.reason);
+      }
+
+      if (newsResult.status === 'fulfilled') {
+        setRecentNews(newsResult.value.slice(0, 5));
+      } else {
+        console.error('Dashboard news failed:', newsResult.reason);
+      }
+
+      if (databaseResult.status === 'fulfilled') {
+        setDbStatus(databaseResult.value);
+      } else {
+        console.error('Dashboard database status failed:', databaseResult.reason);
+      }
+
+      setLoading(false);
+    };
+
+    loadDashboard().catch(error => {
+      console.error('Unexpected dashboard loading error:', error);
+      if (mounted) {
+        setStatsError('Dashboard mengalami kendala saat memuat data.');
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // 8 Specific Metric Counters required by user specification:
@@ -69,7 +114,7 @@ export const DashboardHome: React.FC = () => {
   const statCards = [
     {
       label: 'Berita & Artikel',
-      value: stats?.totalNews || 0,
+      value: stats?.totalNews ?? null,
       sub: 'Publikasi aktif & draft',
       icon: Newspaper,
       color: 'emerald',
@@ -77,15 +122,15 @@ export const DashboardHome: React.FC = () => {
     },
     {
       label: 'Guru & Tenaga Staf',
-      value: (stats?.totalTeachers || 0) + (stats?.totalStaff || 0),
-      sub: `${stats?.totalTeachers || 0} Guru, ${stats?.totalStaff || 0} Tenaga Kependidikan`,
+      value: stats ? stats.totalTeachers + stats.totalStaff : null,
+      sub: stats ? `${stats.totalTeachers} Guru, ${stats.totalStaff} Tenaga Kependidikan` : 'Data belum tersedia',
       icon: Users,
       color: 'sky',
       link: '/admin/guru-staf'
     },
     {
       label: 'Galeri & Media',
-      value: stats?.totalGallery || 0,
+      value: stats?.totalGallery ?? null,
       sub: 'Foto kegiatan & dokumentasi',
       icon: Image,
       color: 'indigo',
@@ -93,7 +138,7 @@ export const DashboardHome: React.FC = () => {
     },
     {
       label: 'Prestasi Siswa',
-      value: stats?.totalAchievements || 0,
+      value: stats?.totalAchievements ?? null,
       sub: 'Akademik & non-akademik',
       icon: Award,
       color: 'amber',
@@ -101,7 +146,7 @@ export const DashboardHome: React.FC = () => {
     },
     {
       label: 'Sarana & Fasilitas',
-      value: stats?.totalFacilities || 0,
+      value: stats?.totalFacilities ?? null,
       sub: 'Ruang belajar & penunjang',
       icon: Landmark,
       color: 'teal',
@@ -109,8 +154,8 @@ export const DashboardHome: React.FC = () => {
     },
     {
       label: 'Pesan Masuk',
-      value: stats?.totalMessages || 0,
-      sub: `${stats?.unreadMessages || 0} belum dibaca`,
+      value: stats?.totalMessages ?? null,
+      sub: stats ? `${stats.unreadMessages} belum dibaca` : 'Data belum tersedia',
       icon: Mail,
       color: stats?.unreadMessages ? 'rose' : 'stone',
       link: '/admin/pesan',
@@ -118,15 +163,15 @@ export const DashboardHome: React.FC = () => {
     },
     {
       label: 'Pengunjung Hari Ini',
-      value: stats?.visitorsToday || 0,
+      value: stats?.visitorsToday ?? null,
       sub: 'Trafik unik 24 jam terakhir',
       icon: Calendar,
       color: 'emerald',
-      link: '#'
+      link: '/admin/statistik'
     },
     {
       label: 'Total Pengunjung',
-      value: stats?.totalVisitors || 0,
+      value: stats?.totalVisitors ?? null,
       sub: 'Akumulasi seluruh kunjungan',
       icon: Eye,
       color: 'sky',
@@ -183,6 +228,12 @@ export const DashboardHome: React.FC = () => {
         </div>
       </div>
 
+      {statsError && (
+        <div role="alert" className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-900">
+          {statsError}
+        </div>
+      )}
+
       {/* Database Engine Architecture Indicator */}
       <div className="bg-white rounded-2xl p-4 sm:p-5 border border-stone-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3.5">
@@ -196,20 +247,20 @@ export const DashboardHome: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-stone-900">
-                Penyimpanan Data: MySQL Relasional 19 Tabel
+                Penyimpanan Data: MySQL Relasional
               </span>
               <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                 dbStatus?.mysql?.connected
                   ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                   : 'bg-amber-50 text-amber-900 border border-amber-300'
               }`}>
-                {dbStatus?.mysql?.connected ? 'MySQL Active' : 'Persistent Storage Fallback Active'}
+                {dbStatus?.mysql?.connected ? 'MySQL Aktif' : dbStatus ? 'MySQL Tidak Terhubung' : 'Status Belum Diketahui'}
               </span>
             </div>
             <p className="text-[11px] text-stone-500 mt-0.5">
               {dbStatus?.mysql?.connected
                 ? `Terhubung ke MySQL host ${dbStatus.mysql.host}:${dbStatus.mysql.port} (${dbStatus.mysql.database})`
-                : 'Lingkungan Sandbox AI Studio: Menyimpan data relasional atomik aman di disk dan siap di-deploy ke MySQL lokal dengan database/schema.sql.'}
+                : 'Status koneksi database belum tersedia. Statistik tidak akan diasumsikan atau dibuat-buat.'}
             </p>
           </div>
         </div>
@@ -262,7 +313,7 @@ export const DashboardHome: React.FC = () => {
             return (
               <Link
                 key={idx}
-                to={card.link !== '#' ? card.link : '#'}
+                to={card.link}
                 className="bg-white rounded-2xl p-5 shadow-sm border border-stone-200/80 flex flex-col justify-between space-y-3 hover:shadow-md transition-all hover:border-emerald-300 group"
               >
                 <div className="flex items-center justify-between">
@@ -280,7 +331,7 @@ export const DashboardHome: React.FC = () => {
 
                 <div>
                   <p className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">
-                    {card.value.toLocaleString('id-ID')}
+                    {card.value === null ? '—' : card.value.toLocaleString('id-ID')}
                   </p>
                   <p className="text-[11px] text-stone-400 font-normal mt-1 truncate">
                     {card.sub}
@@ -298,7 +349,7 @@ export const DashboardHome: React.FC = () => {
         <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-stone-900">Statistik Pengunjung 7 Hari Terakhir</h3>
+              <h3 className="text-base font-bold text-stone-900">Statistik Pengunjung 30 Hari Terakhir</h3>
               <p className="text-xs text-stone-400 font-normal">Jumlah kunjungan unik dan tayangan halaman website</p>
             </div>
             <span className="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2.5 py-1 rounded-full border border-emerald-200">
@@ -330,8 +381,8 @@ export const DashboardHome: React.FC = () => {
         {/* Content Breakdown BarChart (4 cols) */}
         <div className="lg:col-span-4 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-4 flex flex-col justify-between">
           <div>
-            <h3 className="text-base font-bold text-stone-900">Distribusi Konten Sekolah</h3>
-            <p className="text-xs text-stone-400 font-normal">Total entitas aktif yang tersimpan di database</p>
+            <h3 className="text-base font-bold text-stone-900">Distribusi Kategori Berita</h3>
+            <p className="text-xs text-stone-400 font-normal">Jumlah berita per kategori</p>
           </div>
 
           <div className="h-60 w-full pt-2">
