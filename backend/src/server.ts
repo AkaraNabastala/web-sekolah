@@ -2,14 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
-import dotenv from 'dotenv';
+import './config/env.js';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './routes/api.js';
 import { checkConnection, getStatus } from './config/database.js';
 import { logger } from './utils/logger.js';
 import { runMigrations } from './scripts/migrate.js';
 
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
