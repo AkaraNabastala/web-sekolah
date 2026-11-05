@@ -2,6 +2,14 @@ import mysql, { Pool, PoolOptions } from 'mysql2/promise';
 import './env.js';
 import { logger } from '../utils/logger.js';
 
+if (process.env.NODE_ENV === 'production') {
+  const requiredDatabaseVariables = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
+  const missingDatabaseVariables = requiredDatabaseVariables.filter(name => !process.env[name]?.trim());
+  if (missingDatabaseVariables.length > 0) {
+    throw new Error(`Konfigurasi database production belum lengkap: ${missingDatabaseVariables.join(', ')}.`);
+  }
+}
+
 export const dbConfig: PoolOptions = {
   host: process.env.DB_HOST || '127.0.0.1',
   port: parseInt(process.env.DB_PORT || '3306', 10),
