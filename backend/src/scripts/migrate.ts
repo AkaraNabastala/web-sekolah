@@ -110,7 +110,7 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
 }
 
 // Eksekusi langsung jika dipanggil via CLI
-if (process.argv[1] && process.argv[1].endsWith('migrate.ts')) {
+if (process.argv[1] && /migrate\.(ts|js)$/.test(process.argv[1])) {
   runMigrations().then((res) => {
     if (!res.success) {
       process.exit(1);
