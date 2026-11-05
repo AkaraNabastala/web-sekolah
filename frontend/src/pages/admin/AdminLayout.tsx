@@ -43,7 +43,9 @@ export const AdminLayout: React.FC = () => {
         .then(res => {
           setUnreadCount(res.filter(m => !m.is_read).length);
         })
-        .catch(() => {});
+        .catch(error => {
+          console.error('Gagal memuat jumlah pesan belum dibaca:', error);
+        });
     }
   }, [isAuthenticated, location.pathname]);
 
