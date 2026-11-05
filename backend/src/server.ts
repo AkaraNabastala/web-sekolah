@@ -79,9 +79,15 @@ async function start() {
   if (dbCheck.connected) {
     logger.info('Database', dbCheck.message);
     // Jalankan migrasi tabel secara otomatis saat database terhubung
-    await runMigrations();
+    const migration = await runMigrations();
+    if (!migration.success) {
+      throw new Error(`Database migration failed: ${migration.message}`);
+    }
   } else {
-    logger.warn('Database', `${dbCheck.message} Menggunakan Json Relational Store (database/data.json) sebagai fallback.`);
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(`MySQL wajib tersedia pada production: ${dbCheck.message}`);
+    }
+    logger.warn('Database', `${dbCheck.message} Mode fallback JSON hanya diizinkan untuk development offline.`);
   }
 
   const server = app.listen(PORT, '0.0.0.0', () => {
