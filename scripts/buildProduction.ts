@@ -196,11 +196,11 @@ async function startProductionServer() {
   }
 
   const server = app.listen(PORT, '0.0.0.0', () => {
-    logger.info('ProductionServer', \`Server running on http://0.0.0.0:\${PORT} [PRODUCTION]\`);
+    logger.info('ProductionServer', `Server running on http://0.0.0.0:${PORT} [PRODUCTION]`);
   });
 
   const shutdown = (signal) => {
-    logger.info('ProductionServer', \`Menerima \${signal}. Menutup server...\`);
+    logger.info('ProductionServer', `Menerima ${signal}. Menutup server...`);
     server.close(() => {
       logger.info('ProductionServer', 'HTTP Server berhasil ditutup.');
       process.exit(0);
@@ -233,29 +233,29 @@ startProductionServer().catch((err) => {
 Paket ini dirancang untuk hosting berbasis Node.js (cPanel Node.js Selector, VPS Ubuntu/Debian, Docker, Railway, dsb.).
 
 ## 1. Persiapan Environment
-Salin file \`.env.example\` menjadi \`.env\`:
-\`\`\`bash
+Salin file `.env.example` menjadi `.env`:
+```bash
 cp .env.example .env
-\`\`\`
+```
 Sesuaikan nilai variabel lingkungan dengan konfigurasi hosting/database Anda.
 
 ## 2. Instalasi Dependensi
 Jalankan di server hosting:
-\`\`\`bash
+```bash
 npm install --omit=dev
-\`\`\`
+```
 
 ## 3. Menjalankan Aplikasi
-\`\`\`bash
+```bash
 npm start
-\`\`\`
+```
 Aplikasi akan aktif melayani website publik dan API pada port yang ditentukan (default 3000).
 
 ## 4. Setup Administrator Pertama
 Jika database baru dibuat dan belum memiliki admin:
-\`\`\`bash
+```bash
 npm run setup-admin
-\`\`\`
+```
 `;
     fs.writeFileSync(path.join(DEPLOY_DIR, 'README_HOSTING.md'), hostingReadme, 'utf8');
 
