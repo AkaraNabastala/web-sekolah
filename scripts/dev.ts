@@ -1,8 +1,11 @@
 import { spawn, type ChildProcess } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+dotenv.config({ path: path.join(rootDir, '.env') });
+
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const children: ChildProcess[] = [];
 
