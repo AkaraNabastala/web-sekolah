@@ -25,7 +25,7 @@ export const Facilities: React.FC = () => {
     : facilities.filter(f => f.category === selectedCat || (selectedCat === 'Fasilitas Lain' && !categories.includes(f.category)));
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Sarana & Fasilitas Sekolah"
         description="Daftar sarana dan prasarana belajar SMP Islam Caruy: Ruang Kelas Ber-AC, Laboratorium Komputer & IPA, Perpustakaan, Musholla At-Tarbiyah, dan Lapangan Olahraga."
@@ -85,7 +85,7 @@ export const Facilities: React.FC = () => {
 
               <div className="p-6 flex flex-col flex-1 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-base text-stone-900 group-hover:text-emerald-700 transition-colors">
+                  <h3 className="font-bold text-base text-stone-900 group-hover:text-emerald-700 transition-colors">
                     {fac.name}
                   </h3>
                   {fac.capacity && (
@@ -95,7 +95,7 @@ export const Facilities: React.FC = () => {
                   )}
                 </div>
 
-                <p className="text-xs text-stone-600 font-light leading-relaxed">
+                <p className="text-xs text-stone-600 font-normal leading-relaxed">
                   {fac.description}
                 </p>
               </div>

@@ -22,7 +22,7 @@ export const Organization: React.FC = () => {
   const wakilDanTu = members.filter(m => m.level === 3);
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Struktur Organisasi"
         description="Bagan hierarki kepemimpinan, susunan komite sekolah, kepala sekolah, waka, dan tata usaha SMP Islam Caruy."
@@ -40,10 +40,10 @@ export const Organization: React.FC = () => {
             <span className="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
               Hierarki Kepemimpinan
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900">
+            <h2 className="text-2xl sm:text-3xl font-bold text-stone-900">
               Bagan Struktur Organisasi Sekolah
             </h2>
-            <p className="text-xs sm:text-sm text-stone-500 font-light">
+            <p className="text-xs sm:text-sm text-stone-500 font-normal">
               Sinergi kepemimpinan profesional demi terwujudnya layanan pendidikan bermutu tinggi.
             </p>
           </div>
@@ -56,7 +56,7 @@ export const Organization: React.FC = () => {
                   <img src={komite.photo || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=300'} alt={komite.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider bg-amber-500 text-emerald-950 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-emerald-950 px-2.5 py-0.5 rounded-full">
                     {komite.position}
                   </span>
                   <h3 className="text-base font-bold text-stone-900 mt-2">{komite.name}</h3>
@@ -75,14 +75,14 @@ export const Organization: React.FC = () => {
                   <img src={kepalaSekolah.photo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300'} alt={kepalaSekolah.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-extrabold uppercase tracking-widest bg-amber-400 text-emerald-950 px-3 py-1 rounded-full">
+                  <span className="text-[11px] font-bold uppercase tracking-widest bg-amber-400 text-emerald-950 px-3 py-1 rounded-full">
                     {kepalaSekolah.position}
                   </span>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white mt-2.5">{kepalaSekolah.name}</h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-white mt-2.5">{kepalaSekolah.name}</h3>
                   {kepalaSekolah.nip && kepalaSekolah.nip !== '-' && (
                     <p className="text-xs text-emerald-200 font-mono mt-0.5">NIP: {kepalaSekolah.nip}</p>
                   )}
-                  <p className="text-xs text-emerald-100/90 font-light mt-2 max-w-sm mx-auto">{kepalaSekolah.description}</p>
+                  <p className="text-xs text-emerald-100/90 font-normal mt-2 max-w-sm mx-auto">{kepalaSekolah.description}</p>
                 </div>
               </div>
               <ArrowDown className="w-6 h-6 text-emerald-600 my-6" />
@@ -103,12 +103,12 @@ export const Organization: React.FC = () => {
                   <div className="w-16 h-16 rounded-xl overflow-hidden shadow-sm border border-stone-200">
                     <img src={item.photo || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200'} alt={item.name} className="w-full h-full object-cover" />
                   </div>
-                  <span className="text-[9px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                  <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
                     {item.position}
                   </span>
                   <h5 className="font-bold text-xs text-stone-900 leading-snug">{item.name}</h5>
                   {item.description && (
-                    <p className="text-[10px] text-stone-500 font-light leading-relaxed">{item.description}</p>
+                    <p className="text-[10px] text-stone-500 font-normal leading-relaxed">{item.description}</p>
                   )}
                 </div>
               ))}

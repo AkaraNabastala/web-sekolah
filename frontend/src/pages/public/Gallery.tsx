@@ -22,7 +22,7 @@ export const Gallery: React.FC = () => {
   const categories = ['Semua', 'Akademik', 'Keagamaan', 'Kesiswaan', 'Umum'];
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Galeri Foto & Video"
         description="Dokumentasi visual, foto kegiatan belajar, ekstrakurikuler santri, dan video profil SMP Islam Caruy."
@@ -92,7 +92,7 @@ export const Gallery: React.FC = () => {
                   {item.title}
                 </h4>
                 {item.caption && (
-                  <p className="text-xs text-stone-500 font-light line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-stone-500 font-normal line-clamp-2 leading-relaxed">
                     {item.caption}
                   </p>
                 )}
@@ -151,7 +151,7 @@ export const Gallery: React.FC = () => {
                 </div>
                 <h3 className="text-lg font-bold text-stone-900">{selectedMedia.title}</h3>
                 {selectedMedia.caption && (
-                  <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
+                  <p className="text-xs sm:text-sm text-stone-600 font-normal leading-relaxed">
                     {selectedMedia.caption}
                   </p>
                 )}

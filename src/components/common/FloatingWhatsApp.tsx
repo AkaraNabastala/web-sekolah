@@ -28,7 +28,7 @@ export const FloatingWhatsApp: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 font-['Poppins']">
+    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 font-poppins">
       {/* Scroll to Top Button */}
       {showScroll && (
         <button

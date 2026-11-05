@@ -51,7 +51,7 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
         <div className="flex flex-col text-left leading-tight">
           <div className={`font-bold uppercase tracking-tight ${textSizeClasses[size]} ${lightText ? 'text-white' : 'text-emerald-950'}`}>
             <span>SMP ISLAM </span>
-            <span className="text-emerald-600 font-extrabold">CARUY</span>
+            <span className="text-emerald-600 font-bold">CARUY</span>
           </div>
           <span className={`text-[9px] uppercase tracking-widest font-semibold ${lightText ? 'text-emerald-200' : 'text-emerald-700'}`}>
             Cerdas • Berkarakter • Islami

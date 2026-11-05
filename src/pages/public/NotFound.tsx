@@ -6,7 +6,7 @@ import { SchoolLogo } from '../../components/common/SchoolLogo';
 
 export const NotFound: React.FC = () => {
   return (
-    <div className="min-h-[75vh] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 font-['Poppins'] relative bg-stone-50 overflow-hidden">
+    <div className="min-h-[75vh] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 font-poppins relative bg-stone-50 overflow-hidden">
       <SEO
         title="404 Halaman Tidak Ditemukan"
         description="Halaman yang Anda tuju tidak ditemukan pada portal resmi SMP Islam Caruy."
@@ -25,7 +25,7 @@ export const NotFound: React.FC = () => {
           Galat 404 - Halaman Tidak Ditemukan
         </div>
 
-        <h1 className="text-6xl sm:text-7xl font-extrabold text-emerald-950 tracking-tight">
+        <h1 className="text-6xl sm:text-7xl font-bold text-emerald-950 tracking-tight">
           4<span className="text-amber-500">0</span>4
         </h1>
 

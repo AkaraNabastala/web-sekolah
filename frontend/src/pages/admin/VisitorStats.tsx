@@ -152,7 +152,7 @@ export const VisitorStats: React.FC = () => {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900">
               {summary?.today?.unique_visitors_today ?? 0}
             </div>
             <p className="text-xs text-slate-500 mt-1">
@@ -169,7 +169,7 @@ export const VisitorStats: React.FC = () => {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900">
               {summary?.last_7_days?.unique_visitors_7d ?? 0}
             </div>
             <p className="text-xs text-slate-500 mt-1">
@@ -186,7 +186,7 @@ export const VisitorStats: React.FC = () => {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900">
               {summary?.last_30_days?.unique_visitors_30d ?? 0}
             </div>
             <p className="text-xs text-slate-500 mt-1">
@@ -203,7 +203,7 @@ export const VisitorStats: React.FC = () => {
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900">
               {summary?.all_time?.total_pageviews ?? 0}
             </div>
             <p className="text-xs text-slate-500 mt-1">

@@ -2,20 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { PPDBInfo } from '../../types';
 import { Save, CheckCircle, AlertCircle, Plus, Trash2, Calendar, FileText } from 'lucide-react';
+import { toast } from '../../hooks/useToast';
 
 export const ManagePPDB: React.FC = () => {
   const [ppdb, setPpdb] = useState<PPDBInfo | null>(null);
   const [saving, setSaving] = useState(false);
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     schoolApi.getPPDB().then(res => setPpdb(res));
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,48 +20,37 @@ export const ManagePPDB: React.FC = () => {
     try {
       const res = await schoolApi.updatePPDB(ppdb);
       if (res.success) {
-        showToast('Pengaturan PPDB berhasil disimpan!');
+        toast.success('Pengaturan PPDB berhasil disimpan!');
       }
     } catch (err) {
-      showToast('Gagal menyimpan pengaturan PPDB.', 'error');
+      toast.error('Gagal menyimpan pengaturan PPDB.');
     } finally {
       setSaving(false);
     }
   };
 
   if (!ppdb) {
-    return <div className="p-8 text-center text-xs text-stone-500 font-['Poppins']">Memuat data PPDB...</div>;
+    return <div className="p-8 text-center text-xs text-stone-500 font-poppins">Memuat data PPDB...</div>;
   }
 
   return (
-    <div className="space-y-6 font-['Poppins']">
+    <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Manajemen PPDB (Penerimaan Santri)</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Manajemen PPDB (Penerimaan Santri)</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Atur status pembukaan pendaftaran, jadwal seleksi, persyaratan berkas, dan transparansi rincian biaya.
           </p>
         </div>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* SECTION 1: STATUS & TAHUN AJARAN */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4 flex items-center justify-between">
-            <h2 className="text-base font-extrabold text-stone-900">Status Pembukaan & Periode</h2>
+            <h2 className="text-base font-bold text-stone-900">Status Pembukaan & Periode</h2>
             <div className="flex items-center gap-3">
               <span className="text-xs font-bold text-stone-700">Status Pendaftaran:</span>
               <button
@@ -119,7 +104,7 @@ export const ManagePPDB: React.FC = () => {
               rows={3}
               value={ppdb.overview}
               onChange={(e) => setPpdb({ ...ppdb, overview: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-light"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
             />
           </div>
         </div>
@@ -127,7 +112,7 @@ export const ManagePPDB: React.FC = () => {
         {/* SECTION 2: PERSYARATAN BERKAS */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-4">
           <div className="flex items-center justify-between border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Daftar Dokumen Persyaratan</h2>
+            <h2 className="text-base font-bold text-stone-900">Daftar Dokumen Persyaratan</h2>
             <button
               type="button"
               onClick={() => setPpdb({ ...ppdb, requirements: [...ppdb.requirements, ''] })}
@@ -171,7 +156,7 @@ export const ManagePPDB: React.FC = () => {
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="flex items-center justify-between border-b border-stone-100 pb-4">
             <div>
-              <h2 className="text-base font-extrabold text-stone-900">Transparansi Biaya Pendidikan</h2>
+              <h2 className="text-base font-bold text-stone-900">Transparansi Biaya Pendidikan</h2>
               <p className="text-xs text-stone-400">Tampilkan rincian pembiayaan pada halaman publik</p>
             </div>
             <button
@@ -193,7 +178,7 @@ export const ManagePPDB: React.FC = () => {
                   rows={2}
                   value={ppdb.fees_description}
                   onChange={(e) => setPpdb({ ...ppdb, fees_description: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-light"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
                 />
               </div>
 

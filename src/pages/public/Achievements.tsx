@@ -25,7 +25,7 @@ export const Achievements: React.FC = () => {
     : achievements.filter(a => a.level === selectedLevel);
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Prestasi & Kejuaraan Siswa"
         description="Dokumentasi kejuaraan, medali, dan penghargaan yang diraih siswa dan santri SMP Islam Caruy di tingkat Kabupaten, Provinsi, dan Nasional."
@@ -52,7 +52,7 @@ export const Achievements: React.FC = () => {
                 onClick={() => setSelectedLevel(lvl)}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   selectedLevel === lvl
-                    ? 'bg-amber-500 text-emerald-950 shadow-sm font-extrabold'
+                    ? 'bg-amber-500 text-emerald-950 shadow-sm font-bold'
                     : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                 }`}
               >
@@ -76,7 +76,7 @@ export const Achievements: React.FC = () => {
                     alt={ach.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-3 left-3 bg-amber-400 text-emerald-950 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
+                  <div className="absolute top-3 left-3 bg-amber-400 text-emerald-950 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
                     {ach.rank}
                   </div>
                   <div className="absolute bottom-3 right-3 bg-emerald-950/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded">
@@ -93,11 +93,11 @@ export const Achievements: React.FC = () => {
                   <span className="font-semibold text-stone-500">{ach.category}</span>
                 </div>
 
-                <h3 className="font-extrabold text-base text-stone-900 group-hover:text-emerald-700 transition-colors leading-snug">
+                <h3 className="font-bold text-base text-stone-900 group-hover:text-emerald-700 transition-colors leading-snug">
                   {ach.title}
                 </h3>
 
-                <div className="space-y-1 text-xs text-stone-600 font-light">
+                <div className="space-y-1 text-xs text-stone-600 font-normal">
                   <p>
                     <span className="font-semibold text-stone-700">Penerima:</span> {ach.student_or_team}
                   </p>
@@ -107,7 +107,7 @@ export const Achievements: React.FC = () => {
                 </div>
 
                 {ach.description && (
-                  <p className="text-xs text-stone-500 font-light italic leading-relaxed pt-2 border-t border-stone-100">
+                  <p className="text-xs text-stone-500 font-normal italic leading-relaxed pt-2 border-t border-stone-100">
                     "{ach.description}"
                   </p>
                 )}

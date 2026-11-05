@@ -1,321 +1,522 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSchool } from '../../context/SchoolContext';
 import {
   Menu,
   X,
   ChevronDown,
+  MapPin,
   Phone,
   Mail,
-  GraduationCap,
-  ShieldCheck,
-  Award,
+  School,
+  Clock,
+  Sparkles,
   BookOpen,
+  Calendar,
+  Award,
+  Users,
+  Building,
   Image,
-  MapPin,
-  LogIn
+  FileText
 } from 'lucide-react';
-import { SchoolLogo } from './SchoolLogo';
-import { useSchool } from '../../context/SchoolContext';
 
 export const Navbar: React.FC = () => {
-  const { profile, settings } = useSchool();
+  const { profile } = useSchool();
   const [isOpen, setIsOpen] = useState(false);
-  const [profileDropdown, setProfileDropdown] = useState(false);
-  const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
   const location = useLocation();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close menus when route changes
+  // Close mobile drawer on route change
   useEffect(() => {
     setIsOpen(false);
-    setProfileDropdown(false);
-    setMobileProfileOpen(false);
+    setActiveDropdown(null);
+    setMobileAccordion(null);
   }, [location.pathname]);
 
-  const isActive = (path: string) => location.pathname === path;
-  const isProfileActive = ['/profil', '/sejarah', '/visi-misi', '/organisasi'].includes(location.pathname);
+  // Click outside listener for desktop dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handlePointerEnter = (name: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setActiveDropdown(name);
+  };
+
+  const handlePointerLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 250);
+  };
+
+  const toggleAccordion = (name: string) => {
+    setMobileAccordion(mobileAccordion === name ? null : name);
+  };
+
+  const isCurrentPath = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full font-['Poppins']">
-      {/* Topbar Info Header */}
-      <div className="bg-emerald-900 text-emerald-100 text-[11px] py-1.5 px-4 hidden md:block border-b border-emerald-800/80">
+    <header className="sticky top-0 z-50 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#ECE7DD] shadow-sm font-['Poppins',sans-serif]">
+      {/* Top Bar Informasi Kontak & Legalitas */}
+      <div className="bg-[#132A1E] text-[#D5E0D7] text-xs py-2 px-4 sm:px-6 lg:px-8 border-b border-[#1D3B2B] hidden md:block">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 text-emerald-200">
-              <MapPin className="w-3.5 h-3.5 text-amber-400" />
-              {profile?.village || 'Desa Caruy'}, {profile?.district || 'Kec. Cipari'}, {profile?.regency || 'Cilacap'}
+            <span className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-[#E5C178]" />
+              {profile?.address || 'Desa Caruy, Kec. Cipari, Cilacap'}
             </span>
-            <a href={`tel:${profile?.phone || '0821-3297-2773'}`} className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Phone className="w-3.5 h-3.5 text-amber-400" />
-              {profile?.phone || '0821-3297-2773'}
-            </a>
-            <a href={`mailto:${profile?.email || 'info@smpislamcaruy.sch.id'}`} className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Mail className="w-3.5 h-3.5 text-amber-400" />
-              {profile?.email || 'info@smpislamcaruy.sch.id'}
-            </a>
+            {profile?.phone && (
+              <span className="flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5 text-[#E5C178]" />
+                {profile.phone}
+              </span>
+            )}
+            {profile?.email && (
+              <span className="flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-[#E5C178]" />
+                {profile.email}
+              </span>
+            )}
           </div>
-
-          <div className="flex items-center gap-4">
-            <span className="text-[10px] bg-amber-400 text-emerald-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-              NPSN: {profile?.npsn || '20301988'} • Akreditasi {profile?.accreditation || 'A'}
+          <div className="flex items-center gap-4 text-[#D5E0D7]">
+            <span>NPSN: {profile?.npsn || '20301988'}</span>
+            <span className="text-[#E5C178] font-semibold">
+              {profile?.accreditation ? `Akreditasi ${profile.accreditation}` : 'Status: Swasta'}
             </span>
-            <Link
-              to="/admin/login"
-              className="flex items-center gap-1.5 text-emerald-200 hover:text-amber-300 transition-colors font-medium ml-2"
-              title="Portal Administrator"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>Portal Admin</span>
-            </Link>
           </div>
         </div>
       </div>
 
       {/* Main Navbar */}
-      <nav className={`bg-white/95 backdrop-blur-md transition-all duration-300 border-b border-emerald-100 ${isScrolled ? 'shadow-md py-2.5' : 'py-3.5'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo & Brand */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20" ref={dropdownRef}>
+          {/* Logo & Identitas */}
           <Link to="/" className="flex items-center gap-3 group">
-            <SchoolLogo size="md" />
+            <div className="w-11 h-11 rounded-xl bg-[#1B3B2B] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+              <School className="w-6 h-6 text-[#E8CF94]" />
+            </div>
+            <div>
+              <span className="text-base sm:text-lg font-black tracking-tight text-[#1F2621] block leading-tight">
+                SMP ISLAM CARUY
+              </span>
+              <span className="text-[11px] font-semibold text-[#2A5C40] tracking-wide block uppercase">
+                Cipari • Cilacap
+              </span>
+            </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-2">
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-1">
             <Link
               to="/"
-              className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
-                isActive('/') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
+              className={`px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                isCurrentPath('/') ? 'bg-[#E8EFEA] text-[#1B3B2B]' : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
               }`}
             >
               Beranda
             </Link>
 
-            {/* Profil Dropdown */}
+            {/* 1. Dropdown: Profil Sekolah */}
             <div
-              className="relative"
-              onMouseEnter={() => setProfileDropdown(true)}
-              onMouseLeave={() => setProfileDropdown(false)}
+              className="relative py-2"
+              onPointerEnter={() => handlePointerEnter('profil')}
+              onPointerLeave={handlePointerLeave}
             >
               <button
-                className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide flex items-center gap-1 transition-all ${
-                  isProfileActive ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
+                type="button"
+                aria-expanded={activeDropdown === 'profil'}
+                aria-haspopup="true"
+                onClick={() => setActiveDropdown(activeDropdown === 'profil' ? null : 'profil')}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                  location.pathname.startsWith('/profil') || location.pathname === '/sejarah' || location.pathname === '/visi-misi' || location.pathname === '/organisasi' || location.pathname === '/guru' || location.pathname === '/fasilitas'
+                    ? 'bg-[#E8EFEA] text-[#1B3B2B]'
+                    : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
                 }`}
               >
                 <span>Profil Sekolah</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${profileDropdown ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'profil' ? 'rotate-180 text-[#1B3B2B]' : 'text-stone-400'}`} />
               </button>
 
-              {profileDropdown && (
-                <div className="absolute top-full left-0 w-56 bg-white rounded-xl shadow-xl border border-emerald-100 py-2 mt-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <Link to="/profil" className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-stone-700 hover:text-emerald-700 hover:bg-emerald-50 font-medium">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Identitas Sekolah</span>
+              {activeDropdown === 'profil' && (
+                <div
+                  className="absolute left-0 top-full -mt-1 w-64 bg-white rounded-2xl shadow-xl border border-[#ECE7DD] p-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  onPointerEnter={() => handlePointerEnter('profil')}
+                  onPointerLeave={handlePointerLeave}
+                >
+                  <Link
+                    to="/profil"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Tentang Sekolah</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Identitas kelembagaan & legalitas</span>
                   </Link>
-                  <Link to="/sejarah" className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-stone-700 hover:text-emerald-700 hover:bg-emerald-50 font-medium">
-                    <BookOpen className="w-4 h-4 text-amber-500" />
-                    <span>Sejarah Sekolah</span>
+                  <Link
+                    to="/sejarah"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Sejarah & Kilas Balik</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Perjalanan madrasah sejak berdiri</span>
                   </Link>
-                  <Link to="/visi-misi" className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-stone-700 hover:text-emerald-700 hover:bg-emerald-50 font-medium">
-                    <Award className="w-4 h-4 text-emerald-600" />
-                    <span>Visi & Misi</span>
+                  <Link
+                    to="/visi-misi"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Visi, Misi & Tujuan</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Arah panduan pembinaan adab santri</span>
                   </Link>
-                  <Link to="/organisasi" className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-stone-700 hover:text-emerald-700 hover:bg-emerald-50 font-medium">
-                    <GraduationCap className="w-4 h-4 text-sky-600" />
-                    <span>Struktur Organisasi</span>
+                  <Link
+                    to="/guru"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Guru & Tenaga Kependidikan</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Profil dewan pengajar & wali kelas</span>
+                  </Link>
+                  <Link
+                    to="/fasilitas"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Sarana & Fasilitas</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Ruang belajar, lab & perpustakaan</span>
+                  </Link>
+                  <Link
+                    to="/organisasi"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Struktur Organisasi</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Bagan manajemen & komite</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 2. Dropdown: Akademik */}
+            <div
+              className="relative py-2"
+              onPointerEnter={() => handlePointerEnter('akademik')}
+              onPointerLeave={handlePointerLeave}
+            >
+              <button
+                type="button"
+                aria-expanded={activeDropdown === 'akademik'}
+                aria-haspopup="true"
+                onClick={() => setActiveDropdown(activeDropdown === 'akademik' ? null : 'akademik')}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                  location.pathname === '/program' || location.pathname === '/kurikulum' || location.pathname === '/ekstrakurikuler'
+                    ? 'bg-[#E8EFEA] text-[#1B3B2B]'
+                    : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
+                }`}
+              >
+                <span>Akademik</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'akademik' ? 'rotate-180 text-[#1B3B2B]' : 'text-stone-400'}`} />
+              </button>
+
+              {activeDropdown === 'akademik' && (
+                <div
+                  className="absolute left-0 top-full -mt-1 w-60 bg-white rounded-2xl shadow-xl border border-[#ECE7DD] p-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  onPointerEnter={() => handlePointerEnter('akademik')}
+                  onPointerLeave={handlePointerLeave}
+                >
+                  <Link
+                    to="/kurikulum"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Kurikulum Terpadu</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Kurikulum Nasional & Diniyyah</span>
+                  </Link>
+                  <Link
+                    to="/program"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Program Unggulan</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Tahfidzul Quran & Sains Terpadu</span>
+                  </Link>
+                  <Link
+                    to="/ekstrakurikuler"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Ekstrakurikuler</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Pramuka, kaligrafi, dan olahraga</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 3. Dropdown: Informasi */}
+            <div
+              className="relative py-2"
+              onPointerEnter={() => handlePointerEnter('informasi')}
+              onPointerLeave={handlePointerLeave}
+            >
+              <button
+                type="button"
+                aria-expanded={activeDropdown === 'informasi'}
+                aria-haspopup="true"
+                onClick={() => setActiveDropdown(activeDropdown === 'informasi' ? null : 'informasi')}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                  location.pathname.startsWith('/berita') || location.pathname === '/agenda' || location.pathname === '/pengumuman'
+                    ? 'bg-[#E8EFEA] text-[#1B3B2B]'
+                    : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
+                }`}
+              >
+                <span>Informasi</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'informasi' ? 'rotate-180 text-[#1B3B2B]' : 'text-stone-400'}`} />
+              </button>
+
+              {activeDropdown === 'informasi' && (
+                <div
+                  className="absolute left-0 top-full -mt-1 w-60 bg-white rounded-2xl shadow-xl border border-[#ECE7DD] p-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  onPointerEnter={() => handlePointerEnter('informasi')}
+                  onPointerLeave={handlePointerLeave}
+                >
+                  <Link
+                    to="/berita"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Berita & Artikel</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Kabar kegiatan civitas akademika</span>
+                  </Link>
+                  <Link
+                    to="/agenda"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Agenda Kegiatan</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Jadwal acara & kalender akademik</span>
+                  </Link>
+                  <Link
+                    to="/pengumuman"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Pengumuman Resmi</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Surat edaran & jadwal ujian</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Dropdown: Prestasi & Kegiatan */}
+            <div
+              className="relative py-2"
+              onPointerEnter={() => handlePointerEnter('prestasi')}
+              onPointerLeave={handlePointerLeave}
+            >
+              <button
+                type="button"
+                aria-expanded={activeDropdown === 'prestasi'}
+                aria-haspopup="true"
+                onClick={() => setActiveDropdown(activeDropdown === 'prestasi' ? null : 'prestasi')}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                  location.pathname === '/prestasi' || location.pathname === '/galeri'
+                    ? 'bg-[#E8EFEA] text-[#1B3B2B]'
+                    : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
+                }`}
+              >
+                <span>Prestasi & Galeri</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'prestasi' ? 'rotate-180 text-[#1B3B2B]' : 'text-stone-400'}`} />
+              </button>
+
+              {activeDropdown === 'prestasi' && (
+                <div
+                  className="absolute left-0 top-full -mt-1 w-60 bg-white rounded-2xl shadow-xl border border-[#ECE7DD] p-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                  onPointerEnter={() => handlePointerEnter('prestasi')}
+                  onPointerLeave={handlePointerLeave}
+                >
+                  <Link
+                    to="/prestasi"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Prestasi Santri</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Kejuaraan sains, seni & tahfidz</span>
+                  </Link>
+                  <Link
+                    to="/galeri"
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
+                  >
+                    <span className="text-xs font-bold">Dokumentasi & Galeri</span>
+                    <span className="text-[11px] text-[#7A827B] font-normal">Foto & video aktivitas santri</span>
                   </Link>
                 </div>
               )}
             </div>
 
             <Link
-              to="/guru-staf"
-              className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
-                isActive('/guru-staf') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
-              }`}
-            >
-              Guru & Staf
-            </Link>
-
-            <Link
-              to="/berita"
-              className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
-                isActive('/berita') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
-              }`}
-            >
-              Berita & Artikel
-            </Link>
-
-            <Link
-              to="/galeri"
-              className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
-                isActive('/galeri') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
-              }`}
-            >
-              Galeri
-            </Link>
-
-            <Link
-              to="/prestasi"
-              className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
-                isActive('/prestasi') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
-              }`}
-            >
-              Prestasi
-            </Link>
-
-            <Link
-              to="/fasilitas"
-              className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
-                isActive('/fasilitas') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
-              }`}
-            >
-              Fasilitas
-            </Link>
-
-            <Link
               to="/kontak"
-              className={`px-3 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
-                isActive('/kontak') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-700 hover:text-emerald-700 hover:bg-emerald-50/50'
+              className={`px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                isCurrentPath('/kontak') ? 'bg-[#E8EFEA] text-[#1B3B2B]' : 'text-[#3D473F] hover:text-[#1B3B2B] hover:bg-stone-50'
               }`}
             >
               Kontak
             </Link>
-          </div>
 
-          {/* Right Action: PPDB Button & Mobile Trigger */}
-          <div className="flex items-center gap-3">
+            {/* Tombol PPDB Online Highlight */}
             <Link
               to="/ppdb"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-800 hover:to-emerald-700 text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-full shadow-md shadow-emerald-700/20 active:scale-95 transition-all"
+              className="ml-2 px-5 py-2.5 rounded-xl bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-xs uppercase tracking-wider shadow-sm transition-all hover:-translate-y-0.5"
             >
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-              <span>PPDB 2026/2027</span>
+              PPDB 2026/2027
             </Link>
+          </nav>
 
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 rounded-lg text-stone-700 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
-              aria-label="Buka Menu"
+              className="p-2 rounded-xl text-[#1F2621] hover:bg-stone-100 focus:outline-none"
+              aria-label="Toggle Menu"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation Drawer */}
-        {isOpen && (
-          <div className="lg:hidden bg-white border-t border-emerald-100 px-4 pt-3 pb-6 space-y-1 shadow-2xl animate-in fade-in duration-200">
-            <Link
-              to="/"
-              className={`block px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                isActive('/') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-              }`}
+      {/* Mobile Drawer (Accordion Submenu) */}
+      {isOpen && (
+        <div className="lg:hidden bg-white border-t border-[#ECE7DD] px-4 pt-3 pb-6 space-y-2 max-h-[80vh] overflow-y-auto">
+          <Link to="/" className="block px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#1F2621] hover:bg-[#FAF8F5]">
+            Beranda
+          </Link>
+
+          {/* Accordion Profil */}
+          <div>
+            <button
+              onClick={() => toggleAccordion('profil')}
+              className="w-full flex justify-between items-center px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#1F2621] hover:bg-[#FAF8F5]"
             >
-              Beranda
-            </Link>
-
-            {/* Mobile Profil Accordion */}
-            <div>
-              <button
-                onClick={() => setMobileProfileOpen(!mobileProfileOpen)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                  isProfileActive ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-                }`}
-              >
-                <span>Profil Sekolah</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${mobileProfileOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {mobileProfileOpen && (
-                <div className="pl-4 pr-2 py-1 space-y-1 border-l-2 border-emerald-200 ml-3 mt-1">
-                  <Link to="/profil" className="block px-3 py-2 text-xs text-stone-600 hover:text-emerald-700 font-medium">
-                    Identitas Sekolah
-                  </Link>
-                  <Link to="/sejarah" className="block px-3 py-2 text-xs text-stone-600 hover:text-emerald-700 font-medium">
-                    Sejarah Sekolah
-                  </Link>
-                  <Link to="/visi-misi" className="block px-3 py-2 text-xs text-stone-600 hover:text-emerald-700 font-medium">
-                    Visi & Misi
-                  </Link>
-                  <Link to="/organisasi" className="block px-3 py-2 text-xs text-stone-600 hover:text-emerald-700 font-medium">
-                    Struktur Organisasi
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <Link
-              to="/guru-staf"
-              className={`block px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                isActive('/guru-staf') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-              }`}
-            >
-              Guru & Staf
-            </Link>
-
-            <Link
-              to="/berita"
-              className={`block px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                isActive('/berita') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-              }`}
-            >
-              Berita & Artikel
-            </Link>
-
-            <Link
-              to="/galeri"
-              className={`block px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                isActive('/galeri') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-              }`}
-            >
-              Galeri
-            </Link>
-
-            <Link
-              to="/prestasi"
-              className={`block px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                isActive('/prestasi') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-              }`}
-            >
-              Prestasi
-            </Link>
-
-            <Link
-              to="/fasilitas"
-              className={`block px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                isActive('/fasilitas') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-              }`}
-            >
-              Fasilitas
-            </Link>
-
-            <Link
-              to="/kontak"
-              className={`block px-3 py-2.5 rounded-lg text-sm font-semibold ${
-                isActive('/kontak') ? 'text-emerald-700 bg-emerald-50' : 'text-stone-800 hover:bg-stone-50'
-              }`}
-            >
-              Kontak & Lokasi
-            </Link>
-
-            <div className="pt-3 border-t border-emerald-100 flex justify-between items-center px-3">
-              <Link to="/admin/login" className="flex items-center gap-1.5 text-xs text-emerald-800 font-semibold hover:underline">
-                <LogIn className="w-3.5 h-3.5" />
-                <span>Masuk Portal Admin</span>
-              </Link>
-              <span className="text-[10px] text-stone-400 font-medium">NPSN: {profile?.npsn || '20301988'}</span>
-            </div>
+              <span>Profil Sekolah</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${mobileAccordion === 'profil' ? 'rotate-180' : ''}`} />
+            </button>
+            {mobileAccordion === 'profil' && (
+              <div className="pl-6 space-y-1 mt-1 border-l-2 border-[#1B3B2B] ml-3">
+                <Link to="/profil" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Tentang Sekolah
+                </Link>
+                <Link to="/sejarah" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Sejarah Sekolah
+                </Link>
+                <Link to="/visi-misi" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Visi & Misi
+                </Link>
+                <Link to="/guru" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Guru & Staf
+                </Link>
+                <Link to="/fasilitas" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Sarana & Fasilitas
+                </Link>
+                <Link to="/organisasi" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Struktur Organisasi
+                </Link>
+              </div>
+            )}
           </div>
-        )}
-      </nav>
+
+          {/* Accordion Akademik */}
+          <div>
+            <button
+              onClick={() => toggleAccordion('akademik')}
+              className="w-full flex justify-between items-center px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#1F2621] hover:bg-[#FAF8F5]"
+            >
+              <span>Akademik</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${mobileAccordion === 'akademik' ? 'rotate-180' : ''}`} />
+            </button>
+            {mobileAccordion === 'akademik' && (
+              <div className="pl-6 space-y-1 mt-1 border-l-2 border-[#1B3B2B] ml-3">
+                <Link to="/kurikulum" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Kurikulum Terpadu
+                </Link>
+                <Link to="/program" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Program Unggulan
+                </Link>
+                <Link to="/ekstrakurikuler" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Ekstrakurikuler
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Accordion Informasi */}
+          <div>
+            <button
+              onClick={() => toggleAccordion('informasi')}
+              className="w-full flex justify-between items-center px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#1F2621] hover:bg-[#FAF8F5]"
+            >
+              <span>Informasi</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${mobileAccordion === 'informasi' ? 'rotate-180' : ''}`} />
+            </button>
+            {mobileAccordion === 'informasi' && (
+              <div className="pl-6 space-y-1 mt-1 border-l-2 border-[#1B3B2B] ml-3">
+                <Link to="/berita" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Berita & Artikel
+                </Link>
+                <Link to="/agenda" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Agenda Kegiatan
+                </Link>
+                <Link to="/pengumuman" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Pengumuman Resmi
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Accordion Prestasi & Kegiatan */}
+          <div>
+            <button
+              onClick={() => toggleAccordion('prestasi')}
+              className="w-full flex justify-between items-center px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#1F2621] hover:bg-[#FAF8F5]"
+            >
+              <span>Prestasi & Galeri</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${mobileAccordion === 'prestasi' ? 'rotate-180' : ''}`} />
+            </button>
+            {mobileAccordion === 'prestasi' && (
+              <div className="pl-6 space-y-1 mt-1 border-l-2 border-[#1B3B2B] ml-3">
+                <Link to="/prestasi" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Prestasi Santri
+                </Link>
+                <Link to="/galeri" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                  Galeri Foto & Video
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <Link to="/kontak" className="block px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#1F2621] hover:bg-[#FAF8F5]">
+            Kontak & Lokasi
+          </Link>
+
+          <div className="pt-2">
+            <Link
+              to="/ppdb"
+              className="block w-full text-center py-3 bg-[#E8CF94] font-bold text-xs uppercase tracking-wider text-[#1B3B2B] rounded-xl shadow-sm"
+            >
+              Daftar Santri Baru (PPDB Online)
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
+
+export default Navbar;

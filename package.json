@@ -1,12 +1,14 @@
 {
-  "name": "web-notahidup",
+  "name": "smp-islam-caruy",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
-  "homepage": "https://github.com/AkaraNabastala/Web_NotaHidup.git",
   "scripts": {
     "dev": "tsx server.ts",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
     "build": "vite build",
+    "build:production": "tsx scripts/buildProduction.ts",
     "start": "node server.ts",
     "lint": "eslint ."
   },

@@ -36,7 +36,7 @@ export const NewsList: React.FC = () => {
   }, [news, selectedCat, searchQuery]);
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Berita & Artikel"
         description="Kabar terkini, artikel edukatif, liputan prestasi, agenda kegiatan sekolah, dan pengumuman resmi SMP Islam Caruy."
@@ -131,7 +131,7 @@ export const NewsList: React.FC = () => {
                     <Link to={`/berita/${article.slug}`}>{article.title}</Link>
                   </h3>
 
-                  <p className="text-xs text-stone-500 leading-relaxed line-clamp-3 font-light">
+                  <p className="text-xs text-stone-500 leading-relaxed line-clamp-3 font-normal">
                     {article.summary}
                   </p>
 

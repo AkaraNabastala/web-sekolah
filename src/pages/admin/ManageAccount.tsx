@@ -1,3 +1,4 @@
+import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { schoolApi } from '../../services/api';
@@ -44,7 +45,6 @@ export const ManageAccount: React.FC = () => {
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
   const [addingUser, setAddingUser] = useState(false);
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const loadUsers = async () => {
     try {
@@ -59,10 +59,6 @@ export const ManageAccount: React.FC = () => {
     loadUsers();
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,11 +67,11 @@ export const ManageAccount: React.FC = () => {
       const res = await schoolApi.updateAdminProfile({ full_name: fullName, email, username, avatar });
       if (res.success && res.user) {
         updateAdminUser(res.user);
-        showToast('Profil akun administrator berhasil disimpan!');
+        toast.success('Profil akun administrator berhasil disimpan!');
         loadUsers();
       }
     } catch (err: any) {
-      showToast(err.response?.data?.message || 'Gagal memperbarui profil.', 'error');
+      toast.error(err.response?.data?.message || 'Gagal memperbarui profil.');
     } finally {
       setSavingProfile(false);
     }
@@ -84,11 +80,11 @@ export const ManageAccount: React.FC = () => {
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      showToast('Konfirmasi password baru tidak cocok.', 'error');
+      toast.error('Konfirmasi password baru tidak cocok.');
       return;
     }
     if (newPassword.length < 6) {
-      showToast('Password baru minimal 6 karakter.', 'error');
+      toast.error('Password baru minimal 6 karakter.');
       return;
     }
 
@@ -96,13 +92,13 @@ export const ManageAccount: React.FC = () => {
     try {
       const res = await schoolApi.changePassword({ currentPassword, newPassword });
       if (res.success) {
-        showToast(res.message);
+        toast.success(res.message);
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
       }
     } catch (err: any) {
-      showToast(err.response?.data?.message || 'Gagal mengubah password.', 'error');
+      toast.error(err.response?.data?.message || 'Gagal mengubah password.');
     } finally {
       setSavingPassword(false);
     }
@@ -111,20 +107,20 @@ export const ManageAccount: React.FC = () => {
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newUser.password.length < 6) {
-      showToast('Password minimal 6 karakter.', 'error');
+      toast.error('Password minimal 6 karakter.');
       return;
     }
     setAddingUser(true);
     try {
       const res = await schoolApi.createAdminUser(newUser);
       if (res.success) {
-        showToast('Akun pengelola baru berhasil ditambahkan!');
+        toast.success('Akun pengelola baru berhasil ditambahkan!');
         setShowAddUserModal(false);
         setNewUser({ username: '', full_name: '', email: '', password: '', role: 'admin_konten' });
         loadUsers();
       }
     } catch (err: any) {
-      showToast(err.response?.data?.message || 'Gagal menambahkan akun.', 'error');
+      toast.error(err.response?.data?.message || 'Gagal menambahkan akun.');
     } finally {
       setAddingUser(false);
     }
@@ -132,41 +128,30 @@ export const ManageAccount: React.FC = () => {
 
   const handleDeleteUser = async (id: number, uname: string) => {
     if (id === 1) {
-      showToast('Akun superadmin utama tidak dapat dihapus.', 'error');
+      toast.error('Akun superadmin utama tidak dapat dihapus.');
       return;
     }
     if (window.confirm(`Yakin ingin menghapus akun @${uname}?`)) {
       try {
         await schoolApi.deleteAdminUser(id);
-        showToast(`Akun @${uname} berhasil dihapus.`);
+        toast.success(`Akun @${uname} berhasil dihapus.`);
         loadUsers();
       } catch (err: any) {
-        showToast(err.response?.data?.message || 'Gagal menghapus akun.', 'error');
+        toast.error(err.response?.data?.message || 'Gagal menghapus akun.');
       }
     }
   };
 
   return (
-    <div className="space-y-8 font-['Poppins'] pb-12">
+    <div className="space-y-8 font-poppins pb-12">
       <div>
-        <h1 className="text-2xl font-extrabold text-stone-900">Keamanan & Akun Administrator</h1>
-        <p className="text-xs text-stone-500 font-light mt-0.5">
+        <h1 className="text-2xl font-bold text-stone-900">Keamanan & Akun Administrator</h1>
+        <p className="text-xs text-stone-500 font-normal mt-0.5">
           Kelola profil pengelola, amankan akses dengan hashing bcrypt, dan konfigurasi hak akses peran pengguna sekolah.
         </p>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       {/* Profil Saya & Ganti Password */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -176,8 +161,8 @@ export const ManageAccount: React.FC = () => {
             <div className="flex items-center gap-3">
               <User className="w-5 h-5 text-emerald-700" />
               <div>
-                <h2 className="text-base font-extrabold text-stone-900">Informasi Profil Akun Aktif</h2>
-                <p className="text-[11px] text-stone-400 font-light">Identitas administrator yang sedang masuk</p>
+                <h2 className="text-base font-bold text-stone-900">Informasi Profil Akun Aktif</h2>
+                <p className="text-[11px] text-stone-400 font-normal">Identitas administrator yang sedang masuk</p>
               </div>
             </div>
             <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full uppercase">
@@ -247,8 +232,8 @@ export const ManageAccount: React.FC = () => {
           <div className="border-b border-stone-100 pb-4 flex items-center gap-3">
             <Key className="w-5 h-5 text-amber-600" />
             <div>
-              <h2 className="text-base font-extrabold text-stone-900">Ubah Kata Sandi (Password)</h2>
-              <p className="text-[11px] text-stone-400 font-light">Disimpan dengan enkripsi Bcrypt 10 rounds</p>
+              <h2 className="text-base font-bold text-stone-900">Ubah Kata Sandi (Password)</h2>
+              <p className="text-[11px] text-stone-400 font-normal">Disimpan dengan enkripsi Bcrypt 10 rounds</p>
             </div>
           </div>
 
@@ -309,8 +294,8 @@ export const ManageAccount: React.FC = () => {
           <div className="flex items-center gap-3">
             <Shield className="w-5 h-5 text-emerald-700" />
             <div>
-              <h2 className="text-base font-extrabold text-stone-900">Struktur Pengguna & Peran Sistem (Role Management)</h2>
-              <p className="text-[11px] text-stone-400 font-light">
+              <h2 className="text-base font-bold text-stone-900">Struktur Pengguna & Peran Sistem (Role Management)</h2>
+              <p className="text-[11px] text-stone-400 font-normal">
                 Saat ini cukup 1 akun admin aktif, namun arsitektur sistem telah mendukung penambahan peran (Superadmin, Admin Konten, Admin PPDB) di kemudian hari.
               </p>
             </div>
@@ -402,8 +387,8 @@ export const ManageAccount: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl relative border border-stone-100">
             <div className="flex items-center justify-between border-b border-stone-100 pb-3">
               <div>
-                <h3 className="text-base font-extrabold text-stone-900">Tambah Akun Pengelola Baru</h3>
-                <p className="text-xs text-stone-400 font-light">Sistem Multi-User SMP Islam Caruy</p>
+                <h3 className="text-base font-bold text-stone-900">Tambah Akun Pengelola Baru</h3>
+                <p className="text-xs text-stone-400 font-normal">Sistem Multi-User SMP Islam Caruy</p>
               </div>
               <button onClick={() => setShowAddUserModal(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />

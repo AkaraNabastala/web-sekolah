@@ -12,7 +12,8 @@ import {
   MessageSquare,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  ExternalLink
 } from 'lucide-react';
 
 export const Contact: React.FC = () => {
@@ -48,7 +49,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] min-h-screen pb-24">
       <SEO
         title="Kontak & Lokasi Sekolah"
         description="Alamat resmi, peta Google Maps, nomor WhatsApp, email, dan formulir pengiriman pesan langsung ke sekretariat SMP Islam Caruy."
@@ -60,21 +61,21 @@ export const Contact: React.FC = () => {
         breadcrumbs={[{ label: 'Kontak' }]}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 space-y-12">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 -mt-8 relative z-20 space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Kolom Kiri: Informasi Kontak & Jam Kerja (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-stone-100 space-y-6">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E7E2D8] space-y-6">
               <div className="space-y-1">
-                <span className="text-emerald-700 text-xs font-bold uppercase tracking-wider">
+                <span className="text-[#2A5C40] text-xs font-bold uppercase tracking-wider">
                   Informasi Sekretariat
                 </span>
-                <h3 className="text-xl font-extrabold text-stone-900">
+                <h3 className="text-xl font-bold text-[#1F2621]">
                   Kantor SMP Islam Caruy
                 </h3>
               </div>
 
-              <div className="space-y-5 text-xs sm:text-sm text-stone-600 font-light">
+              <div className="space-y-5 text-xs sm:text-sm text-stone-600 font-normal">
                 <div className="flex items-start gap-3.5">
                   <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
                     <MapPin className="w-4 h-4" />
@@ -125,7 +126,7 @@ export const Contact: React.FC = () => {
                 Fast Response
               </span>
               <h4 className="text-lg font-bold">Konsultasi via WhatsApp</h4>
-              <p className="text-xs text-emerald-100 font-light leading-relaxed">
+              <p className="text-xs text-emerald-100 font-normal leading-relaxed">
                 Butuh tanggapan cepat mengenai pendaftaran santri baru atau persyaratan beasiswa? Tim kami siap melayani chat Anda.
               </p>
               <a
@@ -145,10 +146,10 @@ export const Contact: React.FC = () => {
               <span className="text-emerald-700 text-xs font-bold uppercase tracking-wider">
                 Kotak Surat Pengunjung
               </span>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-stone-900 mt-1">
+              <h3 className="text-xl sm:text-2xl font-bold text-stone-900 mt-1">
                 Kirimkan Pertanyaan atau Saran
               </h3>
-              <p className="text-xs text-stone-500 font-light mt-1">
+              <p className="text-xs text-stone-500 font-normal mt-1">
                 Pesan akan langsung diteruskan ke dashboard administrator sekolah.
               </p>
             </div>
@@ -244,25 +245,37 @@ export const Contact: React.FC = () => {
         </div>
 
         {/* Peta Lokasi Google Maps */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-stone-100 space-y-6">
-          <div className="space-y-1">
-            <span className="text-emerald-700 text-xs font-bold uppercase tracking-wider">
-              Peta Lokasi Interaktif
-            </span>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-stone-900">
-              Kunjungi Kampus SMP Islam Caruy
-            </h3>
-            <p className="text-xs text-stone-500 font-light">
-              Terletak di lingkungan yang asri dan sejuk di Desa Caruy, Kec. Cipari, Kabupaten Cilacap.
-            </p>
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-[#ECE7DD] space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[#2A5C40] text-xs font-bold uppercase tracking-wider">
+                Peta Lokasi Interaktif
+              </span>
+              <h3 className="text-xl sm:text-2xl font-bold text-[#1F2621]">
+                Kunjungi Kampus SMP Islam Caruy
+              </h3>
+              <p className="text-xs text-[#5C645D] font-normal">
+                Terletak di lingkungan yang asri dan sejuk di Desa Caruy, Kec. Cipari, Kabupaten Cilacap.
+              </p>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/bXeheSRzzDqizqT6A"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] text-xs font-bold px-5 py-3 rounded-xl shadow-sm transition-all self-start sm:self-auto"
+            >
+              <span>Buka di Google Maps</span>
+              <ExternalLink className="w-4 h-4" />
+            </a>
           </div>
 
-          <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-inner border border-stone-200">
+          <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-inner border border-[#ECE7DD]">
             <iframe
-              src={profile?.maps_embed_url || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15829.897089926417!2d108.77587!3d-7.41245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e657c91c8282bd5%3A0x6b77df28e3488f58!2sCaruy%2C%20Cipari%2C%20Cilacap%20Regency%2C%20Central%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid'}
-              title="Peta Lokasi SMP Islam Caruy"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d989.207700109521!2d108.80624188077323!3d-7.3728531454210495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6f7fff948b5e1f%3A0xacd0a9e0f75a7f04!2sSMP%20Islam%20Caruy!5e0!3m2!1sid!2sid!4v1793771189615!5m2!1sid!2sid"
+              title="Peta Lokasi Resmi SMP Islam Caruy"
               className="w-full h-full border-0"
               loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
             />
           </div>

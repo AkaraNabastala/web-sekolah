@@ -9,9 +9,9 @@
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop",
       "role": "superadmin",
       "is_active": 1,
-      "last_login": "2026-11-03T15:56:42.973Z",
+      "last_login": "2026-11-05T03:21:10.486Z",
       "created_at": "2026-11-03T04:38:00.338Z",
-      "updated_at": "2026-11-03T15:56:42.973Z"
+      "updated_at": "2026-11-05T03:21:10.486Z"
     },
     {
       "id": 2,
@@ -46,8 +46,8 @@
     "phone": "0821-3297-2773",
     "whatsapp": "6282132972773",
     "email": "info@smpislamcaruy.sch.id",
-    "maps_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15829.897089926417!2d108.77587!3d-7.41245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e657c91c8282bd5%3A0x6b77df28e3488f58!2sCaruy%2C%20Cipari%2C%20Cilacap%20Regency%2C%20Central%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid",
-    "updated_at": "2026-11-03T04:38:00.338Z"
+    "maps_embed_url": "https://maps.app.goo.gl/YtvrSvYbKPkq57Fw5",
+    "updated_at": "2026-11-05T05:49:07.246Z"
   },
   "school_history": {
     "id": 1,
@@ -205,19 +205,6 @@
   ],
   "teachers": [
     {
-      "id": 1,
-      "name": "Drs. H. Ahmad Fauzi, M.Pd.I",
-      "title": "M.Pd.I",
-      "nip": "197508122005011003",
-      "photo": "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop",
-      "position": "Kepala Sekolah & Guru PAI",
-      "subject": "Pendidikan Agama Islam",
-      "last_education": "S2 Magister Pendidikan Islam",
-      "short_bio": "Berpengalaman lebih dari 20 tahun dalam dunia pendidikan Islam dan kepemimpinan sekolah.",
-      "display_order": 1,
-      "is_active": 1
-    },
-    {
       "id": 2,
       "name": "Rahmat Hidayat, M.Pd",
       "title": "M.Pd",
@@ -307,6 +294,20 @@
       "short_bio": "Pelatih tim futsal dan bola voli sekolah yang berhasil menjuarai berbagai turnamen daerah.",
       "display_order": 8,
       "is_active": 1
+    },
+    {
+      "name": "asdsa",
+      "title": "S.Pd",
+      "nip": "-",
+      "photo": "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400",
+      "position": "Guru Mata Pelajaran",
+      "subject": "asdas",
+      "last_education": "S1 Pendidikan",
+      "short_bio": "asd",
+      "display_order": 9,
+      "id": 9,
+      "is_active": 1,
+      "created_at": "2026-11-05T03:19:47.803Z"
     }
   ],
   "staff": [
@@ -389,6 +390,22 @@
   ],
   "news": [
     {
+      "title": "sadasdadasdasdassadas",
+      "slug": "sadasdadasdasdassadas",
+      "category_id": 1,
+      "summary": "asdadasd",
+      "content": "asdasdasdas",
+      "thumbnail": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800",
+      "author": "Humas SMP Islam Caruy",
+      "status": "published",
+      "id": 7,
+      "category_name": "Berita Sekolah",
+      "category_slug": "berita-sekolah",
+      "views_count": 0,
+      "created_at": "2026-11-05T03:19:58.732Z",
+      "published_at": "2026-11-05T03:19:58.732Z"
+    },
+    {
       "title": "Pengumuman Kelulusan dan Verifikasi Data Terpadu",
       "category_id": 4,
       "summary": "Ringkasan berita uji coba publikasi terintegrasi.",
@@ -399,7 +416,7 @@
       "slug": "pengumuman-kelulusan-dan-verifikasi-data-terpadu",
       "category_name": "Pengumuman Resmi",
       "category_slug": "pengumuman-resmi",
-      "views_count": 0,
+      "views_count": 3,
       "created_at": "2026-11-03T14:38:34.951Z",
       "published_at": "2026-11-03T14:38:34.951Z"
     },
@@ -415,7 +432,7 @@
       "slug": "kunjungan-studi-wisata-dan-riset-lingkungan-santri",
       "category_name": "Berita Sekolah",
       "category_slug": "berita-sekolah",
-      "views_count": 1,
+      "views_count": 4,
       "created_at": "2026-11-03T08:55:59.772Z",
       "published_at": "2026-11-03T08:55:59.772Z"
     },
@@ -515,6 +532,16 @@
   ],
   "gallery_media": [
     {
+      "title": "asdsadsa",
+      "media_type": "photo",
+      "file_url": "/uploads/Scene_0_media-1793848813158-887547222.jpg",
+      "video_url": "",
+      "caption": "asdas",
+      "category": "Akademik",
+      "id": 7,
+      "created_at": "2026-11-05T03:20:14.029Z"
+    },
+    {
       "id": 1,
       "album_id": 1,
       "title": "Praktikum Mikroskop Lab IPA Terpadu",
@@ -608,6 +635,19 @@
       "photo": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop",
       "description": "Karya kaligrafi ayat suci Al-Quran dengan perpaduan ornamen modern.",
       "created_at": "2026-11-03T04:38:00.339Z"
+    },
+    {
+      "title": "asdasd",
+      "student_or_team": "sadas",
+      "level": "Kabupaten",
+      "category": "Akademik",
+      "rank": "Juara 1",
+      "year": "2025",
+      "organizer": "sadas",
+      "photo": "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?q=80&w=600",
+      "description": "asd",
+      "id": 6,
+      "created_at": "2026-11-05T03:20:23.842Z"
     },
     {
       "id": 3,
@@ -737,6 +777,17 @@
       "condition_status": "Sangat Baik",
       "display_order": 8,
       "created_at": "2026-11-03T04:38:00.339Z"
+    },
+    {
+      "name": "asdasd",
+      "category": "Ruang Belajar",
+      "description": "sadas",
+      "photo": "https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=800",
+      "capacity": "32 Siswa",
+      "condition_status": "Sangat Baik",
+      "display_order": 9,
+      "id": 9,
+      "created_at": "2026-11-05T03:20:30.545Z"
     }
   ],
   "ppdb_information": {
@@ -845,14 +896,25 @@
   },
   "contact_messages": [
     {
+      "name": "Budi Santoso",
+      "email": "budi@example.com",
+      "phone": "08123456789",
+      "subject": "Pertanyaan Pendaftaran",
+      "message": "Bagaimana syarat pendaftaran siswa baru?",
+      "id": 5,
+      "is_read": 0,
+      "reply_status": "unread",
+      "created_at": "2026-11-05T08:23:50.982Z"
+    },
+    {
       "name": "Uji Integrasi",
       "email": "test@caruy.sch.id",
       "phone": "08123456789",
       "subject": "Tes Hubungan Formulir",
       "message": "Pesan pengujian kontak website publik.",
       "id": 4,
-      "is_read": 0,
-      "reply_status": "unread",
+      "is_read": 1,
+      "reply_status": "read",
       "created_at": "2026-11-03T14:37:30.204Z"
     },
     {
@@ -1052,6 +1114,456 @@
       "referrer": "http://localhost:3000/admin/profil",
       "visit_date": "2026-11-03",
       "created_at": "2026-11-03T16:03:47.187Z"
+    },
+    {
+      "id": 16,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/pesan",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:38:58.560Z"
+    },
+    {
+      "id": 17,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/pesan",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:38:58.583Z"
+    },
+    {
+      "id": 18,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/pesan",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:39:06.685Z"
+    },
+    {
+      "id": 19,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/pesan",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:39:06.750Z"
+    },
+    {
+      "id": 20,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:44:28.707Z"
+    },
+    {
+      "id": 21,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:44:28.724Z"
+    },
+    {
+      "id": 22,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:48:41.737Z"
+    },
+    {
+      "id": 23,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:48:41.806Z"
+    },
+    {
+      "id": 24,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:48:43.614Z"
+    },
+    {
+      "id": 25,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T16:48:43.670Z"
+    },
+    {
+      "id": 26,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:08:34.882Z"
+    },
+    {
+      "id": 27,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:08:34.900Z"
+    },
+    {
+      "id": 28,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:09:59.751Z"
+    },
+    {
+      "id": 29,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:09:59.778Z"
+    },
+    {
+      "id": 30,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:10:03.498Z"
+    },
+    {
+      "id": 31,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:10:03.511Z"
+    },
+    {
+      "id": 32,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:45:39.906Z"
+    },
+    {
+      "id": 33,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:45:39.940Z"
+    },
+    {
+      "id": 34,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:45:42.009Z"
+    },
+    {
+      "id": 35,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:45:42.033Z"
+    },
+    {
+      "id": 36,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:45:42.781Z"
+    },
+    {
+      "id": 37,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:45:42.809Z"
+    },
+    {
+      "id": 38,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:48:42.303Z"
+    },
+    {
+      "id": 39,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:48:42.342Z"
+    },
+    {
+      "id": 40,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:48:43.530Z"
+    },
+    {
+      "id": 41,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:48:43.566Z"
+    },
+    {
+      "id": 42,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:48:44.396Z"
+    },
+    {
+      "id": 43,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:48:44.420Z"
+    },
+    {
+      "id": 44,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:53:00.933Z"
+    },
+    {
+      "id": 45,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:53:00.968Z"
+    },
+    {
+      "id": 46,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:59:31.659Z"
+    },
+    {
+      "id": 47,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T19:59:31.678Z"
+    },
+    {
+      "id": 48,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:01:19.014Z"
+    },
+    {
+      "id": 49,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:01:19.043Z"
+    },
+    {
+      "id": 50,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:34:02.366Z"
+    },
+    {
+      "id": 51,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:34:02.415Z"
+    },
+    {
+      "id": 52,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:34:05.691Z"
+    },
+    {
+      "id": 53,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:34:05.720Z"
+    },
+    {
+      "id": 54,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:34:42.165Z"
+    },
+    {
+      "id": 55,
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+      "path": "/",
+      "referrer": "http://localhost:3000/ppdb",
+      "visit_date": "2026-11-03",
+      "created_at": "2026-11-03T20:34:42.198Z"
+    },
+    {
+      "id": 56,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:41:43.417Z"
+    },
+    {
+      "id": 57,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:41:43.444Z"
+    },
+    {
+      "id": 58,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/login",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:45:43.781Z"
+    },
+    {
+      "id": 59,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/login",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:45:43.907Z"
+    },
+    {
+      "id": 60,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/profil",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:46:38.771Z"
+    },
+    {
+      "id": 61,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/profil",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:46:38.878Z"
+    },
+    {
+      "id": 62,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/profil",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:49:44.624Z"
+    },
+    {
+      "id": 63,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/profil",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:49:44.657Z"
+    },
+    {
+      "id": 64,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/profil",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:51:04.979Z"
+    },
+    {
+      "id": 65,
+      "ip_address": "57ca8f09b9a7c460bd1b751c6df38cbc130f8fc16d384d33aa1a93f7e586d307",
+      "user_agent": "Google Chrome",
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/profil",
+      "visit_date": "2026-11-04",
+      "created_at": "2026-11-04T05:51:05.014Z"
     }
   ],
   "admin_activities": [
@@ -1172,5 +1684,100 @@
       "created_at": "2026-11-03T04:38:00.339Z"
     }
   ],
-  "uploaded_files": []
+  "uploaded_files": [],
+  "agendas": [
+    {
+      "title": "Percobaan",
+      "description": "Sasdas",
+      "event_date": "2026-11-05",
+      "start_time": "08:00",
+      "end_time": "11:30",
+      "location": "Kampus SMP Islam Caruy",
+      "organizer": "Panitia Sekolah",
+      "is_published": 1,
+      "id": 3,
+      "slug": "percobaan",
+      "created_at": "2026-11-05T03:19:11.626Z"
+    },
+    {
+      "id": 1,
+      "title": "Masa Pengenalan Lingkungan Sekolah (MPLS) 2026",
+      "slug": "mpls-2026",
+      "description": "Pengenalan lingkungan kampus, pembinaan adab santri, dan tata tertib madrasah.",
+      "event_date": "2026-07-15",
+      "start_time": "07:30",
+      "end_time": "12:00",
+      "location": "Aula & Lapangan SMP Islam Caruy",
+      "organizer": "Kesiswaan & OSIS",
+      "is_published": 1,
+      "created_at": "2026-11-04T05:54:59.412Z"
+    },
+    {
+      "id": 2,
+      "title": "Ujian Pemetaan Tahfidzul Quran Santri",
+      "slug": "ujian-pemetaan-tahfidz",
+      "description": "Tasmi Al-Quran sekali duduk dan pemetaan kelancaran tajwid santri semester genap.",
+      "event_date": "2026-08-10",
+      "start_time": "08:00",
+      "end_time": "11:30",
+      "location": "Musholla At-Tarbiyah",
+      "organizer": "Departemen Keagamaan",
+      "is_published": 1,
+      "created_at": "2026-11-04T05:54:59.412Z"
+    }
+  ],
+  "programs": [
+    {
+      "id": 1,
+      "name": "Tahfidzul Quran Terpadu",
+      "slug": "tahfidzul-quran-terpadu",
+      "category": "keagamaan",
+      "description": "Bimbingan intensif hafalan Al-Quran dengan target minimal 1-3 Juz, bersanad, disertai pemahaman adab Qurani.",
+      "photo": "https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800",
+      "schedule_info": "Setiap Hari Kerja ba’da Sholat Dhuha & Ashar",
+      "instructor": "Ustadz Pembina Tahfidz",
+      "display_order": 1,
+      "is_active": 1,
+      "created_at": "2026-11-04T05:54:59.412Z"
+    },
+    {
+      "id": 2,
+      "name": "Pramuka Penggalang (Gudep SMP Islam Caruy)",
+      "slug": "pramuka-penggalang",
+      "category": "ekstrakurikuler",
+      "description": "Pembentukan karakter kepemimpinan, kemandirian, kecakapan bertahan hidup, dan kepedulian sosial santri.",
+      "photo": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800",
+      "schedule_info": "Setiap Jumat Pukul 14.00 - 16.00 WIB",
+      "instructor": "Pembina Pramuka Kwarran Cipari",
+      "display_order": 2,
+      "is_active": 1,
+      "created_at": "2026-11-04T05:54:59.412Z"
+    },
+    {
+      "id": 3,
+      "name": "Klub Sains & Olimpiade IPA",
+      "slug": "klub-sains-dan-olimpiade",
+      "category": "akademik",
+      "description": "Pendalaman materi sains, praktikum laboratorium multimedia, dan persiapan OSN tingkat kabupaten/provinsi.",
+      "photo": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=800",
+      "schedule_info": "Setiap Rabu Pukul 15.00 - 16.30 WIB",
+      "instructor": "Guru IPA & Laboran",
+      "display_order": 3,
+      "is_active": 1,
+      "created_at": "2026-11-04T05:54:59.412Z"
+    },
+    {
+      "id": 4,
+      "name": "Seni Kaligrafi Islam Kontemporer",
+      "slug": "seni-kaligrafi-islam",
+      "category": "ekstrakurikuler",
+      "description": "Mengasah kepekaan estetika Islam melalui seni khat naskhi, tsuluts, dan kontemporer untuk lomba MTQ.",
+      "photo": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800",
+      "schedule_info": "Setiap Sabtu Pukul 09.00 - 11.00 WIB",
+      "instructor": "Ustadz Pengajar Seni Khat",
+      "display_order": 4,
+      "is_active": 1,
+      "created_at": "2026-11-04T05:54:59.412Z"
+    }
+  ]
 }

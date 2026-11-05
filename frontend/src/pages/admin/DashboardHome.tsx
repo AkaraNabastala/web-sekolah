@@ -144,7 +144,7 @@ export const DashboardHome: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-8 font-['Poppins'] pb-12">
+    <div className="space-y-8 font-poppins pb-12">
       {/* Top Welcome Banner */}
       <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-emerald-800/60">
         <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(#10B981_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
@@ -155,10 +155,10 @@ export const DashboardHome: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>Sistem Manajemen Konten (CMS) SMP Islam Caruy</span>
             </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight">
               Selamat Datang di Dashboard Administrator
             </h1>
-            <p className="text-xs sm:text-sm text-emerald-200/90 font-light leading-relaxed">
+            <p className="text-xs sm:text-sm text-emerald-200/90 font-normal leading-relaxed">
               Pusat kendali konten sekolah, statistik kunjungan, publikasi berita, profil pendidik, sarana pembelajaran, dan interaksi masyarakat secara terintegrasi.
             </p>
           </div>
@@ -198,7 +198,7 @@ export const DashboardHome: React.FC = () => {
               <span className="text-xs font-bold text-stone-900">
                 Penyimpanan Data: MySQL Relasional 19 Tabel
               </span>
-              <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${
+              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                 dbStatus?.mysql?.connected
                   ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                   : 'bg-amber-50 text-amber-900 border border-amber-300'
@@ -224,8 +224,8 @@ export const DashboardHome: React.FC = () => {
       <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-stone-200/80 space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-extrabold text-stone-900">Aksi Cepat Pengelolaan Konten</h2>
-            <p className="text-[11px] text-stone-400 font-light">Pintasan sekali klik untuk memperbarui data sekolah</p>
+            <h2 className="text-sm font-bold text-stone-900">Aksi Cepat Pengelolaan Konten</h2>
+            <p className="text-[11px] text-stone-400 font-normal">Pintasan sekali klik untuk memperbarui data sekolah</p>
           </div>
           <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
             Quick Actions
@@ -252,7 +252,7 @@ export const DashboardHome: React.FC = () => {
       {/* 8 Metric Summary Cards Grid */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-extrabold text-stone-900">Ringkasan Entitas & Trafik</h2>
+          <h2 className="text-sm font-bold text-stone-900">Ringkasan Entitas & Trafik</h2>
           <span className="text-[11px] text-stone-500 font-medium">Update realtime</span>
         </div>
 
@@ -279,10 +279,10 @@ export const DashboardHome: React.FC = () => {
                 </div>
 
                 <div>
-                  <p className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
+                  <p className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">
                     {card.value.toLocaleString('id-ID')}
                   </p>
-                  <p className="text-[11px] text-stone-400 font-light mt-1 truncate">
+                  <p className="text-[11px] text-stone-400 font-normal mt-1 truncate">
                     {card.sub}
                   </p>
                 </div>
@@ -298,8 +298,8 @@ export const DashboardHome: React.FC = () => {
         <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-stone-900">Statistik Pengunjung 7 Hari Terakhir</h3>
-              <p className="text-xs text-stone-400 font-light">Jumlah kunjungan unik dan tayangan halaman website</p>
+              <h3 className="text-base font-bold text-stone-900">Statistik Pengunjung 7 Hari Terakhir</h3>
+              <p className="text-xs text-stone-400 font-normal">Jumlah kunjungan unik dan tayangan halaman website</p>
             </div>
             <span className="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2.5 py-1 rounded-full border border-emerald-200">
               Realtime Logs
@@ -330,8 +330,8 @@ export const DashboardHome: React.FC = () => {
         {/* Content Breakdown BarChart (4 cols) */}
         <div className="lg:col-span-4 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-4 flex flex-col justify-between">
           <div>
-            <h3 className="text-base font-extrabold text-stone-900">Distribusi Konten Sekolah</h3>
-            <p className="text-xs text-stone-400 font-light">Total entitas aktif yang tersimpan di database</p>
+            <h3 className="text-base font-bold text-stone-900">Distribusi Konten Sekolah</h3>
+            <p className="text-xs text-stone-400 font-normal">Total entitas aktif yang tersimpan di database</p>
           </div>
 
           <div className="h-60 w-full pt-2">
@@ -366,7 +366,7 @@ export const DashboardHome: React.FC = () => {
           <div className="flex items-center justify-between border-b border-stone-100 pb-3">
             <div className="flex items-center gap-2">
               <Newspaper className="w-4 h-4 text-emerald-700" />
-              <h3 className="text-base font-extrabold text-stone-900">Daftar Berita & Warta Terbaru</h3>
+              <h3 className="text-base font-bold text-stone-900">Daftar Berita & Warta Terbaru</h3>
             </div>
             <Link to="/admin/berita" className="text-xs font-bold text-emerald-700 hover:underline flex items-center gap-1">
               <span>Kelola Semua</span>
@@ -401,7 +401,7 @@ export const DashboardHome: React.FC = () => {
                       </span>
                     </div>
                     <h4 className="text-xs font-bold text-stone-900 truncate">{item.title}</h4>
-                    <p className="text-[11px] text-stone-500 font-light truncate mt-0.5">{item.summary}</p>
+                    <p className="text-[11px] text-stone-500 font-normal truncate mt-0.5">{item.summary}</p>
                   </div>
                   <Link
                     to="/admin/berita"
@@ -423,7 +423,7 @@ export const DashboardHome: React.FC = () => {
           <div className="flex items-center justify-between border-b border-stone-100 pb-3">
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-emerald-700" />
-              <h3 className="text-base font-extrabold text-stone-900">Pesan Pengunjung Terbaru</h3>
+              <h3 className="text-base font-bold text-stone-900">Pesan Pengunjung Terbaru</h3>
             </div>
             <Link to="/admin/pesan" className="text-xs font-bold text-emerald-700 hover:underline">
               Semua Pesan
@@ -446,7 +446,7 @@ export const DashboardHome: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-emerald-800 mt-0.5 truncate">{msg.subject}</p>
-                  <p className="text-xs text-stone-500 line-clamp-1 font-light mt-1">{msg.message}</p>
+                  <p className="text-xs text-stone-500 line-clamp-1 font-normal mt-1">{msg.message}</p>
                 </div>
               ))
             ) : (
@@ -461,7 +461,7 @@ export const DashboardHome: React.FC = () => {
         <div className="flex items-center justify-between border-b border-stone-100 pb-3">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-emerald-700" />
-            <h3 className="text-base font-extrabold text-stone-900">Aktivitas Audit Log Pengelola</h3>
+            <h3 className="text-base font-bold text-stone-900">Aktivitas Audit Log Pengelola</h3>
           </div>
           <span className="text-[10px] bg-stone-100 text-stone-600 px-2.5 py-0.5 rounded-full font-mono">
             Keamanan & Audit Terverifikasi
@@ -475,7 +475,7 @@ export const DashboardHome: React.FC = () => {
                 <div className="w-2 h-2 rounded-full bg-emerald-600 mt-1.5 shrink-0"></div>
                 <div className="flex-1">
                   <span className="font-bold text-stone-900 mr-2">{act.action}</span>
-                  <span className="text-stone-500 font-light">{act.description}</span>
+                  <span className="text-stone-500 font-normal">{act.description}</span>
                 </div>
                 <span className="text-[10px] text-stone-400 shrink-0 font-mono">
                   {new Date(act.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}

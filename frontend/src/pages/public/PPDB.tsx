@@ -57,7 +57,7 @@ export const PPDB: React.FC = () => {
   };
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Informasi PPDB 2026/2027"
         description="Penerimaan Peserta Didik Baru (PPDB) SMP Islam Caruy - Syarat pendaftaran, jalur beasiswa tahfidz, jadwal gelombang, rincian biaya, dan pra-registrasi online."
@@ -74,7 +74,7 @@ export const PPDB: React.FC = () => {
         <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-950 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden border-4 border-amber-400">
           <div className="max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="bg-amber-400 text-emerald-950 text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-sm">
+              <span className="bg-amber-400 text-emerald-950 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-sm">
                 Status: {ppdb?.is_open ? 'PENDAFTARAN DIBUKA' : 'PENDAFTARAN DITUTUP'}
               </span>
               <span className="text-emerald-200 text-xs">
@@ -82,18 +82,18 @@ export const PPDB: React.FC = () => {
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight">
               Raih Masa Depan Gemilang Berakhlakul Karimah
             </h2>
 
-            <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed font-light">
+            <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed font-normal">
               {ppdb?.overview || 'Penerimaan Peserta Didik Baru (PPDB) SMP Islam Caruy telah dibuka resmi. Tersedia beasiswa prestasi dan jalur tahfidz Al-Quran.'}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-4">
               <a
                 href="#daftar-online"
-                className="bg-amber-400 hover:bg-amber-500 text-emerald-950 font-extrabold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all shadow-md active:scale-95"
+                className="bg-amber-400 hover:bg-amber-500 text-emerald-950 font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all shadow-md active:scale-95"
               >
                 Isi Formulir Pendaftaran
               </a>
@@ -116,7 +116,7 @@ export const PPDB: React.FC = () => {
             <span className="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
               Panduan Praktis
             </span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-900">
+            <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
               Alur Pendaftaran Peserta Didik Baru
             </h3>
           </div>
@@ -127,11 +127,11 @@ export const PPDB: React.FC = () => {
                 key={st.step}
                 className="bg-stone-50 p-6 rounded-2xl border border-stone-200/80 hover:bg-emerald-50/50 hover:border-emerald-200 transition-all space-y-3 relative group"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-extrabold text-base shadow-sm group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-110 transition-transform">
                   {st.step}
                 </div>
                 <h4 className="font-bold text-stone-900 text-base">{st.title}</h4>
-                <p className="text-xs text-stone-600 font-light leading-relaxed">
+                <p className="text-xs text-stone-600 font-normal leading-relaxed">
                   {st.desc}
                 </p>
               </div>
@@ -148,14 +148,14 @@ export const PPDB: React.FC = () => {
                 <FileText className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-extrabold text-stone-900">Persyaratan Dokumen</h3>
-                <p className="text-xs text-stone-500 font-light">Berkas yang disiapkan orang tua/wali</p>
+                <h3 className="text-xl font-bold text-stone-900">Persyaratan Dokumen</h3>
+                <p className="text-xs text-stone-500 font-normal">Berkas yang disiapkan orang tua/wali</p>
               </div>
             </div>
 
             <ul className="space-y-3.5">
               {ppdb?.requirements.map((req, idx) => (
-                <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-stone-700 leading-relaxed font-light">
+                <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-stone-700 leading-relaxed font-normal">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <span>{req}</span>
                 </li>
@@ -170,8 +170,8 @@ export const PPDB: React.FC = () => {
                 <Calendar className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-extrabold text-stone-900">Jadwal & Agenda PPDB</h3>
-                <p className="text-xs text-stone-500 font-light">Gelombang pendaftaran dan tahapan</p>
+                <h3 className="text-xl font-bold text-stone-900">Jadwal & Agenda PPDB</h3>
+                <p className="text-xs text-stone-500 font-normal">Gelombang pendaftaran dan tahapan</p>
               </div>
             </div>
 
@@ -185,7 +185,7 @@ export const PPDB: React.FC = () => {
                     </span>
                   </div>
                   {sch.notes && (
-                    <p className="text-[11px] text-stone-500 font-light">{sch.notes}</p>
+                    <p className="text-[11px] text-stone-500 font-normal">{sch.notes}</p>
                   )}
                 </div>
               ))}
@@ -201,7 +201,7 @@ export const PPDB: React.FC = () => {
                 <span className="text-amber-600 font-bold text-xs uppercase tracking-wider">
                   Investasi Pendidikan
                 </span>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-stone-900 mt-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-stone-900 mt-1">
                   Rincian Biaya Pendidikan Transparan
                 </h3>
               </div>
@@ -210,7 +210,7 @@ export const PPDB: React.FC = () => {
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
+            <p className="text-xs sm:text-sm text-stone-600 font-normal leading-relaxed">
               {ppdb.fees_description}
             </p>
 
@@ -223,7 +223,7 @@ export const PPDB: React.FC = () => {
                     <th className="py-3 px-4">Keterangan</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100 font-light">
+                <tbody className="divide-y divide-stone-100 font-normal">
                   {ppdb.fees_items.map((fee, idx) => (
                     <tr key={idx} className="hover:bg-stone-50/50">
                       <td className="py-3.5 px-4 font-medium text-stone-900">{fee.item}</td>
@@ -243,10 +243,10 @@ export const PPDB: React.FC = () => {
             <span className="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
               Registrasi Cepat
             </span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-900">
+            <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
               Formulir Pra-Pendaftaran PPDB Online
             </h3>
-            <p className="text-xs sm:text-sm text-stone-500 font-light">
+            <p className="text-xs sm:text-sm text-stone-500 font-normal">
               Isi data awal calon santri untuk langsung terhubung dengan panitia PPDB melalui WhatsApp resmi sekolah.
             </p>
           </div>

@@ -1,3 +1,4 @@
+import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { schoolApi } from '../../services/api';
@@ -39,8 +40,6 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
   const [profile, setProfile] = useState<SchoolProfile | null>(null);
   const [visionMission, setVisionMission] = useState<SchoolVisionMission | null>(null);
   const [history, setHistory] = useState<SchoolHistory | null>(null);
-
-  const [notification, setNotification] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -60,10 +59,6 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
     });
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleFileUpload = async (file: File, target: 'headmaster' | 'history') => {
     setUploading(true);
@@ -75,10 +70,10 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
         } else if (target === 'history' && history) {
           setHistory({ ...history, featured_image: res.fileUrl });
         }
-        showToast('Foto berhasil diunggah!');
+        toast.success('Foto berhasil diunggah!');
       }
     } catch (err) {
-      showToast('Gagal mengunggah foto.', 'error');
+      toast.error('Gagal mengunggah foto.');
     } finally {
       setUploading(false);
     }
@@ -92,10 +87,10 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
       const res = await schoolApi.updateProfile(profile);
       if (res.success) {
         updateCachedProfile(res.data);
-        showToast('Profil dan identitas sekolah berhasil disimpan!');
+        toast.success('Profil dan identitas sekolah berhasil disimpan!');
       }
     } catch (err) {
-      showToast('Gagal menyimpan profil sekolah.', 'error');
+      toast.error('Gagal menyimpan profil sekolah.');
     } finally {
       setSaving(false);
     }
@@ -108,10 +103,10 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
     try {
       const res = await schoolApi.updateVisionMission(visionMission);
       if (res.success) {
-        showToast('Visi, Misi, Tujuan & Nilai Utama berhasil diperbarui!');
+        toast.success('Visi, Misi, Tujuan & Nilai Utama berhasil diperbarui!');
       }
     } catch (err) {
-      showToast('Gagal menyimpan Visi & Misi.', 'error');
+      toast.error('Gagal menyimpan Visi & Misi.');
     } finally {
       setSaving(false);
     }
@@ -124,38 +119,27 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
     try {
       const res = await schoolApi.updateHistory(history);
       if (res.success) {
-        showToast('Konten sejarah sekolah & linimasa berhasil disimpan!');
+        toast.success('Konten sejarah sekolah & linimasa berhasil disimpan!');
       }
     } catch (err) {
-      showToast('Gagal menyimpan sejarah sekolah.', 'error');
+      toast.error('Gagal menyimpan sejarah sekolah.');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="space-y-6 font-['Poppins'] pb-12">
+    <div className="space-y-6 font-poppins pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Manajemen Profil Sekolah & Kurikulum</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Manajemen Profil Sekolah & Kurikulum</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Kelola data identitas resmi, sambutan kepala sekolah, rumusan visi misi, serta linimasa sejarah SMP Islam Caruy.
           </p>
         </div>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" /> : <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       {/* TABS HEADER */}
       <div className="flex flex-wrap gap-2 border-b border-stone-200 pb-3">
@@ -212,8 +196,8 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
       {activeTab === 'identitas' && profile && (
         <form onSubmit={handleSaveProfile} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Identitas & Informasi Pokok Pendidikan</h2>
-            <p className="text-xs text-stone-400 font-light mt-0.5">Informasi resmi yang tercantum di header, footer, dan halaman profil</p>
+            <h2 className="text-base font-bold text-stone-900">Identitas & Informasi Pokok Pendidikan</h2>
+            <p className="text-xs text-stone-400 font-normal mt-0.5">Informasi resmi yang tercantum di header, footer, dan halaman profil</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -353,8 +337,8 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
       {activeTab === 'sejarah' && history && (
         <form onSubmit={handleSaveHistory} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Sejarah & Linimasa Pendirian Sekolah</h2>
-            <p className="text-xs text-stone-400 font-light mt-0.5">Kelola artikel sejarah lengkap dan milestone perjalanan sekolah dari masa ke masa</p>
+            <h2 className="text-base font-bold text-stone-900">Sejarah & Linimasa Pendirian Sekolah</h2>
+            <p className="text-xs text-stone-400 font-normal mt-0.5">Kelola artikel sejarah lengkap dan milestone perjalanan sekolah dari masa ke masa</p>
           </div>
 
           <div className="space-y-1.5">
@@ -403,7 +387,7 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
               rows={8}
               value={history.content}
               onChange={(e) => setHistory({ ...history, content: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-light leading-relaxed"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
             />
           </div>
 
@@ -411,7 +395,7 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
           <div className="space-y-4 pt-4 border-t border-stone-100">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-extrabold text-stone-900">Linimasa Tonggak Sejarah (Milestones)</h3>
+                <h3 className="text-sm font-bold text-stone-900">Linimasa Tonggak Sejarah (Milestones)</h3>
                 <p className="text-[11px] text-stone-400">Tahun-tahun penting dan pencapaian bersejarah sekolah</p>
               </div>
               <button
@@ -478,7 +462,7 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
                       newMs[idx] = { ...newMs[idx], desc: e.target.value };
                       setHistory({ ...history, milestones: newMs });
                     }}
-                    className="w-full px-3 py-1.5 rounded-xl border border-stone-200 text-xs font-light text-stone-600 bg-white"
+                    className="w-full px-3 py-1.5 rounded-xl border border-stone-200 text-xs font-normal text-stone-600 bg-white"
                   />
                 </div>
               ))}
@@ -500,8 +484,8 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
       {activeTab === 'visimisi' && visionMission && (
         <form onSubmit={handleSaveVisionMission} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Visi, Misi, Tujuan & Nilai Utama</h2>
-            <p className="text-xs text-stone-400 font-light mt-0.5">Rumusan arah haluan pembinaan karakter peserta didik SMP Islam Caruy</p>
+            <h2 className="text-base font-bold text-stone-900">Visi, Misi, Tujuan & Nilai Utama</h2>
+            <p className="text-xs text-stone-400 font-normal mt-0.5">Rumusan arah haluan pembinaan karakter peserta didik SMP Islam Caruy</p>
           </div>
 
           <div className="space-y-1.5">
@@ -630,8 +614,8 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
       {activeTab === 'sambutan' && profile && (
         <form onSubmit={handleSaveProfile} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Sambutan & Profil Kepala Sekolah</h2>
-            <p className="text-xs text-stone-400 font-light mt-0.5">Sambutan pimpinan yang ditampilkan di halaman beranda dan profil</p>
+            <h2 className="text-base font-bold text-stone-900">Sambutan & Profil Kepala Sekolah</h2>
+            <p className="text-xs text-stone-400 font-normal mt-0.5">Sambutan pimpinan yang ditampilkan di halaman beranda dan profil</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -674,7 +658,7 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({ initialTab }) => {
               rows={8}
               value={profile.headmaster_welcome}
               onChange={(e) => setProfile({ ...profile, headmaster_welcome: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-light leading-relaxed"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
             />
           </div>
 

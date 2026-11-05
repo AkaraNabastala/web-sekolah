@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { GalleryMedia } from '../../types';
 import { Plus, Trash2, Upload, Play, CheckCircle, AlertCircle, X, Image as ImageIcon } from 'lucide-react';
+import { toast } from '../../hooks/useToast';
 
 export const ManageGallery: React.FC = () => {
   const [mediaList, setMediaList] = useState<GalleryMedia[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
 
   const [form, setForm] = useState<Partial<GalleryMedia>>({
@@ -31,10 +31,6 @@ export const ManageGallery: React.FC = () => {
     loadGallery();
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,10 +40,10 @@ export const ManageGallery: React.FC = () => {
       const res = await schoolApi.uploadFile(file);
       if (res.success) {
         setForm(prev => ({ ...prev, file_url: res.fileUrl }));
-        showToast('Foto berhasil diunggah!');
+        toast.success('Foto berhasil diunggah!');
       }
     } catch (err) {
-      showToast('Gagal mengunggah berkas.', 'error');
+      toast.error('Gagal mengunggah berkas.');
     } finally {
       setUploading(false);
     }
@@ -56,13 +52,13 @@ export const ManageGallery: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.file_url) {
-      showToast('Judul dan file URL wajib diisi.', 'error');
+      toast.error('Judul dan file URL wajib diisi.');
       return;
     }
 
     try {
       await schoolApi.createGalleryMedia(form);
-      showToast('Media berhasil disimpan ke galeri!');
+      toast.success('Media berhasil disimpan ke galeri!');
       setModalOpen(false);
       setForm({
         title: '',
@@ -74,7 +70,7 @@ export const ManageGallery: React.FC = () => {
       });
       loadGallery();
     } catch (err) {
-      showToast('Gagal menambahkan media.', 'error');
+      toast.error('Gagal menambahkan media.');
     }
   };
 
@@ -82,20 +78,20 @@ export const ManageGallery: React.FC = () => {
     if (window.confirm('Hapus media ini dari galeri?')) {
       try {
         await schoolApi.deleteGalleryMedia(id);
-        showToast('Media berhasil dihapus.');
+        toast.success('Media berhasil dihapus.');
         loadGallery();
       } catch (err) {
-        showToast('Gagal menghapus media.', 'error');
+        toast.error('Gagal menghapus media.');
       }
     }
   };
 
   return (
-    <div className="space-y-6 font-['Poppins']">
+    <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Manajemen Galeri Media</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Manajemen Galeri Media</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Kelola dokumentasi foto kegiatan belajar, peringatan hari besar Islam, dan video profil sekolah.
           </p>
         </div>
@@ -109,18 +105,7 @@ export const ManageGallery: React.FC = () => {
         </button>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       {/* Media Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -145,7 +130,7 @@ export const ManageGallery: React.FC = () => {
               <div>
                 <h4 className="font-bold text-xs text-stone-900 line-clamp-1">{item.title}</h4>
                 {item.caption && (
-                  <p className="text-[11px] text-stone-500 line-clamp-2 font-light mt-0.5">{item.caption}</p>
+                  <p className="text-[11px] text-stone-500 line-clamp-2 font-normal mt-0.5">{item.caption}</p>
                 )}
               </div>
 
@@ -169,7 +154,7 @@ export const ManageGallery: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 p-6 space-y-4">
             <div className="flex justify-between items-center border-b border-stone-100 pb-3">
-              <h3 className="text-base font-extrabold text-stone-900">Upload Media Galeri Baru</h3>
+              <h3 className="text-base font-bold text-stone-900">Upload Media Galeri Baru</h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
               </button>

@@ -33,7 +33,7 @@ export const VisionMission: React.FC = () => {
   };
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Visi, Misi & Nilai Utama"
         description="Visi, misi terpadu, tujuan pendidikan, dan 4 pilar nilai karakter utama di SMP Islam Caruy Cipari Cilacap."
@@ -53,11 +53,11 @@ export const VisionMission: React.FC = () => {
           </div>
 
           <div className="max-w-3xl space-y-4 relative z-10">
-            <span className="inline-flex items-center gap-2 bg-amber-400 text-emerald-950 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest">
+            <span className="inline-flex items-center gap-2 bg-amber-400 text-emerald-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
               <Sparkles className="w-4 h-4" />
               Visi Utama
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold leading-snug tracking-tight text-white">
+            <h2 className="text-2xl sm:text-4xl font-bold leading-snug tracking-tight text-white">
               "{data?.vision || 'Terwujudnya Generasi Muslim yang Berakhlakul Karimah, Unggul dalam Prestasi Akademik dan Non-Akademik, Menguasai IPTEK, serta Berwawasan Lingkungan.'}"
             </h2>
             {data?.vision_motto && (
@@ -77,14 +77,14 @@ export const VisionMission: React.FC = () => {
                 <Compass className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-extrabold text-stone-900">Misi Sekolah</h3>
-                <p className="text-xs text-stone-500 font-light">Langkah strategis perwujudan visi</p>
+                <h3 className="text-xl font-bold text-stone-900">Misi Sekolah</h3>
+                <p className="text-xs text-stone-500 font-normal">Langkah strategis perwujudan visi</p>
               </div>
             </div>
 
             <ul className="space-y-4">
               {data?.missions.map((misi, idx) => (
-                <li key={idx} className="flex items-start gap-3.5 text-xs sm:text-sm text-stone-700 leading-relaxed font-light">
+                <li key={idx} className="flex items-start gap-3.5 text-xs sm:text-sm text-stone-700 leading-relaxed font-normal">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                   <span>{misi}</span>
                 </li>
@@ -99,14 +99,14 @@ export const VisionMission: React.FC = () => {
                 <Target className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-extrabold text-stone-900">Tujuan Satuan Pendidikan</h3>
-                <p className="text-xs text-stone-500 font-light">Sasaran capaian peserta didik</p>
+                <h3 className="text-xl font-bold text-stone-900">Tujuan Satuan Pendidikan</h3>
+                <p className="text-xs text-stone-500 font-normal">Sasaran capaian peserta didik</p>
               </div>
             </div>
 
             <ul className="space-y-4">
               {data?.goals.map((goal, idx) => (
-                <li key={idx} className="flex items-start gap-3.5 text-xs sm:text-sm text-stone-700 leading-relaxed font-light">
+                <li key={idx} className="flex items-start gap-3.5 text-xs sm:text-sm text-stone-700 leading-relaxed font-normal">
                   <span className="w-5 h-5 rounded-full bg-amber-400 text-emerald-950 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
                     {idx + 1}
                   </span>
@@ -123,10 +123,10 @@ export const VisionMission: React.FC = () => {
             <span className="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
               Karakter Utama
             </span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-900">
+            <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
               Nilai-Nilai Luhur Santri SMP Islam Caruy
             </h3>
-            <p className="text-xs sm:text-sm text-stone-500 font-light">
+            <p className="text-xs sm:text-sm text-stone-500 font-normal">
               Pedoman tingkah laku dan pembentukan kepribadian yang dibiasakan setiap hari.
             </p>
           </div>
@@ -141,7 +141,7 @@ export const VisionMission: React.FC = () => {
                   {getCoreValueIcon(val.title)}
                 </div>
                 <h4 className="font-bold text-stone-900 text-base">{val.title}</h4>
-                <p className="text-xs text-stone-600 font-light leading-relaxed">
+                <p className="text-xs text-stone-600 font-normal leading-relaxed">
                   {val.desc}
                 </p>
               </div>

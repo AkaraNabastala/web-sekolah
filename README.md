@@ -1,189 +1,128 @@
-# Website Profil Sekolah SMP Islam Caruy
+# 🏫 Website Resmi SMP Islam Caruy
 
-Portal Informasi Resmi dan Sistem Manajemen Konten (CMS Dashboard Admin) Terintegrasi untuk **SMP Islam Caruy**, sekolah menengah pertama Islam swasta modern di Desa Caruy, Kec. Cipari, Kab. Cilacap, Jawa Tengah.
-
----
-
-## 🏫 Identitas Sekolah
-- **Nama Sekolah**: SMP Islam Caruy
-- **Jenjang**: Sekolah Menengah Pertama (SMP)
-- **Status**: Swasta
-- **Akreditasi**: A (Unggul)
-- **NPSN**: 20301988
-- **Tahun Berdiri**: 2005
-- **Warna Identitas**: Hijau (Utama), Kuning/Gold, Putih, Oranye, Biru
-- **Alamat**: Jl. Raya Caruy No. 12, Desa Caruy, Kec. Cipari, Kab. Cilacap, Jawa Tengah 53262
+Portal Profil Sekolah, Sistem Informasi Terpadu, Layanan PPDB Online, dan Dashboard Administrator Interaktif SMP Islam Caruy, Cipari, Cilacap.
 
 ---
 
-## 🚀 Teknologi & Arsitektur
+## 🏗️ Arsitektur Proyek
 
-### Frontend
-- **Framework**: React.js 19 + Vite 7 (TypeScript / JSX)
-- **Styling**: Tailwind CSS v4 + Animasi Kustom
-- **Routing**: React Router DOM v7
-- **Icons**: Lucide React + Remix Icon
-- **Charts**: Recharts (Statistik Kunjungan & Kategori)
-- **Form Management**: React Hook Form
-- **HTTP Client**: Axios dengan JWT Interceptor
-
-### Backend
-- **Runtime**: Node.js v22 (ESM)
-- **Web Framework**: Express.js 5
-- **Authentication**: JWT (JSON Web Tokens) dengan middleware proteksi rute
-- **Password Security**: BcryptJS salt rounds 10
-- **File Upload**: Multer (upload thumbnail, galeri, foto guru, dokumen PPDB ke `/uploads`)
-- **Dev Runner**: `tsx` (TypeScript Execution)
-
-### Database
-- **Dialect**: MySQL 8.0+
-- **Production Schema**: `/database/schema.sql` (19 tabel relasional terstruktur dengan foreign keys, indexes, dan constraints)
-- **Seed Data**: `/database/seeds/seed.sql` (Data awal lengkap: admin, profil sekolah, visi misi, guru/staf, berita, galeri, fasilitas, PPDB, pengaturan website)
-- **Development Engine**: Persistent Atomic JSON Store (`/database/data.json`) dengan auto-seeding awal, logging pengunjung otomatis, dan audit aktivitas admin.
-
----
-
-## 📂 Struktur Proyek
+Proyek ini telah direkonstruksi menjadi arsitektur modular yang memisahkan frontend dan backend secara profesional:
 
 ```text
-├── backend/
-│   └── src/
-│       ├── db/
-│       │   └── index.ts          # Storage engine & database handler
-│       ├── middleware/
-│       │   └── auth.ts           # JWT authentication middleware
-│       └── routes/
-│       │   └── api.ts            # RESTful API endpoints (Public & Protected)
+web-sekolah/
+├── frontend/                     # Client Application (React 19, Vite 7, Tailwind CSS v4, TypeScript)
+│   ├── public/                   # Asset statis & favicon
+│   ├── src/
+│   │   ├── components/           # Komponen UI, Navbar dropdown & accordion mobile, Footer
+│   │   ├── context/              # AuthContext (JWT) & SchoolContext
+│   │   ├── pages/
+│   │   │   ├── public/           # Halaman publik (Beranda, Profil, Guru, Berita, Galeri, Fasilitas, PPDB, Kontak)
+│   │   │   └── admin/            # Dashboard Admin & Statistik Pengunjung
+│   │   └── services/             # Axios REST API Client
+│   ├── package.json              # Dependensi frontend
+│   └── vite.config.ts            # Proxy API development & build config
+│
+├── backend/                      # API Backend Service (Node.js, Express, TypeScript, Multer, ExcelJS)
+│   ├── src/
+│   │   ├── config/               # database.ts (MySQL2 Connection Pool & Health Check)
+│   │   ├── middleware/           # auth.ts (JWT Auth & Role Guard)
+│   │   ├── routes/               # api.ts (Endpoints publik, admin CRUD, upload, tracking)
+│   │   ├── services/             # StatisticsService.ts (Pengunjung unik, sesi, ekspor XLSX/CSV)
+│   │   ├── utils/                # privacy.ts (SHA-256 IP anonymization)
+│   │   ├── scripts/              # setupAdmin.ts (CLI setup superadmin pertama)
+│   │   └── server.ts             # Express server runtime
+│   ├── uploads/                  # Penyimpanan berkas terunggah (gambar & dokumen)
+│   └── package.json              # Dependensi backend
+│
 ├── database/
-│   ├── schema.sql                # Skema DDL MySQL 19 tabel
-│   ├── seeds/
-│   │   └── seed.sql              # SQL seeder resmi
-│   └── data.json                 # Penyimpanan relasional dev persisten
-├── src/
-│   ├── assets/                   # Logo resmi & aset statis
-│   ├── components/
-│   │   └── common/               # Navbar, Footer, Logo, Floating WhatsApp, PageHeader
-│   ├── context/
-│   │   ├── AuthContext.tsx       # Auth provider & session token
-│   │   └── SchoolContext.tsx     # Profil sekolah & pengaturan website
-│   ├── pages/
-│   │   ├── public/               # Halaman Beranda, Profil, Sejarah, Visi Misi,
-│   │   │                         # Guru/Staf, Berita, Galeri, Prestasi, Fasilitas, PPDB, Kontak
-│   │   └── admin/                # Dashboard Admin, Kelola Berita, Profil, Guru,
-│   │                             # Organisasi, Galeri, Prestasi, PPDB, Pesan Masuk, Akun
-│   ├── services/
-│   │   └── api.ts                # Axios client & service API
-│   ├── types/
-│   │   └── index.ts              # Definisi interface TypeScript
-│   ├── App.tsx                   # Master router aplikasi
-│   ├── main.jsx                  # Entry point React
-│   └── index.css                 # Style global & Tailwind
-├── uploads/                      # Direktori upload media statis
-├── server.ts                     # Full-stack server (Express API + Vite SPA)
-├── vite.config.js                # Konfigurasi Vite
-└── package.json                  # Dependencies & scripts
+│   ├── schema.sql                # Skema DDL MySQL 8.0+ (20 tabel relasional)
+│   └── seeds/
+│       └── seed.sql              # Data inisialisasi awal (tanpa password default)
+│
+├── .env.example                  # Template variabel lingkungan
+├── .gitignore                    # Rule pengabaian file sensitif
+└── README.md                     # Dokumentasi panduan
 ```
 
 ---
 
-## 🔑 Kredensial Administrator Default
+## 🔒 Keamanan & Pembuatan Administrator Pertama
 
-Gunakan kredensial berikut untuk masuk ke dashboard admin melalui `/admin/login`:
+Untuk menjaga integritas dan keamanan sistem, **tidak ada akun demo atau kata sandi bawaan** yang disimpan di dalam source code repository.
 
-- **URL Login**: `http://localhost:3000/admin/login`
-- **Username**: `admin`
-- **Password**: `adminCaruy2026!`
-- **Role**: `superadmin`
-
-*(Password dapat diganti kapan saja melalui menu Manajemen Akun di dalam Dashboard Admin).*
+### Pembuatan Administrator Pertama (Setup Mandiri):
+1. **Melalui Antarmuka Web**:  
+   Saat pertama kali membuka `/admin/login` ketika database belum memiliki akun administrator, antarmuka setup awal akan otomatis aktif. Pemilik sistem dapat memasukkan nama lengkap, email, username, dan kata sandi pilihan (minimal 8 karakter). Setelah berhasil dibuat, alur setup ini terkunci secara permanen.
+2. **Melalui Baris Perintah (CLI)**:
+   ```bash
+   cd backend
+   npm run setup-admin
+   ```
+   Ikuti instruksi interaktif di terminal untuk mendaftarkan akun Superadmin pertama Anda.
 
 ---
 
 ## 🛠️ Panduan Instalasi & Menjalankan
 
-### 1. Prasyarat
-- Node.js versi 18+ (disarankan Node.js 22 LTS)
-- NPM versi 9+
+### 1. Prasyarat Sistem
+- **Node.js**: Versi 20+ atau 24 LTS
+- **NPM**: Versi 10+
+- **Database**: MySQL 8.0+
 
-### 2. Instalasi Dependensi
+### 2. Konfigurasi Environment (.env)
+Salin `.env.example` menjadi `.env` di root atau di dalam folder `backend/`:
 ```bash
+cp .env.example .env
+```
+Sesuaikan konfigurasi koneksi MySQL (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) serta buat string acak yang kuat untuk `JWT_SECRET`. **Jangan meng-commit file `.env` ke Git!**
+
+### 3. Migrasi Database MySQL
+Jalankan skema basis data pada server MySQL Anda:
+```bash
+mysql -u root -p < database/schema.sql
+mysql -u root -p < database/seeds/seed.sql
+```
+
+### 4. Menjalankan Backend (Development)
+```bash
+cd backend
 npm install
-```
-
-### 3. Konfigurasi Lingkungan (Opsional)
-Salin `.env.example` ke `.env` bila ingin menyesuaikan port atau rahasia JWT:
-```bash
-PORT=3000
-JWT_SECRET=caruy_islamic_school_super_secret_jwt_key_2026
-```
-
-### 4. Menjalankan di Mode Development
-```bash
 npm run dev
 ```
-Buka browser di:
-- **Website Publik**: `http://localhost:3000`
-- **Dashboard Admin**: `http://localhost:3000/admin`
+Backend akan aktif di `http://localhost:5000`.
 
-### 5. Build & Jalankan Mode Produksi
+### 5. Menjalankan Frontend (Development)
+Buka terminal baru:
 ```bash
+cd frontend
+npm install --legacy-peer-deps
+npm run dev
+```
+Frontend akan aktif di `http://localhost:5173`. Permintaan `/api` dan `/uploads` secara otomatis diteruskan (*proxy*) ke backend di port 5000.
+
+---
+
+## 📦 Build Produksi & Deployment
+
+### Build Kompilasi:
+```bash
+# Build Frontend
+cd frontend
 npm run build
+
+# Build Backend
+cd ../backend
+npm run build
+```
+
+### Menjalankan Server Produksi:
+```bash
+cd backend
 npm start
 ```
 
 ---
 
-## 🗄️ Menyiapkan Database MySQL untuk Produksi
-
-Bila ingin menghubungkan ke server MySQL eksternal (misalnya pada server VPS / cPanel):
-
-1. Masuk ke MySQL CLI atau phpMyAdmin:
-   ```bash
-   mysql -u root -p
-   ```
-2. Eksekusi skema database:
-   ```sql
-   SOURCE database/schema.sql;
-   ```
-3. Eksekusi data seeder:
-   ```sql
-   SOURCE database/seeds/seed.sql;
-   ```
-
----
-
-## 🌐 Fitur Utama Website
-
-### 1. Website Publik
-- **Beranda**: Hero interaktif, sambutan Kepala Sekolah, quick stats counter, 4 pilar nilai Islami, berita terkini, galeri, fasilitas unggulan, dan CTA PPDB.
-- **Profil Sekolah**: Data identitas lengkap, NPSN, akreditasi, status, visi, dan filosofi pendidikan.
-- **Sejarah Sekolah**: Narasi sejarah pendirian sekolah dan linimasa (milestone).
-- **Visi & Misi**: Kartu visi, misi, tujuan strategis, dan nilai-nilai inti.
-- **Struktur Organisasi**: Bagan hierarki kepemimpinan sekolah (Komite, Kepala Sekolah, Waka, Ka TU).
-- **Guru & Tenaga Kependidikan**: Daftar dewan guru dengan filter mata pelajaran dan pencarian.
-- **Berita & Artikel**: Indeks berita dengan filter kategori, pencarian, dan halaman detail artikel lengkap (share WhatsApp, views counter).
-- **Galeri Foto & Video**: Galeri kegiatan siswa dengan kategori dan lightbox preview resolusi penuh.
-- **Prestasi Siswa**: Dokumentasi pencapaian tingkat Kabupaten, Provinsi, dan Nasional.
-- **Fasilitas Sekolah**: Daftar fasilitas lengkap dengan status kondisi dan kapasitas.
-- **Informasi PPDB**: Jalur pendaftaran, persyaratan berkas, alur langkah, jadwal gelombang, rincian biaya, dan formulir pra-pendaftaran langsung ke WhatsApp panitia.
-- **Kontak & Lokasi**: Peta interaktif Google Maps, data kontak resmi, dan formulir pesan pengunjung langsung tersimpan di inbox admin.
-- **Tombol WhatsApp Mengambang**: Konsultasi cepat via WhatsApp dan tombol kembali ke atas (*scroll-to-top*).
-
-### 2. Dashboard Administrator (`/admin`)
-- **Dashboard Utama**: Ringkasan 8 indikator statistik (pengunjung total, hari ini, bulan ini, total berita, guru, galeri, prestasi, pesan), grafik tren traffic 7 hari terakhir (Recharts), diagram kategori berita, pesan terbaru, dan log aktivitas admin.
-- **Manajemen Profil**: Pengaturan nama sekolah, sambutan kepala sekolah, foto, visi misi, dan sejarah.
-- **Manajemen Berita**: Tambah, edit, hapus berita, upload thumbnail, pemilihan kategori, auto slug, dan status publikasi (Draft/Published).
-- **Manajemen Guru & Staf**: Pengelolaan dewan guru dengan foto, jabatan, mata pelajaran, dan tingkat pendidikan.
-- **Manajemen Organisasi**: Pengaturan bagan hierarki dan susunan pengurus sekolah.
-- **Manajemen Galeri**: Unggah foto/video kegiatan sekolah dengan album dan kategori.
-- **Manajemen Prestasi**: Pendataan prestasi lomba siswa dan sekolah beserta penyelenggara.
-- **Manajemen Fasilitas**: Pendataan sarana & prasarana sekolah.
-- **Manajemen PPDB**: Pengaturan tahun ajaran baru, status pendaftaran (Buka/Tutup), syarat, jadwal gelombang, dan rincian biaya masuk.
-- **Manajemen Pesan Masuk**: Kotak masuk pesan dari pengunjung dengan status belum dibaca/sudah dibaca dan tombol balas cepat via WhatsApp/Email.
-- **Pengaturan Website**: Penyesuaian nama situs, tagline, teks banner hero, nomor WhatsApp, media sosial, dan meta SEO.
-- **Manajemen Akun Admin**: Ubah username, nama lengkap, dan pembaruan password dengan enkripsi bcrypt.
-
----
-
-## 📄 Lisensi
-Hak Cipta © 2026 SMP Islam Caruy. Seluruh hak cipta dilindungi undang-undang.
+## 📊 Statistik Pengunjung & Laporan
+- **Metrik Privasi**: Menggunakan *one-way SHA-256 daily salt hashing* pada IP pengunjung dan User-Agent, sehingga privasi pengunjung terlindungi tanpa menyimpan IP mentah.
+- **Ekspor Dokumen**: Laporan analitik kunjungan dapat diunduh langsung dalam format **Microsoft Excel (.xlsx)** dan **CSV** melalui Dashboard Admin pada menu `Statistik Pengunjung`.

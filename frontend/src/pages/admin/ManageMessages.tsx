@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { ContactMessage } from '../../types';
 import { Mail, Check, Trash2, CheckCircle, AlertCircle, Phone, MessageSquare, X, ExternalLink } from 'lucide-react';
+import { toast } from '../../hooks/useToast';
 
 export const ManageMessages: React.FC = () => {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [selectedMsg, setSelectedMsg] = useState<ContactMessage | null>(null);
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const loadMessages = async () => {
     try {
@@ -21,18 +21,14 @@ export const ManageMessages: React.FC = () => {
     loadMessages();
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleToggleRead = async (id: number, currentStatus: boolean | number) => {
     try {
       await schoolApi.markMessageRead(id, !currentStatus);
-      showToast('Status pesan diperbarui.');
+      toast.success('Status pesan diperbarui.');
       loadMessages();
     } catch (err) {
-      showToast('Gagal memperbarui status.', 'error');
+      toast.error('Gagal memperbarui status.');
     }
   };
 
@@ -40,11 +36,11 @@ export const ManageMessages: React.FC = () => {
     if (window.confirm('Hapus pesan ini dari database?')) {
       try {
         await schoolApi.deleteMessage(id);
-        showToast('Pesan berhasil dihapus.');
+        toast.success('Pesan berhasil dihapus.');
         if (selectedMsg?.id === id) setSelectedMsg(null);
         loadMessages();
       } catch (err) {
-        showToast('Gagal menghapus pesan.', 'error');
+        toast.error('Gagal menghapus pesan.');
       }
     }
   };
@@ -57,28 +53,17 @@ export const ManageMessages: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 font-['Poppins']">
+    <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Kotak Masuk Pesan Pengunjung</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Kotak Masuk Pesan Pengunjung</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Daftar pertanyaan, pesan, dan permohonan informasi yang dikirimkan masyarakat melalui formulir kontak.
           </p>
         </div>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       {/* TABLE */}
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200/80 overflow-hidden">
@@ -93,7 +78,7 @@ export const ManageMessages: React.FC = () => {
                 <th className="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100 font-light">
+            <tbody className="divide-y divide-stone-100 font-normal">
               {messages.length > 0 ? (
                 messages.map((item) => (
                   <tr
@@ -109,7 +94,7 @@ export const ManageMessages: React.FC = () => {
                     </td>
                     <td className="py-3 px-4">
                       <p className="font-semibold text-emerald-800 line-clamp-1">{item.subject}</p>
-                      <p className="text-[11px] text-stone-500 line-clamp-1 font-light">{item.message}</p>
+                      <p className="text-[11px] text-stone-500 line-clamp-1 font-normal">{item.message}</p>
                     </td>
                     <td className="py-3 px-4 text-stone-400 text-[11px]">
                       {new Date(item.created_at).toLocaleDateString('id-ID', {
@@ -166,7 +151,7 @@ export const ManageMessages: React.FC = () => {
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
                   Detail Pesan Pengunjung
                 </span>
-                <h3 className="text-lg font-extrabold text-stone-900 mt-2">{selectedMsg.subject}</h3>
+                <h3 className="text-lg font-bold text-stone-900 mt-2">{selectedMsg.subject}</h3>
               </div>
               <button onClick={() => setSelectedMsg(null)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
@@ -182,7 +167,7 @@ export const ManageMessages: React.FC = () => {
 
             <div className="space-y-2">
               <p className="text-xs font-bold text-stone-700">Isi Pesan:</p>
-              <div className="p-4 rounded-2xl bg-white border border-stone-200 text-stone-700 text-xs leading-relaxed font-light whitespace-pre-line">
+              <div className="p-4 rounded-2xl bg-white border border-stone-200 text-stone-700 text-xs leading-relaxed font-normal whitespace-pre-line">
                 {selectedMsg.message}
               </div>
             </div>

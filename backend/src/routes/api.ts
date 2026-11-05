@@ -389,7 +389,7 @@ apiRouter.get('/news', async (req: Request, res: Response) => {
     const [rows]: any = await pool.query(sql, params);
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getNews(category) });
+  res.json({ success: true, data: db.getNews() });
 });
 
 apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
@@ -402,7 +402,7 @@ apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
 });
 
 apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
-  const { slug } = req.params;
+  const slug = String(req.params.slug);
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT * FROM news WHERE slug = ? LIMIT 1', [slug]);
@@ -447,7 +447,7 @@ apiRouter.get('/gallery', async (req: Request, res: Response) => {
     const [rows]: any = await pool.query(sql, params);
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getGallery(category) });
+  res.json({ success: true, data: db.getGalleryMedia(category) });
 });
 
 apiRouter.get('/gallery/albums', async (_req: Request, res: Response) => {
@@ -466,6 +466,35 @@ apiRouter.get('/ppdb', async (_req: Request, res: Response) => {
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
   } catch {}
   res.json({ success: true, data: db.getPPDB() });
+});
+
+// Agendas Public Route
+apiRouter.get('/agendas', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM agendas WHERE is_published = 1 ORDER BY event_date ASC');
+    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
+  } catch {}
+  res.json({ success: true, data: db.getAgendas().filter((a: any) => a.is_published !== 0) });
+});
+
+// Programs & Extracurricular Public Route
+apiRouter.get('/programs', async (req: Request, res: Response) => {
+  const category = req.query.category as string;
+  const pool = getPool();
+  try {
+    let sql = 'SELECT * FROM programs WHERE is_active = 1 ORDER BY display_order ASC';
+    const params: any[] = [];
+    if (category) {
+      sql = 'SELECT * FROM programs WHERE is_active = 1 AND category = ? ORDER BY display_order ASC';
+      params.push(category);
+    }
+    const [rows]: any = await pool.query(sql, params);
+    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
+  } catch {}
+  let progs = db.getPrograms().filter((p: any) => p.is_active !== 0);
+  if (category) progs = progs.filter((p: any) => p.category === category);
+  res.json({ success: true, data: progs });
 });
 
 apiRouter.get('/settings', async (_req: Request, res: Response) => {
@@ -532,7 +561,7 @@ apiRouter.get('/admin/news', requireAdmin, async (_req: Request, res: Response) 
     const [rows]: any = await pool.query('SELECT * FROM news ORDER BY id DESC');
     if (rows) return res.json({ success: true, data: rows });
   } catch {}
-  res.json({ success: true, data: db.getAllNewsAdmin() });
+  res.json({ success: true, data: db.getNews(true) });
 });
 
 apiRouter.post('/admin/news', requireAdmin, async (req: Request, res: Response) => {
@@ -554,7 +583,7 @@ apiRouter.post('/admin/news', requireAdmin, async (req: Request, res: Response) 
 });
 
 apiRouter.put('/admin/news/:id', requireAdmin, async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
     await pool.query(
@@ -570,7 +599,7 @@ apiRouter.put('/admin/news/:id', requireAdmin, async (req: Request, res: Respons
 });
 
 apiRouter.delete('/admin/news/:id', requireAdmin, async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
     await pool.query('DELETE FROM news WHERE id = ?', [id]);
@@ -609,7 +638,7 @@ apiRouter.get('/admin/messages', requireAdmin, async (_req: Request, res: Respon
 });
 
 apiRouter.put('/admin/messages/:id/read', requireAdmin, async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const { is_read } = req.body;
   const pool = getPool();
   try {
@@ -620,7 +649,7 @@ apiRouter.put('/admin/messages/:id/read', requireAdmin, async (req: Request, res
 });
 
 apiRouter.delete('/admin/messages/:id', requireAdmin, async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
     await pool.query('DELETE FROM contact_messages WHERE id = ?', [id]);
@@ -645,7 +674,7 @@ apiRouter.post('/admin/teachers', requireAdmin, async (req: Request, res: Respon
 });
 
 apiRouter.put('/admin/teachers/:id', requireAdmin, async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
     await pool.query(
@@ -659,7 +688,7 @@ apiRouter.put('/admin/teachers/:id', requireAdmin, async (req: Request, res: Res
 });
 
 apiRouter.delete('/admin/teachers/:id', requireAdmin, async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
     await pool.query('DELETE FROM teachers WHERE id = ?', [id]);
@@ -699,7 +728,7 @@ apiRouter.post('/admin/users', requireSuperadmin, async (req: Request, res: Resp
 });
 
 apiRouter.delete('/admin/users/:id', requireSuperadmin, async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   if (id === 1) return res.status(400).json({ success: false, message: 'Superadmin utama tidak dapat dihapus.' });
 
   const pool = getPool();
@@ -711,13 +740,233 @@ apiRouter.delete('/admin/users/:id', requireSuperadmin, async (req: Request, res
   res.json({ success: true, message: 'Akun admin berhasil dihapus.' });
 });
 
+// Facilities CRUD
+apiRouter.post('/admin/facilities', requireAdmin, async (req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [ins]: any = await pool.query(
+      `INSERT INTO facilities (name, category, description, photo, capacity, condition_status, display_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [req.body.name, req.body.category || 'Ruang Belajar', req.body.description || '', req.body.photo || null, req.body.capacity || '', req.body.condition_status || 'Baik', req.body.display_order || 0]
+    );
+    return res.json({ success: true, message: 'Fasilitas berhasil ditambahkan.', data: { id: ins.insertId, ...req.body } });
+  } catch {}
+  const saved = db.createFacility(req.body);
+  res.json({ success: true, message: 'Fasilitas berhasil ditambahkan.', data: saved });
+});
+
+apiRouter.put('/admin/facilities/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query(
+      `UPDATE facilities SET name = ?, category = ?, description = ?, photo = ?, capacity = ?, condition_status = ?, display_order = ? WHERE id = ?`,
+      [req.body.name, req.body.category || 'Ruang Belajar', req.body.description || '', req.body.photo || null, req.body.capacity || '', req.body.condition_status || 'Baik', req.body.display_order || 0, id]
+    );
+    return res.json({ success: true, message: 'Fasilitas berhasil diperbarui.' });
+  } catch {}
+  const upd = db.updateFacility(id, req.body);
+  res.json({ success: true, message: 'Fasilitas berhasil diperbarui.', data: upd });
+});
+
+apiRouter.delete('/admin/facilities/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query('DELETE FROM facilities WHERE id = ?', [id]);
+    return res.json({ success: true, message: 'Fasilitas berhasil dihapus.' });
+  } catch {}
+  db.deleteFacility(id);
+  res.json({ success: true, message: 'Fasilitas berhasil dihapus.' });
+});
+
+// Achievements CRUD
+apiRouter.post('/admin/achievements', requireAdmin, async (req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [ins]: any = await pool.query(
+      `INSERT INTO achievements (title, student_or_team, level, category, rank_position, year, organizer, photo, description)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [req.body.title, req.body.student_or_team || '', req.body.level || 'Kabupaten', req.body.category || 'Akademik', req.body.rank || req.body.rank_position || 'Juara 1', req.body.year || '2025', req.body.organizer || '', req.body.photo || null, req.body.description || '']
+    );
+    return res.json({ success: true, message: 'Prestasi berhasil disimpan.', data: { id: ins.insertId, ...req.body } });
+  } catch {}
+  const saved = db.createAchievement(req.body);
+  res.json({ success: true, message: 'Prestasi berhasil disimpan.', data: saved });
+});
+
+apiRouter.put('/admin/achievements/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query(
+      `UPDATE achievements SET title = ?, student_or_team = ?, level = ?, category = ?, rank_position = ?, year = ?, organizer = ?, photo = ?, description = ? WHERE id = ?`,
+      [req.body.title, req.body.student_or_team || '', req.body.level || 'Kabupaten', req.body.category || 'Akademik', req.body.rank || req.body.rank_position || 'Juara 1', req.body.year || '2025', req.body.organizer || '', req.body.photo || null, req.body.description || '', id]
+    );
+    return res.json({ success: true, message: 'Prestasi berhasil diperbarui.' });
+  } catch {}
+  const upd = db.updateAchievement(id, req.body);
+  res.json({ success: true, message: 'Prestasi berhasil diperbarui.', data: upd });
+});
+
+apiRouter.delete('/admin/achievements/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query('DELETE FROM achievements WHERE id = ?', [id]);
+    return res.json({ success: true, message: 'Prestasi berhasil dihapus.' });
+  } catch {}
+  db.deleteAchievement(id);
+  res.json({ success: true, message: 'Prestasi berhasil dihapus.' });
+});
+
+// Gallery Media & Albums CRUD
+apiRouter.post('/admin/gallery', requireAdmin, async (req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [ins]: any = await pool.query(
+      `INSERT INTO gallery_media (album_id, title, media_type, file_url, video_url, caption, category, display_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [req.body.album_id || null, req.body.title, req.body.media_type || 'photo', req.body.file_url, req.body.video_url || null, req.body.caption || '', req.body.category || 'Akademik', req.body.display_order || 0]
+    );
+    return res.json({ success: true, message: 'Foto galeri berhasil disimpan.', data: { id: ins.insertId, ...req.body } });
+  } catch {}
+  const saved = db.createGalleryMedia(req.body);
+  res.json({ success: true, message: 'Foto galeri berhasil disimpan.', data: saved });
+});
+
+apiRouter.delete('/admin/gallery/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query('DELETE FROM gallery_media WHERE id = ?', [id]);
+    return res.json({ success: true, message: 'Foto galeri berhasil dihapus.' });
+  } catch {}
+  db.deleteGalleryMedia(id);
+  res.json({ success: true, message: 'Foto galeri berhasil dihapus.' });
+});
+
+// Agendas CRUD
+apiRouter.get('/admin/agendas', requireAdmin, async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM agendas ORDER BY event_date DESC');
+    if (rows) return res.json({ success: true, data: rows });
+  } catch {}
+  res.json({ success: true, data: db.getAgendas() });
+});
+
+apiRouter.post('/admin/agendas', requireAdmin, async (req: Request, res: Response) => {
+  const pool = getPool();
+  const slug = (req.body.title || `agenda-${Date.now()}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+  try {
+    const [ins]: any = await pool.query(
+      `INSERT INTO agendas (title, slug, description, event_date, start_time, end_time, location, organizer, is_published)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [req.body.title, slug, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Kampus SMP Islam Caruy', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1]
+    );
+    return res.json({ success: true, message: 'Agenda berhasil ditambahkan.', data: { id: ins.insertId, ...req.body, slug } });
+  } catch {}
+  const saved = db.createAgenda(req.body);
+  res.json({ success: true, message: 'Agenda berhasil ditambahkan.', data: saved });
+});
+
+apiRouter.put('/admin/agendas/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query(
+      `UPDATE agendas SET title = ?, description = ?, event_date = ?, start_time = ?, end_time = ?, location = ?, organizer = ?, is_published = ? WHERE id = ?`,
+      [req.body.title, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Kampus SMP Islam Caruy', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1, id]
+    );
+    return res.json({ success: true, message: 'Agenda berhasil diperbarui.' });
+  } catch {}
+  const upd = db.updateAgenda(id, req.body);
+  res.json({ success: true, message: 'Agenda berhasil diperbarui.', data: upd });
+});
+
+apiRouter.delete('/admin/agendas/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query('DELETE FROM agendas WHERE id = ?', [id]);
+    return res.json({ success: true, message: 'Agenda berhasil dihapus.' });
+  } catch {}
+  db.deleteAgenda(id);
+  res.json({ success: true, message: 'Agenda berhasil dihapus.' });
+});
+
+// Programs CRUD
+apiRouter.get('/admin/programs', requireAdmin, async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM programs ORDER BY display_order ASC');
+    if (rows) return res.json({ success: true, data: rows });
+  } catch {}
+  res.json({ success: true, data: db.getPrograms() });
+});
+
+apiRouter.post('/admin/programs', requireAdmin, async (req: Request, res: Response) => {
+  const pool = getPool();
+  const slug = (req.body.name || `program-${Date.now()}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+  try {
+    const [ins]: any = await pool.query(
+      `INSERT INTO programs (name, slug, category, description, photo, schedule_info, instructor, display_order, is_active)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [req.body.name, slug, req.body.category || 'unggulan', req.body.description || '', req.body.photo || null, req.body.schedule_info || '', req.body.instructor || '', req.body.display_order || 0, req.body.is_active ?? 1]
+    );
+    return res.json({ success: true, message: 'Program berhasil disimpan.', data: { id: ins.insertId, ...req.body, slug } });
+  } catch {}
+  const saved = db.createProgram(req.body);
+  res.json({ success: true, message: 'Program berhasil disimpan.', data: saved });
+});
+
+apiRouter.put('/admin/programs/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query(
+      `UPDATE programs SET name = ?, category = ?, description = ?, photo = ?, schedule_info = ?, instructor = ?, display_order = ?, is_active = ? WHERE id = ?`,
+      [req.body.name, req.body.category || 'unggulan', req.body.description || '', req.body.photo || null, req.body.schedule_info || '', req.body.instructor || '', req.body.display_order || 0, req.body.is_active ?? 1, id]
+    );
+    return res.json({ success: true, message: 'Program berhasil diperbarui.' });
+  } catch {}
+  const upd = db.updateProgram(id, req.body);
+  res.json({ success: true, message: 'Program berhasil diperbarui.', data: upd });
+});
+
+apiRouter.delete('/admin/programs/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id), 10);
+  const pool = getPool();
+  try {
+    await pool.query('DELETE FROM programs WHERE id = ?', [id]);
+    return res.json({ success: true, message: 'Program berhasil dihapus.' });
+  } catch {}
+  db.deleteProgram(id);
+  res.json({ success: true, message: 'Program berhasil dihapus.' });
+});
+
 // Settings & PPDB
 apiRouter.put('/admin/ppdb', requireAdmin, async (req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    await pool.query(
+      `UPDATE ppdb_information SET academic_year = ?, is_open = ?, start_date = ?, end_date = ?, overview = ?, contact_person = ?, contact_phone = ?, contact_whatsapp = ?, updated_at = NOW() WHERE id = 1`,
+      [req.body.academic_year, req.body.is_open ? 1 : 0, req.body.start_date || null, req.body.end_date || null, req.body.overview, req.body.contact_person || '', req.body.contact_phone || '', req.body.contact_whatsapp || '']
+    );
+  } catch {}
   const upd = db.updatePPDB(req.body);
   res.json({ success: true, message: 'Informasi PPDB berhasil diperbarui.', data: upd });
 });
 
 apiRouter.put('/admin/settings', requireAdmin, async (req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    await pool.query(
+      `UPDATE website_settings SET school_name = ?, tagline = ?, hero_title = ?, hero_subtitle = ?, facebook_url = ?, instagram_url = ?, youtube_url = ?, footer_text = ?, updated_at = NOW() WHERE id = 1`,
+      [req.body.school_name, req.body.tagline || '', req.body.hero_title || '', req.body.hero_subtitle || '', req.body.facebook_url || '', req.body.instagram_url || '', req.body.youtube_url || '', req.body.footer_text || '']
+    );
+  } catch {}
   const upd = db.updateSettings(req.body);
   res.json({ success: true, message: 'Pengaturan website berhasil disimpan.', data: upd });
 });

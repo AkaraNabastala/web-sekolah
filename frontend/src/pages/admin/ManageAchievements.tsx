@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { Achievement } from '../../types';
 import { Plus, Edit, Trash2, CheckCircle, AlertCircle, X, Trophy } from 'lucide-react';
+import { toast } from '../../hooks/useToast';
 
 export const ManageAchievements: React.FC = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const [form, setForm] = useState<Partial<Achievement>>({
     title: '',
@@ -34,10 +34,6 @@ export const ManageAchievements: React.FC = () => {
     loadData();
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -66,15 +62,15 @@ export const ManageAchievements: React.FC = () => {
     try {
       if (editingId) {
         await schoolApi.updateAchievement(editingId, form);
-        showToast('Prestasi berhasil diperbarui!');
+        toast.success('Prestasi berhasil diperbarui!');
       } else {
         await schoolApi.createAchievement(form);
-        showToast('Prestasi baru berhasil ditambahkan!');
+        toast.success('Prestasi baru berhasil ditambahkan!');
       }
       setModalOpen(false);
       loadData();
     } catch (err) {
-      showToast('Gagal menyimpan data.', 'error');
+      toast.error('Gagal menyimpan data.');
     }
   };
 
@@ -82,20 +78,20 @@ export const ManageAchievements: React.FC = () => {
     if (window.confirm('Hapus catatan prestasi ini?')) {
       try {
         await schoolApi.deleteAchievement(id);
-        showToast('Prestasi berhasil dihapus.');
+        toast.success('Prestasi berhasil dihapus.');
         loadData();
       } catch (err) {
-        showToast('Gagal menghapus prestasi.', 'error');
+        toast.error('Gagal menghapus prestasi.');
       }
     }
   };
 
   return (
-    <div className="space-y-6 font-['Poppins']">
+    <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Manajemen Prestasi Sekolah</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Manajemen Prestasi Sekolah</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Dokumentasikan piagam, piala kejuaraan, dan capaian membanggakan para santri.
           </p>
         </div>
@@ -109,18 +105,7 @@ export const ManageAchievements: React.FC = () => {
         </button>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       {/* TABLE */}
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200/80 overflow-hidden">
@@ -135,7 +120,7 @@ export const ManageAchievements: React.FC = () => {
                 <th className="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100 font-light">
+            <tbody className="divide-y divide-stone-100 font-normal">
               {achievements.map((item) => (
                 <tr key={item.id} className="hover:bg-stone-50/50">
                   <td className="py-3 px-4">
@@ -143,7 +128,7 @@ export const ManageAchievements: React.FC = () => {
                     <span className="text-[10px] text-stone-400">{item.category}</span>
                   </td>
                   <td className="py-3 px-4">
-                    <span className="bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded text-[10px]">
+                    <span className="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded text-[10px]">
                       {item.rank}
                     </span>
                     <p className="text-[11px] text-stone-400 mt-0.5">Tahun {item.year}</p>
@@ -181,7 +166,7 @@ export const ManageAchievements: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 p-6 space-y-4">
             <div className="flex justify-between items-center border-b border-stone-100 pb-3">
-              <h3 className="text-base font-extrabold text-stone-900">
+              <h3 className="text-base font-bold text-stone-900">
                 {editingId ? 'Edit Data Prestasi' : 'Tambah Prestasi Baru'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">

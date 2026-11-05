@@ -122,6 +122,20 @@ export const schoolApi = {
   updateFacility: (id: number, data: Partial<Facility>) => api.put<{ success: boolean; message: string; data: Facility }>(`/admin/facilities/${id}`, data).then(r => r.data),
   deleteFacility: (id: number) => api.delete<{ success: boolean; message: string }>(`/admin/facilities/${id}`).then(r => r.data),
 
+  // Agendas
+  getAgendas: () => api.get<{ success: boolean; data: any[] }>('/agendas').then(r => r.data.data),
+  getAdminAgendas: () => api.get<{ success: boolean; data: any[] }>('/admin/agendas').then(r => r.data.data),
+  createAgenda: (data: any) => api.post<{ success: boolean; message: string; data: any }>('/admin/agendas', data).then(r => r.data),
+  updateAgenda: (id: number, data: any) => api.put<{ success: boolean; message: string; data: any }>(`/admin/agendas/${id}`, data).then(r => r.data),
+  deleteAgenda: (id: number) => api.delete<{ success: boolean; message: string }>(`/admin/agendas/${id}`).then(r => r.data),
+
+  // Programs & Extracurricular
+  getPrograms: (category?: string) => api.get<{ success: boolean; data: any[] }>('/programs', { params: { category } }).then(r => r.data.data),
+  getAdminPrograms: () => api.get<{ success: boolean; data: any[] }>('/admin/programs').then(r => r.data.data),
+  createProgram: (data: any) => api.post<{ success: boolean; message: string; data: any }>('/admin/programs', data).then(r => r.data),
+  updateProgram: (id: number, data: any) => api.put<{ success: boolean; message: string; data: any }>(`/admin/programs/${id}`, data).then(r => r.data),
+  deleteProgram: (id: number) => api.delete<{ success: boolean; message: string }>(`/admin/programs/${id}`).then(r => r.data),
+
   // Admin PPDB
   updatePPDB: (data: Partial<PPDBInfo>) => api.put<{ success: boolean; message: string; data: PPDBInfo }>('/admin/ppdb', data).then(r => r.data),
 

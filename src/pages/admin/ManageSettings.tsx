@@ -3,22 +3,18 @@ import { schoolApi } from '../../services/api';
 import { WebsiteSettings } from '../../types';
 import { useSchool } from '../../context/SchoolContext';
 import { Save, CheckCircle, AlertCircle, Upload, Globe, Palette, Sliders } from 'lucide-react';
+import { toast } from '../../hooks/useToast';
 
 export const ManageSettings: React.FC = () => {
   const { updateCachedSettings } = useSchool();
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     schoolApi.getSettings().then(res => setSettings(res));
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -28,10 +24,10 @@ export const ManageSettings: React.FC = () => {
       const res = await schoolApi.uploadFile(file);
       if (res.success) {
         setSettings(prev => (prev ? { ...prev, logo_url: res.fileUrl } : null));
-        showToast('Logo berhasil diunggah!');
+        toast.success('Logo berhasil diunggah!');
       }
     } catch (err) {
-      showToast('Gagal mengunggah logo.', 'error');
+      toast.error('Gagal mengunggah logo.');
     } finally {
       setUploading(false);
     }
@@ -45,48 +41,37 @@ export const ManageSettings: React.FC = () => {
       const res = await schoolApi.updateSettings(settings);
       if (res.success) {
         updateCachedSettings(res.data);
-        showToast('Pengaturan website berhasil disimpan!');
+        toast.success('Pengaturan website berhasil disimpan!');
       }
     } catch (err) {
-      showToast('Gagal menyimpan pengaturan.', 'error');
+      toast.error('Gagal menyimpan pengaturan.');
     } finally {
       setSaving(false);
     }
   };
 
   if (!settings) {
-    return <div className="p-8 text-center text-xs text-stone-500 font-['Poppins']">Memuat konfigurasi website...</div>;
+    return <div className="p-8 text-center text-xs text-stone-500 font-poppins">Memuat konfigurasi website...</div>;
   }
 
   return (
-    <div className="space-y-6 font-['Poppins']">
+    <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Pengaturan Website & Branding</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Pengaturan Website & Branding</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Konfigurasi nama sekolah, logo resmi, warna identitas, teks hero beranda, media sosial, dan SEO.
           </p>
         </div>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* SECTION 1: IDENTITAS & LOGO */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Branding & Logo Resmi</h2>
+            <h2 className="text-base font-bold text-stone-900">Branding & Logo Resmi</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -133,7 +118,7 @@ export const ManageSettings: React.FC = () => {
         {/* SECTION 2: BERANDA & HERO */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Konten Hero Beranda</h2>
+            <h2 className="text-base font-bold text-stone-900">Konten Hero Beranda</h2>
           </div>
 
           <div className="space-y-1.5">
@@ -152,7 +137,7 @@ export const ManageSettings: React.FC = () => {
               rows={3}
               value={settings.hero_subtitle}
               onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-light"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
             />
           </div>
 
@@ -170,7 +155,7 @@ export const ManageSettings: React.FC = () => {
         {/* SECTION 3: ANGKA STATISTIK BERANDA */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Angka Statistik Sekolah (Counter Beranda)</h2>
+            <h2 className="text-base font-bold text-stone-900">Angka Statistik Sekolah (Counter Beranda)</h2>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -219,7 +204,7 @@ export const ManageSettings: React.FC = () => {
         {/* SECTION 4: MEDIA SOSIAL & SEO */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-extrabold text-stone-900">Media Sosial & Optimasi SEO</h2>
+            <h2 className="text-base font-bold text-stone-900">Media Sosial & Optimasi SEO</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -280,7 +265,7 @@ export const ManageSettings: React.FC = () => {
               rows={2}
               value={settings.seo_description}
               onChange={(e) => setSettings({ ...settings, seo_description: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-light"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
             />
           </div>
 

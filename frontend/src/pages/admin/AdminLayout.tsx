@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { SchoolLogo } from '../../components/common/SchoolLogo';
+import { Toaster } from '../../components/common/Toaster';
+import { toast } from '../../hooks/useToast';
 import {
   LayoutDashboard,
   Building2,
@@ -22,7 +24,9 @@ import {
   Menu,
   X,
   Bell,
-  Eye
+  Eye,
+  Award,
+  Calendar
 } from 'lucide-react';
 import { schoolApi } from '../../services/api';
 
@@ -45,7 +49,7 @@ export const AdminLayout: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-stone-100 flex items-center justify-center font-['Poppins']">
+      <div className="min-h-screen bg-stone-100 flex items-center justify-center font-poppins">
         <p className="text-stone-500 text-sm">Memeriksa sesi administrator...</p>
       </div>
     );
@@ -63,7 +67,9 @@ export const AdminLayout: React.FC = () => {
     { label: 'Visi & Misi', path: '/admin/visi-misi', icon: Compass },
     { label: 'Struktur Organisasi', path: '/admin/organisasi', icon: GraduationCap },
     { label: 'Guru & Tenaga Staf', path: '/admin/guru-staf', icon: Users },
+    { label: 'Program & Ekstrakurikuler', path: '/admin/program', icon: Award },
     { label: 'Manajemen Berita', path: '/admin/berita', icon: Newspaper },
+    { label: 'Agenda & Pengumuman', path: '/admin/agenda', icon: Calendar },
     { label: 'Galeri & Dokumentasi', path: '/admin/galeri', icon: Image },
     { label: 'Prestasi Sekolah', path: '/admin/prestasi', icon: Trophy },
     { label: 'Fasilitas Belajar', path: '/admin/fasilitas', icon: Landmark },
@@ -75,11 +81,14 @@ export const AdminLayout: React.FC = () => {
 
   const handleLogout = () => {
     logout();
+    toast.info('Anda telah keluar dari sesi admin.');
     navigate('/admin/login');
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F8] flex font-['Poppins'] text-stone-800">
+    <div className="min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
+      {/* Global Toaster — mounted once at layout level */}
+      <Toaster />
       {/* SIDEBAR FOR DESKTOP */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-emerald-950 text-white flex flex-col transition-transform duration-300 ease-in-out border-r border-emerald-900 ${
@@ -116,7 +125,7 @@ export const AdminLayout: React.FC = () => {
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   active
-                    ? 'bg-amber-400 text-emerald-950 shadow-md font-extrabold'
+                    ? 'bg-amber-400 text-emerald-950 shadow-md font-bold'
                     : 'text-emerald-100/90 hover:bg-emerald-900/80 hover:text-white'
                 }`}
               >

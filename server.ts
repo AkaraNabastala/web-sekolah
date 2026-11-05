@@ -6,6 +6,8 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './backend/src/routes/api.js';
 import { testMySQLConnection, getMySQLStatus } from './backend/src/config/database.js';
+import { logger } from './backend/src/utils/logger.js';
+import { runMigrations } from './backend/src/scripts/migrate.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -62,22 +64,33 @@ async function startServer() {
 
   // Uji koneksi MySQL saat boot
   const dbTest = await testMySQLConnection();
-  console.log(`[SMP Islam Caruy Database] ${dbTest.message}`);
+  if (dbTest.connected) {
+    logger.info('RootServer', `Database connected: ${dbTest.message}`);
+    await runMigrations();
+  } else {
+    logger.warn('RootServer', `Database check: ${dbTest.message}. Fallback data.json aktif.`);
+  }
 
   if (!isProd) {
-    // Mode pengembangan dengan Vite dev middleware
+    // Mode pengembangan dengan Vite dev middleware yang mengarah ke folder frontend/
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
+      root: path.resolve(__dirname, 'frontend'),
       server: { middlewareMode: true, host: '0.0.0.0', port: PORT },
       appType: 'spa'
     });
     app.use(vite.middlewares);
   } else {
-    // Mode produksi menyajikan build dist
-    const distDir = path.resolve(__dirname, 'dist');
-    app.use(express.static(distDir));
-    app.get('*', (_req, res) => {
-      res.sendFile(path.join(distDir, 'index.html'));
+    // Mode produksi menyajikan build dist dari frontend
+    const distDir = path.resolve(__dirname, 'frontend/dist');
+    const fallbackDistDir = path.resolve(__dirname, 'dist');
+    const targetDist = fs.existsSync(distDir) ? distDir : fallbackDistDir;
+    app.use(express.static(targetDist));
+    app.get('{*path}', (req, res, next) => {
+      if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+        return next();
+      }
+      res.sendFile(path.join(targetDist, 'index.html'));
     });
   }
 

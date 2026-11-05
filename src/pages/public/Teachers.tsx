@@ -38,7 +38,7 @@ export const Teachers: React.FC = () => {
   }, [staff, searchQuery]);
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Guru & Tenaga Kependidikan"
         description="Daftar profil dewan guru, asatidz, dan tenaga kependidikan SMP Islam Caruy dengan kualifikasi pendidikan dan mata pelajaran yang diampu."
@@ -99,7 +99,7 @@ export const Teachers: React.FC = () => {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-              <h3 className="text-xl font-extrabold text-stone-900">Dewan Guru Pengajar</h3>
+              <h3 className="text-xl font-bold text-stone-900">Dewan Guru Pengajar</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -115,14 +115,14 @@ export const Teachers: React.FC = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm p-2.5 rounded-xl text-center shadow-sm border border-white/50">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">
                         {teacher.subject}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-5 flex flex-col flex-1 space-y-2 text-center">
-                    <h4 className="font-extrabold text-stone-900 text-sm group-hover:text-emerald-700 transition-colors">
+                    <h4 className="font-bold text-stone-900 text-sm group-hover:text-emerald-700 transition-colors">
                       {teacher.name}
                     </h4>
                     <p className="text-xs text-stone-500 font-medium">{teacher.position}</p>
@@ -130,7 +130,7 @@ export const Teachers: React.FC = () => {
                       {teacher.last_education}
                     </p>
                     {teacher.short_bio && (
-                      <p className="text-[11px] text-stone-500 font-light leading-relaxed pt-1">
+                      <p className="text-[11px] text-stone-500 font-normal leading-relaxed pt-1">
                         {teacher.short_bio}
                       </p>
                     )}
@@ -146,7 +146,7 @@ export const Teachers: React.FC = () => {
           <div className="space-y-6 pt-6">
             <div className="flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-              <h3 className="text-xl font-extrabold text-stone-900">Tenaga Kependidikan & Tata Usaha</h3>
+              <h3 className="text-xl font-bold text-stone-900">Tenaga Kependidikan & Tata Usaha</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -162,14 +162,14 @@ export const Teachers: React.FC = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-sm p-2.5 rounded-xl text-center shadow-sm border border-white/50">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
                         {staf.department}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-5 flex flex-col flex-1 space-y-2 text-center">
-                    <h4 className="font-extrabold text-stone-900 text-sm group-hover:text-emerald-700 transition-colors">
+                    <h4 className="font-bold text-stone-900 text-sm group-hover:text-emerald-700 transition-colors">
                       {staf.name}
                     </h4>
                     <p className="text-xs text-stone-500 font-medium">{staf.position}</p>
@@ -177,7 +177,7 @@ export const Teachers: React.FC = () => {
                       {staf.last_education}
                     </p>
                     {staf.short_bio && (
-                      <p className="text-[11px] text-stone-500 font-light leading-relaxed pt-1">
+                      <p className="text-[11px] text-stone-500 font-normal leading-relaxed pt-1">
                         {staf.short_bio}
                       </p>
                     )}

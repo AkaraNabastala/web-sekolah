@@ -18,7 +18,7 @@ export const History: React.FC = () => {
   }, []);
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Sejarah Perjalanan Sekolah"
         description="Jejak langkah perjuangan berdirinya SMP Islam Caruy sejak tahun 2005 hingga berkembang menjadi lembaga pendidikan Islam terpercaya di Cilacap."
@@ -37,7 +37,7 @@ export const History: React.FC = () => {
             <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider">
               Kisah Perjalanan & Pendirian
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-stone-900 tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-4xl font-bold text-stone-900 tracking-tight leading-tight">
               {history?.title || 'Langkah Panjang Mengabdi: Sejarah Berdirinya SMP Islam Caruy'}
             </h2>
             <div className="w-20 h-1 bg-amber-400 rounded-full"></div>
@@ -51,14 +51,14 @@ export const History: React.FC = () => {
                 alt="Dokumentasi Sejarah SMP Islam Caruy"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-4 left-4 right-4 bg-emerald-950/80 backdrop-blur-sm text-white px-4 py-2 rounded-xl text-xs font-light">
+              <div className="absolute bottom-4 left-4 right-4 bg-emerald-950/80 backdrop-blur-sm text-white px-4 py-2 rounded-xl text-xs font-normal">
                 Dokumentasi: Perkembangan Kampus Terpadu SMP Islam Caruy
               </div>
             </div>
           )}
 
           {/* Content Paragraphs */}
-          <div className="text-stone-700 text-sm sm:text-base leading-relaxed space-y-4 font-light">
+          <div className="text-stone-700 text-sm sm:text-base leading-relaxed space-y-4 font-normal">
             {history?.content ? (
               history.content.split('\n\n').map((par, i) => (
                 <p key={i}>{par}</p>
@@ -76,7 +76,7 @@ export const History: React.FC = () => {
               <span className="text-amber-600 font-bold text-xs uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
                 Tonggak Sejarah
               </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-stone-900">
+              <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
                 Milestone Perjalanan Sekolah
               </h3>
             </div>
@@ -90,11 +90,11 @@ export const History: React.FC = () => {
                   </div>
 
                   <div className="bg-stone-50 p-6 rounded-2xl border border-stone-200/80 hover:bg-emerald-50/50 hover:border-emerald-200 transition-all space-y-2">
-                    <div className="inline-block bg-emerald-800 text-amber-300 px-3 py-0.5 rounded-full text-xs font-extrabold">
+                    <div className="inline-block bg-emerald-800 text-amber-300 px-3 py-0.5 rounded-full text-xs font-bold">
                       Tahun {m.year}
                     </div>
                     <h4 className="text-lg font-bold text-stone-900">{m.title}</h4>
-                    <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
+                    <p className="text-xs sm:text-sm text-stone-600 font-normal leading-relaxed">
                       {m.desc}
                     </p>
                   </div>

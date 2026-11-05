@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './routes/api.js';
 import { checkConnection, getStatus } from './config/database.js';
+import { logger } from './utils/logger.js';
+import { runMigrations } from './scripts/migrate.js';
 
 dotenv.config();
 
@@ -71,15 +73,43 @@ if (fs.existsSync(clientDist)) {
 }
 
 async function start() {
-  const dbCheck = await checkConnection();
-  console.log(`[SMP Islam Caruy Backend] ${dbCheck.message}`);
+  logger.info('ServerBootstrap', 'Starting SMP Islam Caruy Backend Service...');
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[SMP Islam Caruy Backend] Service running on http://0.0.0.0:${PORT}`);
+  const dbCheck = await checkConnection();
+  if (dbCheck.connected) {
+    logger.info('Database', dbCheck.message);
+    // Jalankan migrasi tabel secara otomatis saat database terhubung
+    await runMigrations();
+  } else {
+    logger.warn('Database', `${dbCheck.message} Menggunakan Json Relational Store (database/data.json) sebagai fallback.`);
+  }
+
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    logger.info('ServerBootstrap', `Service running successfully on http://0.0.0.0:${PORT} [${process.env.NODE_ENV || 'development'}]`);
   });
+
+  const shutdown = (signal: string) => {
+    logger.info('ServerBootstrap', `Received ${signal}. Shutting down gracefully...`);
+    server.close(() => {
+      logger.info('ServerBootstrap', 'HTTP server closed.');
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
+process.on('unhandledRejection', (reason: any) => {
+  logger.error('UnhandledRejection', reason?.message || String(reason), reason);
+});
+
+process.on('uncaughtException', (err: any) => {
+  logger.error('UncaughtException', err.message, err);
+  process.exit(1);
+});
+
 start().catch(err => {
-  console.error('[Backend Startup Error]', err);
+  logger.error('BackendStartupError', err.message, err);
   process.exit(1);
 });

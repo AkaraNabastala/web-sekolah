@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
   const { profile, settings } = useSchool();
 
   return (
-    <footer className="bg-emerald-950 text-white font-['Poppins'] relative overflow-hidden border-t-4 border-amber-400">
+    <footer className="bg-emerald-950 text-white font-poppins relative overflow-hidden border-t-4 border-amber-400">
       {/* Decorative Islamic Arch Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
@@ -27,19 +27,19 @@ export const Footer: React.FC = () => {
           {/* Column 1: School Identity & Description (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
             <SchoolLogo size="lg" lightText />
-            <p className="text-emerald-200/90 text-xs leading-relaxed font-light mt-3">
+            <p className="text-emerald-200/90 text-xs leading-relaxed font-normal mt-3">
               SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta di bawah naungan yayasan pendidikan Islam yang mengintegrasikan Kurikulum Nasional Terpadu dengan nilai-nilai kepesantrenan, tahfidz Al-Quran, dan budi pekerti luhur.
             </p>
 
             <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
               <span className="bg-emerald-900/80 text-amber-300 px-3 py-1 rounded-full border border-emerald-800 font-medium">
-                NPSN: {profile?.npsn || '20301988'}
+                NPSN: {profile?.npsn || 'Dalam Pembaruan'}
               </span>
               <span className="bg-emerald-900/80 text-emerald-300 px-3 py-1 rounded-full border border-emerald-800 font-medium">
-                Akreditasi: {profile?.accreditation || 'A (Unggul)'}
+                Akreditasi: {profile?.accreditation || 'Dalam Proses Pembaruan'}
               </span>
               <span className="bg-emerald-900/80 text-emerald-300 px-3 py-1 rounded-full border border-emerald-800 font-medium">
-                Berdiri Sejak: {profile?.founding_year || '2005'}
+                Status: {profile?.status || 'Swasta'}
               </span>
             </div>
 

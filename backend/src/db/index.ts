@@ -30,49 +30,35 @@ export interface DbState {
   visitor_logs: any[];
   admin_activities: any[];
   uploaded_files: any[];
+  agendas: any[];
+  programs: any[];
 }
 
 function getInitialData(): DbState {
-  // Hash for 'adminCaruy2026!'
-  const adminPasswordHash = bcrypt.hashSync('adminCaruy2026!', 10);
-
   return {
-    admins: [
-      {
-        id: 1,
-        username: 'admin',
-        email: 'admin@smpislamcaruy.sch.id',
-        password: adminPasswordHash,
-        full_name: 'Administrator SMP Islam Caruy',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop',
-        role: 'superadmin',
-        is_active: 1,
-        last_login: new Date().toISOString(),
-        created_at: new Date().toISOString()
-      }
-    ],
+    admins: [],
     school_profile: {
       id: 1,
       name: 'SMP Islam Caruy',
-      npsn: '20301988',
+      npsn: '-',
       education_level: 'Sekolah Menengah Pertama (SMP)',
       status: 'Swasta',
-      accreditation: 'A (Unggul)',
-      founding_year: '2005',
-      headmaster_name: 'Drs. H. Ahmad Fauzi, M.Pd.I',
-      headmaster_photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop',
-      headmaster_welcome: `Assalamu’alaikum Warahmatullahi Wabarakatuh.\n\nPuji syukur senantiasa kita panjatkan ke hadirat Allah SWT atas segala limpahan rahmat dan karunia-Nya. Selamat datang di website profil resmi SMP Islam Caruy.\n\nSebagai institusi pendidikan Islam yang berdedikasi melahirkan generasi unggul, kami terus berupaya menghadirkan layanan pendidikan bermutu tinggi yang memadukan Kurikulum Nasional Terpadu dengan penguatan aqidah, tahfidzul quran, serta pembiasaan akhlakul karimah.\n\nDengan dukungan dewan guru yang kompeten dan fasilitas pembelajaran yang memadai, kami berkomitmen mendampingi setiap peserta didik agar berkembang secara intelektual, emosional, dan spiritual. Mari bersama kami membangun masa depan cerah anak bangsa yang berkarakter Islami dan siap bersaing di era global.\n\nWassalamu’alaikum Warahmatullahi Wabarakatuh.`,
-      description: 'SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta bernuansa Islami di Kecamatan Cipari, Kabupaten Cilacap. Sekolah ini memadukan keunggulan akademik sains dan teknologi dengan kedalaman nilai-nilai akhlakul karimah dan tahfidz Al-Quran.',
-      address: 'Jl. Raya Caruy No. 12, Desa Caruy, Kec. Cipari, Kabupaten Cilacap',
+      accreditation: 'Dalam Proses Pembaruan',
+      founding_year: '-',
+      headmaster_name: 'Kepala Sekolah SMP Islam Caruy',
+      headmaster_photo: null,
+      headmaster_welcome: 'Informasi sambutan resmi kepala sekolah sedang dalam tahap penyesuaian dokumen.',
+      description: 'SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta bernuansa Islami di Kecamatan Cipari, Kabupaten Cilacap.',
+      address: 'Desa Caruy, Kec. Cipari, Kabupaten Cilacap',
       village: 'Desa Caruy',
       district: 'Kec. Cipari',
       regency: 'Kab. Cilacap',
       province: 'Jawa Tengah',
       postal_code: '53262',
-      phone: '0821-3297-2773',
-      whatsapp: '6282132972773',
-      email: 'info@smpislamcaruy.sch.id',
-      maps_embed_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15829.897089926417!2d108.77587!3d-7.41245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e657c91c8282bd5%3A0x6b77df28e3488f58!2sCaruy%2C%20Cipari%2C%20Cilacap%20Regency%2C%20Central%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid',
+      phone: '-',
+      whatsapp: '-',
+      email: '-',
+      maps_embed_url: null,
       updated_at: new Date().toISOString()
     },
     school_history: {
@@ -344,7 +330,63 @@ function getInitialData(): DbState {
     admin_activities: [
       { id: 1, admin_id: 1, action: 'Sistem Terpasang', description: 'Inisialisasi database sekolah dan konfigurasi profil awal.', ip_address: '127.0.0.1', created_at: new Date().toISOString() }
     ],
-    uploaded_files: []
+    uploaded_files: [],
+    agendas: [
+      {
+        id: 1,
+        title: 'Penilaian Tengah Semester (PTS) Genap 2025/2026',
+        category: 'Akademik',
+        date: '2026-03-15',
+        start_time: '07:30',
+        end_time: '12:00',
+        location: 'Ruang Kelas SMP Islam Caruy',
+        description: 'Pelaksanaan asesmen tengah semester genap bagi seluruh santri kelas VII, VIII, dan IX.',
+        is_published: 1,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: 2,
+        title: 'Kajian Tarhib Ramadhan & Doa Bersama',
+        category: 'Keagamaan',
+        date: '2026-03-20',
+        start_time: '08:00',
+        end_time: '11:00',
+        location: 'Musholla At-Tarbiyah SMP Islam Caruy',
+        description: 'Tausiyah persiapan menyambut bulan suci Ramadhan bersama wali murid dan civitas akademika.',
+        is_published: 1,
+        created_at: new Date().toISOString()
+      }
+    ],
+    programs: [
+      {
+        id: 1,
+        title: 'Tahfidzul Quran & Pengkajian Kitab Adab',
+        category: 'Keagamaan',
+        target_audience: 'Seluruh Siswa',
+        schedule_info: 'Setiap Hari Sebelum KBM & Halaqah Sore',
+        short_description: 'Program akselerasi hafalan Al-Quran dengan target minimal 3 Juz saat kelulusan.',
+        full_description: 'Program unggulan yang memadukan metode tahsin makharijul huruf bersanad, halaqah harian, setoran berkala, dan penanaman adab penuntut ilmu.',
+        features: ['Bimbingan Asatidz Bersanad', 'Target Hafalan Terstruktur', 'Sertifikasi Tahfidz Resmi'],
+        icon_name: 'BookOpen',
+        display_order: 1,
+        is_active: 1,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: 2,
+        title: 'Bilingual Environment (Bahasa Arab & Inggris)',
+        category: 'Unggulan',
+        target_audience: 'Siswa Kelas Unggulan & Reguler',
+        schedule_info: 'Daily Conversation & Weekly Speech',
+        short_description: 'Pembiasaan percakapan dwi-bahasa untuk melatih kepercayaan diri dan wawasan global.',
+        full_description: 'Membiasakan kosakata tematik, dialog harian di lingkungan madrasah, dan pelatihan public speaking melalui Muhadhoroh dwi-bahasa.',
+        features: ['Vocab Enrichment Harian', 'Muhadhoroh 3 Bahasa', 'Native/Guest Speaker Session'],
+        icon_name: 'Languages',
+        display_order: 2,
+        is_active: 1,
+        created_at: new Date().toISOString()
+      }
+    ]
   };
 }
 
@@ -892,6 +934,72 @@ class Database {
     this.data.uploaded_files.push(newFile);
     this.commit();
     return newFile;
+  }
+
+  // --- AGENDAS ---
+  getAgendas() {
+    if (!this.data.agendas) this.data.agendas = [];
+    return this.data.agendas;
+  }
+
+  createAgenda(data: any) {
+    if (!this.data.agendas) this.data.agendas = [];
+    const nextId = (this.data.agendas.reduce((max, item) => Math.max(max, item.id), 0) || 0) + 1;
+    const slug = (data.title || `agenda-${nextId}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+    const newAgenda = { ...data, id: nextId, slug, is_published: data.is_published ?? 1, created_at: new Date().toISOString() };
+    this.data.agendas.unshift(newAgenda);
+    this.commit();
+    return newAgenda;
+  }
+
+  updateAgenda(id: number, data: any) {
+    if (!this.data.agendas) this.data.agendas = [];
+    const idx = this.data.agendas.findIndex(a => a.id === id);
+    if (idx !== -1) {
+      this.data.agendas[idx] = { ...this.data.agendas[idx], ...data, updated_at: new Date().toISOString() };
+      this.commit();
+      return this.data.agendas[idx];
+    }
+    return null;
+  }
+
+  deleteAgenda(id: number) {
+    if (!this.data.agendas) this.data.agendas = [];
+    this.data.agendas = this.data.agendas.filter(a => a.id !== id);
+    this.commit();
+  }
+
+  // --- PROGRAMS & EXTRACURRICULAR ---
+  getPrograms() {
+    if (!this.data.programs) this.data.programs = [];
+    return this.data.programs;
+  }
+
+  createProgram(data: any) {
+    if (!this.data.programs) this.data.programs = [];
+    const nextId = (this.data.programs.reduce((max, item) => Math.max(max, item.id), 0) || 0) + 1;
+    const slug = (data.name || `program-${nextId}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+    const newProgram = { ...data, id: nextId, slug, is_active: data.is_active ?? 1, created_at: new Date().toISOString() };
+    this.data.programs.push(newProgram);
+    this.commit();
+    return newProgram;
+  }
+
+  updateProgram(id: number, data: any) {
+    if (!this.data.programs) this.data.programs = [];
+    const idx = this.data.programs.findIndex(p => p.id === id);
+    if (idx !== -1) {
+      this.data.programs[idx] = { ...this.data.programs[idx], ...data, updated_at: new Date().toISOString() };
+      this.commit();
+      return this.data.programs[idx];
+    }
+    return null;
+  }
+
+  deleteProgram(id: number) {
+    if (!this.data.programs) this.data.programs = [];
+    this.data.programs = this.data.programs.filter(p => p.id !== id);
+    this.commit();
   }
 }
 

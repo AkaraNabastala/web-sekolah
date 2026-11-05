@@ -1,3 +1,4 @@
+import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { Teacher, Staff } from '../../types';
@@ -19,7 +20,6 @@ export const ManageTeachers: React.FC = () => {
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
 
   // Form for teacher or staff
@@ -62,10 +62,6 @@ export const ManageTeachers: React.FC = () => {
     loadData();
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -117,10 +113,10 @@ export const ManageTeachers: React.FC = () => {
         } else {
           setStaffForm(prev => ({ ...prev, photo: res.fileUrl }));
         }
-        showToast('Foto berhasil diunggah!');
+        toast.success('Foto berhasil diunggah!');
       }
     } catch (err) {
-      showToast('Gagal mengunggah foto.', 'error');
+      toast.error('Gagal mengunggah foto.');
     } finally {
       setUploading(false);
     }
@@ -132,24 +128,24 @@ export const ManageTeachers: React.FC = () => {
       if (activeTab === 'teachers') {
         if (editingId) {
           await schoolApi.updateTeacher(editingId, teacherForm);
-          showToast('Data guru berhasil diperbarui!');
+          toast.success('Data guru berhasil diperbarui!');
         } else {
           await schoolApi.createTeacher(teacherForm);
-          showToast('Guru baru berhasil ditambahkan!');
+          toast.success('Guru baru berhasil ditambahkan!');
         }
       } else {
         if (editingId) {
           await schoolApi.updateStaff(editingId, staffForm);
-          showToast('Data staf berhasil diperbarui!');
+          toast.success('Data staf berhasil diperbarui!');
         } else {
           await schoolApi.createStaff(staffForm);
-          showToast('Staf baru berhasil ditambahkan!');
+          toast.success('Staf baru berhasil ditambahkan!');
         }
       }
       setModalOpen(false);
       loadData();
     } catch (err) {
-      showToast('Gagal menyimpan data.', 'error');
+      toast.error('Gagal menyimpan data.');
     }
   };
 
@@ -161,20 +157,20 @@ export const ManageTeachers: React.FC = () => {
         } else {
           await schoolApi.deleteStaff(id);
         }
-        showToast('Data berhasil dihapus.');
+        toast.success('Data berhasil dihapus.');
         loadData();
       } catch (err) {
-        showToast('Gagal menghapus data.', 'error');
+        toast.error('Gagal menghapus data.');
       }
     }
   };
 
   return (
-    <div className="space-y-6 font-['Poppins']">
+    <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Manajemen Guru & Tenaga Kependidikan</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Manajemen Guru & Tenaga Kependidikan</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Kelola profil pendidik, mata pelajaran, riwayat pendidikan, dan staf tata usaha sekolah.
           </p>
         </div>
@@ -188,18 +184,7 @@ export const ManageTeachers: React.FC = () => {
         </button>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       {/* Tabs Switcher */}
       <div className="bg-white p-2 rounded-2xl shadow-sm border border-stone-200/80 flex gap-1 w-fit">
@@ -236,7 +221,7 @@ export const ManageTeachers: React.FC = () => {
                 <th className="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100 font-light">
+            <tbody className="divide-y divide-stone-100 font-normal">
               {(activeTab === 'teachers' ? teachers : staffList).map((item: any) => (
                 <tr key={item.id} className="hover:bg-stone-50/50">
                   <td className="py-3 px-4">
@@ -285,7 +270,7 @@ export const ManageTeachers: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 flex flex-col">
             <div className="p-6 border-b border-stone-100 flex justify-between items-center sticky top-0 bg-white z-10">
-              <h3 className="text-lg font-extrabold text-stone-900">
+              <h3 className="text-lg font-bold text-stone-900">
                 {editingId ? `Edit ${activeTab === 'teachers' ? 'Guru' : 'Staf'}` : `Tambah ${activeTab === 'teachers' ? 'Guru' : 'Staf'} Baru`}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">

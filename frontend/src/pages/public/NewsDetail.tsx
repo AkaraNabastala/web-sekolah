@@ -54,7 +54,7 @@ export const NewsDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="font-['Poppins'] min-h-screen bg-stone-50 py-32 text-center">
+      <div className="font-poppins min-h-screen bg-stone-50 py-32 text-center">
         <p className="text-stone-500 text-sm">Memuat artikel...</p>
       </div>
     );
@@ -62,7 +62,7 @@ export const NewsDetail: React.FC = () => {
 
   if (!article) {
     return (
-      <div className="font-['Poppins'] min-h-screen bg-stone-50 py-32 text-center space-y-4">
+      <div className="font-poppins min-h-screen bg-stone-50 py-32 text-center space-y-4">
         <h2 className="text-2xl font-bold text-stone-900">Artikel Tidak Ditemukan</h2>
         <p className="text-stone-500 text-sm">Maaf, artikel yang Anda cari tidak tersedia atau telah dipindahkan.</p>
         <Link to="/berita" className="inline-block bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
@@ -73,7 +73,7 @@ export const NewsDetail: React.FC = () => {
   }
 
   return (
-    <div className="font-['Poppins'] bg-stone-50 min-h-screen pb-24">
+    <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title={article.title}
         description={article.summary || article.content.substring(0, 160)}
@@ -158,7 +158,7 @@ export const NewsDetail: React.FC = () => {
             )}
 
             {/* Article Body */}
-            <div className="prose prose-stone max-w-none text-stone-700 text-sm sm:text-base leading-relaxed space-y-4 font-light">
+            <div className="prose prose-stone max-w-none text-stone-700 text-sm sm:text-base leading-relaxed space-y-4 font-normal">
               {article.content.split('\n\n').map((paragraph, i) => (
                 <p key={i}>{paragraph}</p>
               ))}
@@ -181,7 +181,7 @@ export const NewsDetail: React.FC = () => {
             <div className="bg-white rounded-3xl p-6 shadow-xl border border-stone-100 space-y-4">
               <div className="flex items-center gap-2 border-b border-stone-100 pb-3">
                 <BookOpen className="w-4 h-4 text-emerald-600" />
-                <h3 className="text-base font-extrabold text-stone-900">Warta Terkait</h3>
+                <h3 className="text-base font-bold text-stone-900">Warta Terkait</h3>
               </div>
 
               <div className="space-y-4">

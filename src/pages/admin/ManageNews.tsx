@@ -1,3 +1,4 @@
+import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { NewsArticle, NewsCategory } from '../../types';
@@ -23,7 +24,6 @@ export const ManageNews: React.FC = () => {
   const [previewArticle, setPreviewArticle] = useState<NewsArticle | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
-  const [notification, setNotification] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
 
   const [formData, setFormData] = useState<Partial<NewsArticle>>({
@@ -54,10 +54,6 @@ export const ManageNews: React.FC = () => {
     loadNews();
   }, []);
 
-  const showToast = (text: string, type: 'success' | 'error' = 'success') => {
-    setNotification({ text, type });
-    setTimeout(() => setNotification(null), 3500);
-  };
 
   const handleOpenCreate = () => {
     setEditingId(null);
@@ -102,10 +98,10 @@ export const ManageNews: React.FC = () => {
       const res = await schoolApi.uploadFile(file);
       if (res.success) {
         setFormData(prev => ({ ...prev, thumbnail: res.fileUrl }));
-        showToast('Thumbnail berhasil diunggah!');
+        toast.success('Thumbnail berhasil diunggah!');
       }
     } catch (err) {
-      showToast('Gagal mengunggah thumbnail.', 'error');
+      toast.error('Gagal mengunggah thumbnail.');
     } finally {
       setUploading(false);
     }
@@ -114,22 +110,22 @@ export const ManageNews: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.content) {
-      showToast('Judul dan konten wajib diisi.', 'error');
+      toast.error('Judul dan konten wajib diisi.');
       return;
     }
 
     try {
       if (editingId) {
         await schoolApi.updateNews(editingId, formData);
-        showToast('Warta berita berhasil diperbarui!');
+        toast.success('Warta berita berhasil diperbarui!');
       } else {
         await schoolApi.createNews(formData);
-        showToast('Berita baru berhasil diterbitkan!');
+        toast.success('Berita baru berhasil diterbitkan!');
       }
       setModalOpen(false);
       loadNews();
     } catch (err) {
-      showToast('Terjadi kesalahan saat menyimpan berita.', 'error');
+      toast.error('Terjadi kesalahan saat menyimpan berita.');
     }
   };
 
@@ -137,10 +133,10 @@ export const ManageNews: React.FC = () => {
     if (window.confirm('Apakah Anda yakin ingin menghapus warta ini?')) {
       try {
         await schoolApi.deleteNews(id);
-        showToast('Berita berhasil dihapus.');
+        toast.success('Berita berhasil dihapus.');
         loadNews();
       } catch (err) {
-        showToast('Gagal menghapus berita.', 'error');
+        toast.error('Gagal menghapus berita.');
       }
     }
   };
@@ -151,11 +147,11 @@ export const ManageNews: React.FC = () => {
   );
 
   return (
-    <div className="space-y-6 font-['Poppins']">
+    <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Manajemen Berita & Artikel</h1>
-          <p className="text-xs text-stone-500 font-light mt-0.5">
+          <h1 className="text-2xl font-bold text-stone-900">Manajemen Berita & Artikel</h1>
+          <p className="text-xs text-stone-500 font-normal mt-0.5">
             Publikasikan agenda, prestasi siswa, liputan kegiatan, dan pengumuman resmi sekolah.
           </p>
         </div>
@@ -169,18 +165,7 @@ export const ManageNews: React.FC = () => {
         </button>
       </div>
 
-      {notification && (
-        <div
-          className={`p-4 rounded-2xl flex items-center gap-2.5 text-xs font-semibold shadow-sm ${
-            notification.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {notification.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-          <span>{notification.text}</span>
-        </div>
-      )}
+      
 
       {/* Table Container */}
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200/80 space-y-4">
@@ -210,7 +195,7 @@ export const ManageNews: React.FC = () => {
                 <th className="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100 font-light">
+            <tbody className="divide-y divide-stone-100 font-normal">
               {filtered.map((item) => (
                 <tr key={item.id} className="hover:bg-stone-50/50">
                   <td className="py-3 px-4">
@@ -276,7 +261,7 @@ export const ManageNews: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 flex flex-col">
             <div className="p-6 border-b border-stone-100 flex justify-between items-center sticky top-0 bg-white z-10">
-              <h3 className="text-lg font-extrabold text-stone-900">
+              <h3 className="text-lg font-bold text-stone-900">
                 {editingId ? 'Edit Warta Berita' : 'Tulis Berita Baru'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
@@ -341,7 +326,7 @@ export const ManageNews: React.FC = () => {
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                   placeholder="Tuliskan isi berita selengkapnya (gunakan enter untuk paragraf)..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-light leading-relaxed"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
                 />
               </div>
 
@@ -410,14 +395,14 @@ export const ManageNews: React.FC = () => {
               </button>
             </div>
 
-            <h2 className="text-xl font-extrabold text-stone-900">{previewArticle.title}</h2>
+            <h2 className="text-xl font-bold text-stone-900">{previewArticle.title}</h2>
             {previewArticle.thumbnail && (
               <img src={previewArticle.thumbnail} alt={previewArticle.title} className="w-full h-48 object-cover rounded-xl" />
             )}
             <p className="text-xs text-stone-500 italic bg-stone-50 p-3 rounded-lg border-l-4 border-emerald-600">
               {previewArticle.summary}
             </p>
-            <div className="text-xs text-stone-700 leading-relaxed space-y-3 font-light">
+            <div className="text-xs text-stone-700 leading-relaxed space-y-3 font-normal">
               {previewArticle.content.split('\n\n').map((p, i) => (
                 <p key={i}>{p}</p>
               ))}

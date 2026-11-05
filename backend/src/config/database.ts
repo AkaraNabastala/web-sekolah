@@ -1,5 +1,6 @@
 import mysql, { Pool, PoolOptions } from 'mysql2/promise';
 import dotenv from 'dotenv';
+import { logger } from '../utils/logger.js';
 dotenv.config();
 
 export const dbConfig: PoolOptions = {
@@ -7,7 +8,7 @@ export const dbConfig: PoolOptions = {
   port: parseInt(process.env.DB_PORT || '3306', 10),
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'smp_islam_caruy',
+  database: process.env.DB_NAME || 'web-sekolah',
   waitForConnections: true,
   connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10', 10),
   queueLimit: 0,
@@ -23,7 +24,7 @@ let lastError: string | null = null;
 try {
   pool = mysql.createPool(dbConfig);
 } catch (err: any) {
-  console.error('[MySQL Init Error]', err.message);
+  logger.error('DatabaseConfig', `MySQL Init Error: ${err.message}`, { error: err.message });
   lastError = err.message;
 }
 
@@ -50,6 +51,10 @@ export async function checkConnection(): Promise<{ connected: boolean; message: 
     };
   }
 }
+
+// Alias kompatibilitas dengan server.ts
+export const testMySQLConnection = checkConnection;
+export const getMySQLStatus = getStatus;
 
 export function getPool(): Pool {
   if (!pool) {

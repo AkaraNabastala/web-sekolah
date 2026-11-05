@@ -1,10 +1,8 @@
 -- ==============================================================================
 -- SKEMA RESMI DATABASE SMP ISLAM CARUY (MySQL 8.0+)
 -- Profil Sekolah, Akademik, Sistem Informasi & Statistik Kunjungan Terpadu
+-- Catatan: Eksekusi tabel menggunakan database aktif pada sesi koneksi.
 -- ==============================================================================
-
-CREATE DATABASE IF NOT EXISTS `smp_islam_caruy` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `smp_islam_caruy`;
 
 -- 1. Tabel Administrator & Peran (Role-Based Access)
 CREATE TABLE IF NOT EXISTS `admins` (
@@ -327,3 +325,40 @@ CREATE TABLE IF NOT EXISTS `uploaded_files` (
   `uploaded_by` VARCHAR(100) DEFAULT 'Administrator',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 21. Agenda Kegiatan & Kalender Akademik Sekolah
+CREATE TABLE IF NOT EXISTS `agendas` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `title` VARCHAR(200) NOT NULL,
+  `slug` VARCHAR(220) NOT NULL UNIQUE,
+  `description` TEXT,
+  `event_date` DATE NOT NULL,
+  `start_time` VARCHAR(20) DEFAULT '08:00',
+  `end_time` VARCHAR(20) DEFAULT 'Selesai',
+  `location` VARCHAR(150) NOT NULL DEFAULT 'Kampus SMP Islam Caruy',
+  `organizer` VARCHAR(100) DEFAULT 'Panitia Sekolah',
+  `is_published` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_agenda_date` (`event_date`),
+  INDEX `idx_agenda_pub` (`is_published`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 22. Program Unggulan & Ekstrakurikuler
+CREATE TABLE IF NOT EXISTS `programs` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(150) NOT NULL,
+  `slug` VARCHAR(180) NOT NULL UNIQUE,
+  `category` ENUM('unggulan', 'ekstrakurikuler', 'keagamaan', 'akademik') NOT NULL DEFAULT 'unggulan',
+  `description` TEXT,
+  `photo` VARCHAR(255) DEFAULT NULL,
+  `schedule_info` VARCHAR(150) DEFAULT NULL,
+  `instructor` VARCHAR(120) DEFAULT NULL,
+  `display_order` INT NOT NULL DEFAULT 0,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_prog_cat` (`category`),
+  INDEX `idx_prog_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
