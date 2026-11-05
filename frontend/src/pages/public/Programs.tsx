@@ -19,7 +19,7 @@ export const Programs: React.FC = () => {
       ? 'Ekstrakurikuler'
       : 'Program Unggulan';
   const pageDescription = pathname === '/kurikulum'
-    ? 'Informasi program dan kegiatan akademik yang tercatat pada sistem sekolah.'
+    ? 'Informasi kurikulum lengkap akan ditampilkan setelah data resmi sekolah dimasukkan. Daftar di bawah ini memuat program akademik yang tercatat di sistem.'
     : pathname === '/ekstrakurikuler'
       ? 'Daftar kegiatan ekstrakurikuler yang dikelola dan dipublikasikan sekolah.'
       : 'Program unggulan sekolah yang dikelola dan dipublikasikan melalui sistem informasi sekolah.';
