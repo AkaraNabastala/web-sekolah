@@ -2,6 +2,7 @@ import { getPool, checkConnection, getStatus } from '../config/database.js';
 import { logger } from '../utils/logger.js';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 /**
  * Script Migrasi Database MySQL
@@ -23,7 +24,9 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
 
   try {
     // 1. Baca schema.sql utama
-    const schemaPath = path.resolve(process.cwd(), 'database', 'schema.sql');
+    const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+    const backendRoot = path.resolve(scriptDir, '../../');
+    const schemaPath = path.join(backendRoot, 'database', 'schema.sql');
     if (!fs.existsSync(schemaPath)) {
       throw new Error(`Berkas schema.sql tidak ditemukan pada path: ${schemaPath}`);
     }
@@ -31,14 +34,19 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
     const rawSchema = fs.readFileSync(schemaPath, 'utf8');
 
     // Filter baris yang memuat instruksi 'CREATE DATABASE' atau 'USE' agar migrasi selalu menggunakan database koneksi aktif
-    const cleanedStatements = rawSchema
+    // Hapus komentar SQL sebelum pemisahan statement. Komentar baris sebelumnya
+    // membuat CREATE TABLE terbuang jika parser hanya memeriksa awalan statement.
+    const schemaWithoutComments = rawSchema
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/^\s*--.*$/gm, '');
+
+    const cleanedStatements = schemaWithoutComments
       .split(';')
       .map(stmt => stmt.trim())
       .filter(stmt => {
         if (!stmt || stmt.length < 5) return false;
-        if (stmt.startsWith('--') || stmt.startsWith('/*')) return false;
         const upper = stmt.toUpperCase();
-        if (upper.startsWith('CREATE DATABASE') || upper.startsWith('USE ')) return false;
+        if (upper.startsWith('CREATE DATABASE') || /^USE\s+/i.test(upper)) return false;
         return true;
       });
 
@@ -50,7 +58,7 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
       executedCount++;
     }
 
-    // 2. Buat tabel pencatatan riwayat migrasi (idempotent)
+    // 2. Buat tabel riwayat migrasi setelah seluruh statement schema berhasil.
     await pool.query(`
       CREATE TABLE IF NOT EXISTS migration_history (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -60,27 +68,39 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
-    // Catat batch migrasi
-    await pool.query(`
-      INSERT INTO migration_history (migration_name, batch)
-      VALUES ('001_core_schema_and_visitor_sessions', 1)
-      ON DUPLICATE KEY UPDATE executed_at = CURRENT_TIMESTAMP
-    `);
+    // 3. Verifikasi seluruh tabel aplikasi, bukan hanya beberapa tabel contoh.
+    const requiredTables = [
+      'admins', 'school_profile', 'school_history', 'school_vision_mission',
+      'school_organization', 'teachers', 'staff', 'news_categories', 'news',
+      'gallery_albums', 'gallery_media', 'achievements', 'facilities',
+      'ppdb_information', 'contact_messages', 'website_settings',
+      'visitor_sessions', 'visitor_pageviews', 'admin_activities',
+      'uploaded_files', 'agendas', 'programs', 'migration_history'
+    ];
+    const [rows]: any = await pool.query(
+      `SELECT table_name FROM information_schema.tables
+       WHERE table_schema = ? AND table_name IN (${requiredTables.map(() => '?').join(', ')})`,
+      [dbInfo.database, ...requiredTables]
+    );
+    const foundTables = new Set((rows as any[]).map(r => String(r.table_name || r.TABLE_NAME).toLowerCase()));
+    const missingTables = requiredTables.filter(name => !foundTables.has(name));
 
-    // 3. Verifikasi ketersediaan tabel vital
-    const [rows]: any = await pool.query(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = ? 
-      AND table_name IN ('visitor_sessions', 'visitor_pageviews', 'migration_history', 'admins', 'school_profile')
-    `, [dbInfo.database]);
+    if (missingTables.length > 0) {
+      throw new Error(`Verifikasi skema gagal. Tabel wajib belum tersedia: ${missingTables.join(', ')}`);
+    }
 
-    const foundTables = (rows as any[]).map(r => r.table_name || r.TABLE_NAME);
-    logger.info('MigrationService', `✅ Verifikasi tabel berhasil. Ditemukan tabel: ${foundTables.join(', ')} pada database [${dbInfo.database}].`);
+    // Catat migrasi hanya setelah semua tabel wajib benar-benar tersedia.
+    await pool.query(
+      `INSERT INTO migration_history (migration_name, batch)
+       VALUES ('001_core_schema_and_visitor_sessions', 1)
+       ON DUPLICATE KEY UPDATE executed_at = CURRENT_TIMESTAMP`
+    );
+
+    logger.info('MigrationService', `Verifikasi seluruh ${requiredTables.length} tabel berhasil pada database [${dbInfo.database}].`);
 
     return {
       success: true,
-      message: `Migrasi selesai. ${executedCount} statement berhasil dieksekusi.`
+      message: `Migrasi selesai. ${executedCount} statement berhasil dieksekusi dan ${requiredTables.length} tabel terverifikasi.`
     };
   } catch (err: any) {
     const errorMsg = `Gagal menjalankan migrasi database [${dbInfo.database}]: ${err.message}`;
