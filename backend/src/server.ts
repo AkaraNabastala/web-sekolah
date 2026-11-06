@@ -16,8 +16,31 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 
+// CORS memakai allowlist origin yang dikonfigurasi eksplisit.
+// Development memiliki default untuk Vite; production wajib menentukan domain sendiri.
+const configuredOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
+const allowedOrigins = configuredOrigins.length > 0
+  ? configuredOrigins
+  : process.env.NODE_ENV === 'production'
+    ? []
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+
+if (process.env.NODE_ENV === 'production' && allowedOrigins.length === 0) {
+  throw new Error('CORS_ORIGINS wajib diisi dengan daftar origin frontend pada production.');
+}
+
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    // Permintaan non-browser (tanpa Origin) tetap diizinkan.
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    // Origin di luar allowlist tidak mendapat header CORS.
+    return callback(null, false);
+  },
   credentials: true
 }));
 
