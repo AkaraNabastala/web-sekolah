@@ -24,7 +24,7 @@ export const PPDB: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [documentFiles, setDocumentFiles] = useState<Record<string, File | null>>({});
   const [formData, setFormData] = useState({
-    candidateName: '', birthPlace: '', birthDate: '', gender: '',
+    candidateName: '', nationalId: '', birthPlace: '', birthDate: '', gender: '',
     originSchool: '', parentName: '', phone: '', address: '',
     program: 'Reguler', notes: ''
   });
@@ -51,7 +51,7 @@ export const PPDB: React.FC = () => {
         if (file) documents[label] = (await schoolApi.uploadAdmissionDocument(file)).fileKey;
       }
       const result = await schoolApi.submitAdmissionApplication({
-        candidate_name: formData.candidateName, birth_place: formData.birthPlace,
+        candidate_name: formData.candidateName, national_id: formData.nationalId, birth_place: formData.birthPlace,
         birth_date: formData.birthDate || null, gender: formData.gender,
         origin_school: formData.originSchool, parent_name: formData.parentName,
         parent_phone: formData.phone, address: formData.address,
@@ -315,21 +315,21 @@ export const PPDB: React.FC = () => {
               </div>
             </div>
 
+            <label className="block space-y-1.5 text-xs font-bold text-stone-700">NIK (opsional)<input type="text" inputMode="numeric" maxLength={32} value={formData.nationalId} onChange={event=>setFormData({...formData,nationalId:event.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
             <label className="block space-y-1.5 text-xs font-bold text-stone-700">Alamat Domisili<textarea rows={2} value={formData.address} onChange={e=>setFormData({...formData,address:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
             <div className="space-y-2"><label className="text-xs font-bold text-stone-700">Dokumen Pendukung (PDF, JPG, PNG, WebP)</label>
               {['Kartu Keluarga','Akta Kelahiran','Ijazah atau Surat Keterangan Lulus'].map(label=><div key={label} className="grid gap-2 sm:grid-cols-[180px_1fr] sm:items-center"><span className="text-xs text-stone-600">{label}</span><input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" onChange={e=>setDocumentFiles(prev=>({...prev,[label]:e.target.files?.[0]||null}))} className="w-full text-xs"/></div>)}
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-stone-700">Pilihan Peminatan Program</label>
-              <select
+              <label className="text-xs font-bold text-stone-700">Program yang diminati</label>
+              <input
+                type="text"
+                maxLength={120}
                 value={formData.program}
-                onChange={(e) => setFormData({ ...formData, program: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-              >
-                <option value="Reguler">Kelas Reguler Terpadu</option>
-                
-                <option value="Sains & Robotika">Kelas Peminatan Sains & Teknologi</option>
-              </select>
+                onChange={event => setFormData({ ...formData, program: event.target.value })}
+                placeholder="Reguler"
+                className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"
+              />
             </div>
 
             <div className="space-y-1.5">
