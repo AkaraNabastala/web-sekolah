@@ -3,6 +3,7 @@ import { Plus, Save, Trash2 } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
 import { schoolApi } from '../../services/api';
 import { SchoolVisionMission } from '../../types';
+import { RichTextEditor } from '../../components/common/RichTextEditor';
 
 const fieldClass = "w-full rounded-xl border border-stone-200 bg-white px-3.5 py-3 text-sm text-stone-800 outline-none transition focus:border-[var(--school-primary)] focus:ring-2 focus:ring-stone-100";
 
@@ -52,7 +53,7 @@ export const ManageVisionMission: React.FC = () => {
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <section className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5 sm:p-6">
             <h2 className="text-lg font-semibold text-stone-900">Visi</h2>
-            <textarea rows={8} value={data.vision || ''} onChange={event => setData({ ...data, vision: event.target.value })} className={fieldClass} />
+            <RichTextEditor rows={7} value={data.vision || ''} onChange={vision => setData({ ...data, vision })}/>
             <div className="space-y-2">
               <label className="text-xs font-semibold text-stone-600">Motto (opsional)</label>
               <input value={data.vision_motto || ''} onChange={event => setData({ ...data, vision_motto: event.target.value })} className={fieldClass} />
@@ -70,7 +71,7 @@ export const ManageVisionMission: React.FC = () => {
               {(data.missions || []).map((mission, index) => (
                 <div key={index} className="flex items-start gap-2">
                   <span className="mt-3 w-7 shrink-0 text-sm font-semibold text-stone-400">{index + 1}.</span>
-                  <textarea rows={3} value={mission} onChange={event => updateMission(index, event.target.value)} className={fieldClass} />
+                  <div className="min-w-0 flex-1"><RichTextEditor rows={3} value={mission} onChange={value => updateMission(index, value)}/></div>
                   <button type="button" onClick={() => setData({ ...data, missions: data.missions.filter((_, i) => i !== index) })} aria-label={`Hapus misi ${index + 1}`} className="mt-2 rounded-lg p-2 text-stone-400 hover:bg-red-50 hover:text-red-600">
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -91,7 +92,7 @@ export const ManageVisionMission: React.FC = () => {
           {(data.goals || []).map((goal, index) => (
             <div key={index} className="flex items-start gap-2">
               <span className="mt-3 w-7 shrink-0 text-sm font-semibold text-stone-400">{index + 1}.</span>
-              <textarea rows={2} value={goal} onChange={event => { const goals = [...(data.goals || [])]; goals[index] = event.target.value; setData({ ...data, goals }); }} className={fieldClass} />
+              <div className="min-w-0 flex-1"><RichTextEditor rows={3} value={goal} onChange={value => { const goals = [...(data.goals || [])]; goals[index] = value; setData({ ...data, goals }); }}/></div>
               <button type="button" onClick={() => setData({ ...data, goals: (data.goals || []).filter((_, i) => i !== index) })} aria-label={`Hapus tujuan ${index + 1}`} className="mt-2 rounded-lg p-2 text-stone-400 hover:bg-red-50 hover:text-red-600">
                 <Trash2 className="h-4 w-4" />
               </button>
