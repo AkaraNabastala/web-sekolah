@@ -99,6 +99,17 @@ export const ManageSettings: React.FC = () => {
     } : null);
   };
 
+  const moveHeroSlide = (index: number, direction: -1 | 1) => {
+    setSettings(current => {
+      if (!current) return current;
+      const slides = [...normalizeHeroSlides(current.hero_slides)];
+      const target = index + direction;
+      if (target < 0 || target >= slides.length) return current;
+      [slides[index], slides[target]] = [slides[target], slides[index]];
+      return { ...current, hero_slides: slides };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!settings) return;
@@ -264,7 +275,11 @@ export const ManageSettings: React.FC = () => {
                 <div className="space-y-2 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-stone-700">Slide {index + 1}</span>
-                    <button type="button" onClick={() => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).filter((_, i) => i !== index) })} className="text-xs font-semibold text-red-600">Hapus</button>
+                    <div className="flex items-center gap-3">
+                      <button type="button" disabled={index === 0} onClick={() => moveHeroSlide(index, -1)} className="text-xs font-semibold text-stone-600 disabled:opacity-30">Naik</button>
+                      <button type="button" disabled={index === normalizeHeroSlides(settings.hero_slides).length - 1} onClick={() => moveHeroSlide(index, 1)} className="text-xs font-semibold text-stone-600 disabled:opacity-30">Turun</button>
+                      <button type="button" onClick={() => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).filter((_, i) => i !== index) })} className="text-xs font-semibold text-red-600">Hapus</button>
+                    </div>
                   </div>
                   <div className="flex flex-wrap items-center gap-3">
                     {slide.image && <img src={slide.image} alt={slide.title || 'Pratinjau slide'} className="h-20 w-32 rounded-lg object-cover" />}
