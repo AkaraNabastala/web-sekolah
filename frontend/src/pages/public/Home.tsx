@@ -77,7 +77,7 @@ export const Home: React.FC = () => {
       image: settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
       tag: 'Suasana Belajar Berkarakter',
       title: 'Pendidikan Islami yang Teduh, Mendalam & Beradab',
-      subtitle: settings?.hero_subtitle || 'Memadukan Kurikulum Nasional Terpadu dengan penguatan aqidah, tahfidzul quran, serta pembiasaan adab keseharian dalam ekosistem belajar yang asri.',
+      subtitle: settings?.hero_subtitle || 'Memadukan kurikulum nasional dengan pendidikan agama Islam dan pembentukan karakter.',
       badge: `Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`
     },
     {
@@ -148,7 +148,7 @@ export const Home: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] selection:bg-[#E2EBE4] selection:text-[#1B3B2B] overflow-x-hidden">
       <SEO
         title="Beranda Resmi"
-        description="Portal Resmi SMP Islam Caruy - Lembaga Pendidikan Menengah Pertama Islam Modern di Desa Caruy, Kec. Cipari, Kab. Cilacap. Memadukan kurikulum terpadu, tahfidz Al-Quran, dan sains teknologi."
+        description="Portal resmi SMP Islam Caruy, sekolah menengah pertama di Desa Caruy, Kecamatan Cipari, Kabupaten Cilacap."
       />
 
       {/* 1. HERO / COVER FULL-WIDTH (DESAIN V2) */}
@@ -201,7 +201,7 @@ export const Home: React.FC = () => {
                 to="/ppdb"
                 className="inline-flex items-center justify-center gap-2.5 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-sm px-7 py-3.5 rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:scale-95"
               >
-                <span>Informasi Pendaftaran Santri</span>
+                <span>Informasi Pendaftaran Siswa</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
@@ -258,7 +258,7 @@ export const Home: React.FC = () => {
                   {profile?.description || 'SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di Kecamatan Cipari, Kabupaten Cilacap.'}
                 </p>
                 <p>
-                  Sekolah ini berdedikasi memadukan keunggulan akademik sains dan teknologi dengan kedalaman nilai-nilai akhlakul karimah dan tahfidz Al-Quran. Lingkungan pedesaan yang damai dan asri menghadirkan iklim belajar yang kondusif bagi santri untuk bertumbuh mandiri, santun, dan berwawasan luas.
+                  SMP Islam Caruy mengutamakan pembelajaran akademik, pendidikan agama, dan pembentukan karakter. Lingkungan belajar yang nyaman mendukung siswa untuk berkembang, mandiri, dan berprestasi.
                 </p>
               </div>
 
@@ -412,7 +412,7 @@ export const Home: React.FC = () => {
                 <ul className="space-y-3.5">
                   {(visionMission?.missions && visionMission.missions.length > 0 ? visionMission.missions : [
                     'Menanamkan aqidah Islamiyyah yang shahihah dan membiasakan pengamalan ibadah yaumiyyah serta akhlakul karimah.',
-                    'Menyelenggarakan proses pembelajaran berkualitas yang mengintegrasikan kurikulum nasional dengan kurikulum kepesantrenan.',
+                    'Menyelenggarakan pembelajaran berkualitas sesuai kurikulum nasional dengan penguatan pendidikan agama dan karakter.',
                     'Mengembangkan potensi, minat, dan bakat peserta didik secara optimal melalui kegiatan akademik, ekstrakurikuler, dan keolahragaan.',
                     'Memanfaatkan teknologi informasi dan komunikasi secara bijak dan produktif dalam kegiatan pembelajaran.'
                   ]).slice(0, 4).map((mission, idx) => (
@@ -449,7 +449,7 @@ export const Home: React.FC = () => {
               Nilai Utama Pendidikan SMP Islam Caruy
             </h2>
             <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed">
-              Empat pilar utama yang senantiasa dihidupkan dalam keseharian para pendidik dan santri.
+              Nilai-nilai utama yang diterapkan dalam kegiatan belajar dan keseharian warga sekolah.
             </p>
           </ScrollReveal>
 
@@ -507,10 +507,10 @@ export const Home: React.FC = () => {
             {(programs && programs.length > 0 ? programs : [
               {
                 id: 1,
-                name: 'Tahfidzul Quran & Adab',
-                description: 'Bimbingan hafalan Al-Quran dengan target minimal juz 30, didampingi guru pembina tahfidz bersanad dengan penekanan kaidah tajwid.',
+                name: 'Pendidikan Agama & Karakter',
+                description: 'Pembelajaran pendidikan agama Islam dan pembiasaan karakter positif.',
                 schedule_info: 'Setiap Hari Kerja ba’da Sholat Dhuha & Ashar',
-                instructor: 'Ustadz Pembina Tahfidz'
+                instructor: 'Guru Pendidikan Agama'
               },
               {
                 id: 2,
@@ -647,7 +647,7 @@ export const Home: React.FC = () => {
                   <p className="text-xs text-[#2A5C40] font-medium mt-0.5">{teacher.subject}</p>
                 </div>
                 <p className="text-[11px] text-[#5C645D] leading-relaxed line-clamp-2 font-normal">
-                  {teacher.short_bio || 'Pengajar berpengalaman yang berdedikasi membina santri.'}
+                  {teacher.short_bio || 'Pengajar berpengalaman yang mendampingi siswa dalam belajar.'}
                 </p>
               </ScrollReveal>
             ))}
@@ -665,7 +665,7 @@ export const Home: React.FC = () => {
                 Dokumentasi Kegiatan
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1F2621] tracking-tight mt-1">
-                Aktivitas & Keseharian Santri
+                Kegiatan Siswa
               </h2>
             </div>
             <Link
@@ -727,7 +727,7 @@ export const Home: React.FC = () => {
                 Jejak Keberhasilan
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1F2621] tracking-tight mt-1">
-                Prestasi Santri & Sekolah
+                Prestasi Siswa
               </h2>
             </div>
             <Link
@@ -869,7 +869,7 @@ export const Home: React.FC = () => {
               },
               {
                 id: 2,
-                title: 'Ujian Pemetaan Tahfidzul Quran Santri',
+                title: 'Kegiatan Pendidikan Agama',
                 event_date: '2026-08-10',
                 start_time: '08:00',
                 end_time: '11:30',
@@ -926,11 +926,11 @@ export const Home: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div className="flex items-center gap-2 text-xs text-[#2C332D]">
                   <CheckCircle2 className="w-4 h-4 text-[#2A5C40] shrink-0" />
-                  <span>Jalur Prestasi & Beasiswa Tahfidz</span>
+                  <span>Jalur Prestasi dan Beasiswa</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[#2C332D]">
                   <CheckCircle2 className="w-4 h-4 text-[#2A5C40] shrink-0" />
-                  <span>Bebas Infaq bagi Santri Yatim</span>
+                  <span>Bantuan pendidikan sesuai ketentuan sekolah</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[#2C332D]">
                   <CheckCircle2 className="w-4 h-4 text-[#2A5C40] shrink-0" />
@@ -975,7 +975,7 @@ export const Home: React.FC = () => {
               Kunjungi Kampus Kami atau Hubungi Sekretariat
             </h2>
             <p className="text-xs sm:text-sm text-[#D5E0D7] font-normal leading-relaxed max-w-xl">
-              Pintu silaturahmi SMP Islam Caruy senantiasa terbuka bagi calon wali santri, alumni, dan masyarakat luas yang ingin berkonsultasi mengenai pendidikan putra-putrinya.
+              Pintu silaturahmi SMP Islam Caruy senantiasa terbuka bagi calon orang tua/wali siswa, alumni, dan masyarakat luas yang ingin berkonsultasi mengenai pendidikan putra-putrinya.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-xs text-[#E6EFE9]">
