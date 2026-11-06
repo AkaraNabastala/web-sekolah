@@ -24,13 +24,13 @@ export const PPDB: React.FC = () => {
   const [ppdb, setPpdb] = useState<PPDBInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
+  const [applicationCode, setApplicationCode] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [documentFiles, setDocumentFiles] = useState<Record<string, File | null>>({});
   const [formData, setFormData] = useState({
-    candidateName: '',
-    originSchool: '',
-    parentName: '',
-    phone: '',
-    program: 'Reguler',
-    notes: ''
+    candidateName: '', birthPlace: '', birthDate: '', gender: '',
+    originSchool: '', parentName: '', phone: '', address: '',
+    program: 'Reguler', notes: ''
   });
 
   useEffect(() => {
@@ -40,24 +40,29 @@ export const PPDB: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const waText = encodeURIComponent(
-      `*PENDAFTARAN ONLINE ${ADMISSION_LABEL} SMP ISLAM CARUY*\n` +
-      `----------------------------------------\n` +
-      `Nama Calon Siswa: ${formData.candidateName}\n` +
-      `Asal Sekolah (SD/MI): ${formData.originSchool}\n` +
-      `Nama Orang Tua/Wali: ${formData.parentName}\n` +
-      `No. WhatsApp/HP: ${formData.phone}\n` +
-      `Pilihan Program: ${formData.program}\n` +
-      `Catatan Tambahan: ${formData.notes || '-'}\n` +
-      `----------------------------------------\n` +
-      `Mohon petunjuk kelanjutan verifikasi berkas. Terima kasih!`
-    );
-
-    const waNum = ppdb?.contact_whatsapp || '6282132972773';
-    window.open(`https://wa.me/${waNum}?text=${waText}`, '_blank');
-    setSubmitted(true);
+    if (!ppdb?.is_open) return;
+    setSubmitting(true);
+    try {
+      const documents: Record<string, string> = {};
+      for (const [label, file] of Object.entries(documentFiles)) {
+        if (file) documents[label] = (await schoolApi.uploadAdmissionDocument(file)).fileUrl;
+      }
+      const result = await schoolApi.submitAdmissionApplication({
+        candidate_name: formData.candidateName, birth_place: formData.birthPlace,
+        birth_date: formData.birthDate || null, gender: formData.gender,
+        origin_school: formData.originSchool, parent_name: formData.parentName,
+        parent_phone: formData.phone, address: formData.address,
+        program: formData.program, notes: formData.notes, documents,
+        academic_year: ppdb.academic_year
+      });
+      setApplicationCode(result.data.application_code);
+      setSubmitted(true);
+    } catch (error: any) {
+      console.error('Pendaftaran gagal dikirim:', error);
+      window.alert(error?.response?.data?.message || 'Pendaftaran belum berhasil dikirim. Silakan coba kembali.');
+    } finally { setSubmitting(false); }
   };
 
   return (
@@ -252,7 +257,13 @@ export const PPDB: React.FC = () => {
             </p>
           </div>
 
+          {submitted && <div role="status" className="mx-auto max-w-2xl rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">Pendaftaran berhasil dikirim. Simpan nomor pendaftaran Anda: <strong>{applicationCode}</strong>. Panitia akan memeriksa data dan dokumen yang dikirim.</div>}
           <form onSubmit={handleFormSubmit} className="max-w-2xl mx-auto space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label className="space-y-1.5 text-xs font-bold text-stone-700">Tempat Lahir<input type="text" value={formData.birthPlace} onChange={e=>setFormData({...formData,birthPlace:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
+              <label className="space-y-1.5 text-xs font-bold text-stone-700">Tanggal Lahir<input type="date" value={formData.birthDate} onChange={e=>setFormData({...formData,birthDate:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
+            </div>
+            <label className="block space-y-1.5 text-xs font-bold text-stone-700">Jenis Kelamin<select value={formData.gender} onChange={e=>setFormData({...formData,gender:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Nama Calon Siswa *</label>
@@ -301,6 +312,10 @@ export const PPDB: React.FC = () => {
               </div>
             </div>
 
+            <label className="block space-y-1.5 text-xs font-bold text-stone-700">Alamat Domisili<textarea rows={2} value={formData.address} onChange={e=>setFormData({...formData,address:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
+            <div className="space-y-2"><label className="text-xs font-bold text-stone-700">Dokumen Pendukung (PDF, JPG, PNG, WebP)</label>
+              {['Kartu Keluarga','Akta Kelahiran','Ijazah atau Surat Keterangan Lulus'].map(label=><div key={label} className="grid gap-2 sm:grid-cols-[180px_1fr] sm:items-center"><span className="text-xs text-stone-600">{label}</span><input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" onChange={e=>setDocumentFiles(prev=>({...prev,[label]:e.target.files?.[0]||null}))} className="w-full text-xs"/></div>)}
+            </div>
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-stone-700">Pilihan Peminatan Program</label>
               <select
@@ -326,10 +341,11 @@ export const PPDB: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all flex items-center justify-center gap-2 active:scale-95"
+              disabled={submitting || !ppdb?.is_open}
+              className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
-              <span>Kirim Formulir ke WhatsApp Panitia</span>
+              <span>{submitting ? 'Mengirim Pendaftaran…' : ppdb?.is_open ? 'Kirim Formulir Pendaftaran' : 'Pendaftaran Ditutup'}</span>
             </button>
           </form>
         </div>
