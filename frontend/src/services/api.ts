@@ -139,6 +139,13 @@ export const schoolApi = {
   updateProgram: (id: number, data: any) => api.put<{ success: boolean; message: string; data: any }>(`/admin/programs/${id}`, data).then(r => r.data),
   deleteProgram: (id: number) => api.delete<{ success: boolean; message: string }>(`/admin/programs/${id}`).then(r => r.data),
 
+  // Announcements
+  getAnnouncements: () => api.get<{ success: boolean; data: any[] }>('/announcements').then(r => r.data.data),
+  getAdminAnnouncements: () => api.get<{ success: boolean; data: any[] }>('/admin/announcements').then(r => r.data.data),
+  createAnnouncement: (data: any) => api.post('/admin/announcements', data).then(r => r.data),
+  updateAnnouncement: (id: number, data: any) => api.put(`/admin/announcements/${id}`, data).then(r => r.data),
+  deleteAnnouncement: (id: number) => api.delete(`/admin/announcements/${id}`).then(r => r.data),
+
   // SPMB / PPDB application workflow
   submitAdmissionApplication: (data: any) => api.post('/admissions/applications', data).then(r => r.data),
   uploadAdmissionDocument: async (file: File) => {
