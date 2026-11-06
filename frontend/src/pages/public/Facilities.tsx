@@ -32,7 +32,7 @@ export const Facilities: React.FC = () => {
       />
       <PageHeader
         title="Sarana & Fasilitas Sekolah"
-        subtitle="Dukungan infrastruktur modern, representatif, dan aman untuk mengoptimalkan potensi belajar santri."
+        subtitle="Fasilitas sekolah untuk mendukung kegiatan belajar siswa."
         badge="Infrastruktur Kampus"
         breadcrumbs={[{ label: 'Fasilitas' }]}
       />
