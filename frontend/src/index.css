@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+:root {
+  --school-primary: #1B3B2B;
+  --school-secondary: #E5C178;
+  --school-accent-orange: #C87941;
+  --school-accent-blue: #547C91;
+}
+
 @theme {
   --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-poppins: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
