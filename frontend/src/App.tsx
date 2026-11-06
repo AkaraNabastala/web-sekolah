@@ -100,11 +100,11 @@ export const App: React.FC = () => {
             <Route path="/berita" element={<PublicLayout><FeatureRoute feature="news"><NewsList /></FeatureRoute></PublicLayout>} />
             <Route path="/berita/:slug" element={<PublicLayout><FeatureRoute feature="news"><NewsDetail /></FeatureRoute></PublicLayout>} />
             <Route path="/agenda" element={<PublicLayout><FeatureRoute feature="agenda"><AgendaList /></FeatureRoute></PublicLayout>} />
-            <Route path="/kegiatan" element={<PublicLayout><AgendaList /></PublicLayout>} />
+            <Route path="/kegiatan" element={<PublicLayout><FeatureRoute feature="agenda"><AgendaList /></FeatureRoute></PublicLayout>} />
             <Route path="/pengumuman" element={<FeatureRoute feature="news"><Navigate to="/berita?kategori=pengumuman-resmi" replace /></FeatureRoute>} />
             <Route path="/program" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
-            <Route path="/kurikulum" element={<PublicLayout><Programs /></PublicLayout>} />
-            <Route path="/ekstrakurikuler" element={<PublicLayout><Programs /></PublicLayout>} />
+            <Route path="/kurikulum" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
+            <Route path="/ekstrakurikuler" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
             <Route path="/galeri" element={<PublicLayout><FeatureRoute feature="gallery"><Gallery /></FeatureRoute></PublicLayout>} />
             <Route path="/prestasi" element={<PublicLayout><FeatureRoute feature="achievements"><Achievements /></FeatureRoute></PublicLayout>} />
             <Route path="/fasilitas" element={<PublicLayout><FeatureRoute feature="facilities"><Facilities /></FeatureRoute></PublicLayout>} />
