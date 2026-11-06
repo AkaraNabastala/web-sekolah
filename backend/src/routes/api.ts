@@ -1414,7 +1414,7 @@ apiRouter.put('/admin/settings', requireSuperadmin, async (req: Request, res: Re
   try {
     await pool.query(
       `UPDATE website_settings SET
-         school_name = ?, tagline = ?, logo_url = ?, favicon_url = ?, hero_title = ?, hero_subtitle = ?, hero_image = ?,
+         school_name = ?, tagline = ?, logo_url = ?, favicon_url = ?, hero_title = ?, hero_subtitle = ?, hero_image = ?, hero_slides = ?,
          primary_color = ?, secondary_color = ?, accent_orange = ?, accent_blue = ?, feature_flags = ?,
          facebook_url = ?, instagram_url = ?, youtube_url = ?, tiktok_url = ?,
          seo_title = ?, seo_description = ?, footer_text = ?,
@@ -1423,6 +1423,7 @@ apiRouter.put('/admin/settings', requireSuperadmin, async (req: Request, res: Re
       [
         req.body.school_name || 'SMP Islam Caruy', req.body.tagline || '', req.body.logo_url || '',
         req.body.favicon_url || '', req.body.hero_title || '', req.body.hero_subtitle || '', req.body.hero_image || '',
+        JSON.stringify(Array.isArray(req.body.hero_slides) ? req.body.hero_slides : []),
         req.body.primary_color || '#1B3B2B', req.body.secondary_color || '#E5C178',
         req.body.accent_orange || '#F97316', req.body.accent_blue || '#0284C7',
         JSON.stringify(req.body.feature_flags || {}), req.body.facebook_url || '',
