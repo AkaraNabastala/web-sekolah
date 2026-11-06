@@ -35,7 +35,7 @@ export const ManageNews: React.FC = () => {
     content: '',
     thumbnail: '',
     author: 'Humas SMP Islam Caruy',
-    status: 'published'
+    status: 'draft'
   });
 
   const loadNews = async () => {
@@ -361,7 +361,7 @@ export const ManageNews: React.FC = () => {
                   type="submit"
                   className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-2.5 rounded-xl shadow-md transition-all"
                 >
-                  {editingId ? 'Perbarui Warta' : 'Terbitkan Sekarang'}
+                  {editingId ? 'Perbarui Warta' : 'Simpan Berita'}
                 </button>
               </div>
             </form>
