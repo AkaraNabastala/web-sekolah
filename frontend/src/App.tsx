@@ -33,6 +33,7 @@ import { NotFound } from './pages/public/NotFound';
 import { AdminLogin } from './pages/admin/AdminLogin';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { DashboardHome } from './pages/admin/DashboardHome';
+import { DashboardPPDB } from './pages/admin/DashboardPPDB';
 import { ManageProfile } from './pages/admin/ManageProfile';
 import { ManageWelcome } from './pages/admin/ManageWelcome';
 import { ManageHistory } from './pages/admin/ManageHistory';
@@ -85,6 +86,11 @@ const FeatureRoute: React.FC<{ feature: string; children: React.ReactNode }> = (
   return flags && flags[feature] === false ? <Navigate to="/" replace /> : <>{children}</>;
 };
 
+const AdminDashboardRoute: React.FC = () => {
+  const { admin } = useAuth();
+  return admin?.role === 'admin_ppdb' ? <DashboardPPDB /> : <DashboardHome />;
+};
+
 const RoleRoute: React.FC<{ roles: string[]; children: React.ReactNode }> = ({ roles, children }) => {
   const { admin } = useAuth();
   return admin && roles.includes(admin.role) ? <>{children}</> : <Navigate to="/admin" replace />;
@@ -130,7 +136,7 @@ export const App: React.FC = () => {
 
             {/* PROTECTED ADMIN DASHBOARD ROUTES */}
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<DashboardHome />} />
+              <Route index element={<AdminDashboardRoute />} />
               <Route path="statistik" element={<RoleRoute roles={SUPERADMIN_ROLES}><VisitorStats /></RoleRoute>} />
               <Route path="profil" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageProfile /></RoleRoute>} />
               <Route path="sambutan" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageWelcome /></RoleRoute>} />
