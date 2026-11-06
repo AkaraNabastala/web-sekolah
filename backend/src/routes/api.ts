@@ -5,6 +5,7 @@ import { getPool } from '../config/database.js';
 import { JWT_SECRET, requireAdmin, requireSuperadmin, AuthenticatedRequest } from '../middleware/auth.js';
 import { hashVisitor, parseDeviceAndBrowser, getClientIp } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
+import { createHash } from 'crypto';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -263,7 +264,8 @@ apiRouter.post('/visitor/log', async (req: Request, res: Response) => {
   // Privasi: Hashing anonim
   const { visitorHash } = hashVisitor(req);
   const { deviceType, browser } = parseDeviceAndBrowser(userAgent);
-  const actualSessionId = sessionId || `${visitorHash}-${new Date().toISOString().split('T')[0]}`;
+  const sessionSeed = String(sessionId || visitorHash);
+  const actualSessionId = createHash('sha256').update(`${sessionSeed}-${new Date().toISOString().split('T')[0]}`).digest('hex');
 
   await StatisticsService.recordVisit({
     sessionId: actualSessionId,
