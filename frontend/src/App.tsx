@@ -123,7 +123,7 @@ export const App: React.FC = () => {
             <Route path="/berita/:slug" element={<PublicLayout><FeatureRoute feature="news"><NewsDetail /></FeatureRoute></PublicLayout>} />
             <Route path="/agenda" element={<PublicLayout><FeatureRoute feature="agenda"><AgendaList /></FeatureRoute></PublicLayout>} />
             <Route path="/kegiatan" element={<PublicLayout><FeatureRoute feature="agenda"><AgendaList /></FeatureRoute></PublicLayout>} />
-            <Route path="/pengumuman" element={<PublicLayout><Announcements /></PublicLayout>} />
+            <Route path="/pengumuman" element={<PublicLayout><FeatureRoute feature="announcements"><Announcements /></FeatureRoute></PublicLayout>} />
             <Route path="/program" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
             <Route path="/kurikulum" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
             <Route path="/ekstrakurikuler" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
