@@ -1967,6 +1967,13 @@ apiRouter.delete('/admin/content-categories/:scope/:id', requireContentAdmin, as
   const id=Number(req.params.id);
   if(!['news','program','facility'].includes(scope)||!Number.isInteger(id)||id<1) return res.status(400).json({success:false,message:'Kategori tidak valid.'});
   try {
+    if (scope === 'program' || scope === 'facility') {
+      const [categoryRows]: any = await getPool().query('SELECT name FROM content_categories WHERE id = ? AND scope = ? LIMIT 1', [id, scope]);
+      if (!categoryRows.length) return res.status(404).json({ success:false, message:'Kategori tidak ditemukan.' });
+      const table = scope === 'program' ? 'programs' : 'facilities';
+      const [usageRows]: any = await getPool().query('SELECT COUNT(*) AS total FROM ' + table + ' WHERE category = ?', [categoryRows[0].name]);
+      if (Number(usageRows[0]?.total || 0) > 0) return res.status(409).json({ success:false, message:'Kategori masih digunakan. Ubah kategori pada konten terkait sebelum menghapusnya.' });
+    }
     const [result]:any = scope==='news'
       ? await getPool().query('DELETE FROM news_categories WHERE id = ?',[id])
       : await getPool().query('DELETE FROM content_categories WHERE id = ? AND scope = ?',[id,scope]);
