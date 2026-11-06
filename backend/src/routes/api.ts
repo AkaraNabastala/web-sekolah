@@ -5,7 +5,7 @@ import { getPool } from '../config/database.js';
 import { JWT_SECRET, requireAdmin, requireSuperadmin, requireContentAdmin, requirePpdbAdmin, requireCsrf, AuthenticatedRequest } from '../middleware/auth.js';
 import { hashVisitor, parseDeviceAndBrowser } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
-import { createHash, randomUUID, randomBytes } from 'crypto';
+import { createHash, randomUUID, randomBytes, timingSafeEqual } from 'crypto';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
@@ -79,6 +79,15 @@ const clearAdminSession = (res: Response) => {
   res.clearCookie(SESSION_COOKIE, { ...options, httpOnly: true });
   res.clearCookie(CSRF_COOKIE, { ...options, httpOnly: false });
 };
+
+const firstAdminSetupRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: { success: false, message: 'Terlalu banyak percobaan setup. Coba kembali satu jam lagi.' }
+});
 
 const loginRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -202,60 +211,75 @@ apiRouter.get('/setup/status', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.post('/setup/first-admin', requireTrustedOrigin, async (req: Request, res: Response) => {
-  const { username, email, password, full_name } = req.body;
+apiRouter.post('/setup/first-admin', requireTrustedOrigin, firstAdminSetupRateLimiter, async (req: Request, res: Response) => {
+  // Setup publik hanya boleh dilakukan operator yang memiliki token rahasia dari environment server.
+  const configuredToken = process.env.ADMIN_SETUP_TOKEN || '';
+  const suppliedToken = req.get('x-admin-setup-token') || '';
+  if (configuredToken.length < 32) {
+    return res.status(503).json({ success: false, message: 'Setup admin melalui web dinonaktifkan. Gunakan perintah setup-admin di server atau konfigurasi ADMIN_SETUP_TOKEN.' });
+  }
+  const expectedBuffer = Buffer.from(configuredToken);
+  const suppliedBuffer = Buffer.from(suppliedToken);
+  if (expectedBuffer.length !== suppliedBuffer.length || !timingSafeEqual(expectedBuffer, suppliedBuffer)) {
+    return res.status(403).json({ success: false, message: 'Token setup tidak valid.' });
+  }
 
-  if (!username || !email || !password || !full_name) {
+  const { username, email, password, full_name } = req.body || {};
+  const normalizedUsername = typeof username === 'string' ? username.trim().toLowerCase() : '';
+  const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+  const normalizedName = typeof full_name === 'string' ? full_name.trim() : '';
+  if (!/^[a-z0-9._-]{3,50}$/.test(normalizedUsername) ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) ||
+      normalizedEmail.length > 100 || !normalizedName || normalizedName.length > 100 ||
+      typeof password !== 'string' || password.length < 12 || password.length > 128) {
     return res.status(400).json({
       success: false,
-      message: 'Semua kolom (username, email, password, nama lengkap) wajib diisi.'
+      message: 'Data tidak valid. Username 3–50 karakter, email valid, nama maksimal 100 karakter, dan password 12–128 karakter.'
     });
   }
 
-  if (password.length < 8) {
-    return res.status(400).json({
-      success: false,
-      message: 'Password administrator minimal 8 karakter demi keamanan.'
-    });
-  }
-
+  let connection: any = null;
+  let lockAcquired = false;
   try {
-    const pool = getPool();
-    let hasAdmin = false;
-    try {
-      const [rows]: any = await pool.query('SELECT COUNT(*) as cnt FROM admins');
-      hasAdmin = rows[0]?.cnt > 0;
-    } catch (err: any) {
-      logger.error('SetupRoute', 'Gagal memeriksa administrator di MySQL.', { code: err?.code, sqlState: err?.sqlState, message: err?.message });
-      return res.status(500).json({ success: false, message: 'Status administrator tidak dapat diperiksa.' });
+    connection = await getPool().getConnection();
+    const [lockRows]: any = await connection.query(
+      'SELECT GET_LOCK(?, 10) AS acquired',
+      ['smp_islam_caruy_first_admin_setup']
+    );
+    lockAcquired = Number(lockRows?.[0]?.acquired) === 1;
+    if (!lockAcquired) {
+      return res.status(503).json({ success: false, message: 'Setup sedang diproses oleh operator lain. Silakan coba kembali.' });
     }
 
-    if (hasAdmin) {
+    const [rows]: any = await connection.query('SELECT COUNT(*) AS cnt FROM admins');
+    if (Number(rows?.[0]?.cnt || 0) > 0) {
       return res.status(403).json({
         success: false,
-        message: 'Setup terkunci: Administrator pertama sudah pernah dibuat sebelumnya.'
+        message: 'Setup terkunci: Administrator sudah terdaftar.'
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
+    await connection.query(
+      `INSERT INTO admins (username, email, password, full_name, role, is_active, created_at)
+       VALUES (?, ?, ?, ?, 'superadmin', 1, NOW())`,
+      [normalizedUsername, normalizedEmail, hashedPassword, normalizedName]
+    );
 
-    try {
-      await pool.query(
-        `INSERT INTO admins (username, email, password, full_name, role, is_active, created_at)
-         VALUES (?, ?, ?, ?, 'superadmin', 1, NOW())`,
-        [username.trim().toLowerCase(), email.trim().toLowerCase(), hashedPassword, full_name.trim()]
-      );
-    } catch (err: any) {
-      logger.error('SetupRoute', 'Gagal membuat administrator di MySQL.', { code: err?.code, sqlState: err?.sqlState, message: err?.message });
-      return res.status(500).json({ success: false, message: 'Administrator gagal dibuat di MySQL.' });
-    }
-
-    res.json({
+    return res.json({
       success: true,
-      message: 'Administrator utama SMP Islam Caruy berhasil dibuat. Setup telah terkunci permanen.'
+      message: 'Administrator utama SMP Islam Caruy berhasil dibuat. Setup telah terkunci.'
     });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: err.message });
+    logger.error('SetupRoute', 'Gagal membuat administrator pertama.', { code: err?.code, sqlState: err?.sqlState, message: err?.message });
+    return res.status(500).json({ success: false, message: 'Administrator gagal dibuat. Periksa log backend.' });
+  } finally {
+    if (connection) {
+      if (lockAcquired) {
+        await connection.query('SELECT RELEASE_LOCK(?)', ['smp_islam_caruy_first_admin_setup']).catch(() => undefined);
+      }
+      connection.release();
+    }
   }
 });
 
