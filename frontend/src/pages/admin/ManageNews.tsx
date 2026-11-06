@@ -2,8 +2,6 @@ import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { NewsArticle, NewsCategory } from '../../types';
-import { NewsEditorModal } from '../../modals/news/NewsEditorModal';
-import { NewsPreviewModal } from '../../modals/news/NewsPreviewModal';
 import {
   Plus,
   Edit,
@@ -249,24 +247,163 @@ export const ManageNews: React.FC = () => {
                       title="Hapus Berita"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </b      {modalOpen && (
-        <NewsEditorModal
-          editingId={editingId}
-          formData={formData}
-          setFormData={setFormData}
-          categories={categories}
-          uploading={uploading}
-          onClose={() => setModalOpen(false)}
-          onSubmit={handleSubmit}
-          onTitleChange={handleTitleChange}
-          onFileUpload={handleFileUpload}
-        />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* CREATE / EDIT MODAL */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 flex flex-col">
+            <div className="p-6 border-b border-stone-100 flex justify-between items-center sticky top-0 bg-white z-10">
+              <h3 className="text-lg font-bold text-stone-900">
+                {editingId ? 'Edit Warta Berita' : 'Tulis Berita Baru'}
+              </h3>
+              <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-stone-700">Judul Berita *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={handleTitleChange}
+                  placeholder="Masukkan judul artikel yang menarik..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-stone-700">Slug URL</label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-stone-700">Kategori</label>
+                  <select
+                    value={formData.category_id}
+                    onChange={(e) => setFormData({ ...formData, category_id: parseInt(e.target.value) })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+                  >
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-stone-700">Ringkasan Singkat (Lead)</label>
+                <textarea
+                  rows={2}
+                  value={formData.summary}
+                  onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                  placeholder="Ringkasan 1-2 kalimat untuk preview..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-stone-700">Isi Lengkap Artikel *</label>
+                <textarea
+                  rows={8}
+                  required
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  placeholder="Tuliskan isi berita selengkapnya (gunakan enter untuk paragraf)..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-stone-700">URL Gambar Thumbnail</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={formData.thumbnail}
+                      onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
+                      placeholder="https://... atau upload file"
+                      className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+                    />
+                    <label className="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1 shrink-0">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{uploading ? '...' : 'Upload'}</span>
+                      <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-stone-700">Status Publikasi</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+                  >
+                    <option value="published">Published (Tayang Publik)</option>
+                    <option value="draft">Draft (Konsep Sementara)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-stone-100 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-100"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-2.5 rounded-xl shadow-md transition-all"
+                >
+                  {editingId ? 'Perbarui Warta' : 'Terbitkan Sekarang'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
+      {/* ARTICLE PREVIEW MODAL */}
       {previewModalOpen && previewArticle && (
-        <NewsPreviewModal article={previewArticle} onClose={() => setPreviewModalOpen(false)} />
-      )}
-it('\n\n').map((p, i) => (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-4">
+            <div className="flex justify-between items-center border-b border-stone-100 pb-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+                Preview Mode • {previewArticle.category_name}
+              </span>
+              <button onClick={() => setPreviewModalOpen(false)} className="text-stone-400 hover:text-stone-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <h2 className="text-xl font-bold text-stone-900">{previewArticle.title}</h2>
+            {previewArticle.thumbnail && (
+              <img src={previewArticle.thumbnail} alt={previewArticle.title} className="w-full h-48 object-cover rounded-xl" />
+            )}
+            <p className="text-xs text-stone-500 italic bg-stone-50 p-3 rounded-lg border-l-4 border-emerald-600">
+              {previewArticle.summary}
+            </p>
+            <div className="text-xs text-stone-700 leading-relaxed space-y-3 font-normal">
+              {previewArticle.content.split('\n\n').map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
             </div>
