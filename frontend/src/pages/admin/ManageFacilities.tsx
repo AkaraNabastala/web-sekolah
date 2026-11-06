@@ -7,6 +7,7 @@ import { RichTextEditor } from '../../components/common/RichTextEditor';
 
 export const ManageFacilities: React.FC = () => {
   const [facilities, setFacilities] = useState<Facility[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -32,6 +33,7 @@ export const ManageFacilities: React.FC = () => {
 
   useEffect(() => {
     loadData();
+    schoolApi.getContentCategories('facility').then(setCategoryOptions).catch(() => undefined);
   }, []);
 
 
@@ -206,8 +208,7 @@ export const ManageFacilities: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
                   <input type="text" list="facility-category-options" value={form.category || ''} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
                   <datalist id="facility-category-options">
-                    {Array.from(new Set(facilities.map(item => item.category).filter(Boolean))).map(category => <option key={category} value={category} />)}
-                    {['Ruang Belajar', 'Laboratorium', 'Perpustakaan', 'Lapangan', 'Kesehatan'].map(category => <option key={category} value={category} />)}
+                    {categoryOptions.map(category => <option key={category.id} value={category.name} />)}
                   </datalist>
                 </div>
 
