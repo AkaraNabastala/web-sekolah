@@ -1,7 +1,14 @@
 import mysql, { Pool, PoolOptions } from 'mysql2/promise';
-import dotenv from 'dotenv';
+import './env.js';
 import { logger } from '../utils/logger.js';
-dotenv.config();
+
+if (process.env.NODE_ENV === 'production') {
+  const requiredDatabaseVariables = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
+  const missingDatabaseVariables = requiredDatabaseVariables.filter(name => !process.env[name]?.trim());
+  if (missingDatabaseVariables.length > 0) {
+    throw new Error(`Konfigurasi database production belum lengkap: ${missingDatabaseVariables.join(', ')}.`);
+  }
+}
 
 export const dbConfig: PoolOptions = {
   host: process.env.DB_HOST || '127.0.0.1',

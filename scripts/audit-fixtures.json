@@ -1,0 +1,60 @@
+{
+  "notice": "DATA DUMMY SAJA. Jangan impor ke database sekolah produksi.",
+  "prefix": "AUDIT_DEMO_",
+  "admins": [
+    {
+      "username": "audit_superadmin",
+      "role": "superadmin",
+      "password": "GENERATE_LOCALLY_ONLY"
+    },
+    {
+      "username": "audit_konten",
+      "role": "admin_konten",
+      "password": "GENERATE_LOCALLY_ONLY"
+    },
+    {
+      "username": "audit_ppdb",
+      "role": "admin_ppdb",
+      "password": "GENERATE_LOCALLY_ONLY"
+    }
+  ],
+  "news": {
+    "title": "AUDIT_DEMO_Berita Uji",
+    "slug": "audit-demo-berita-uji",
+    "content": "Konten dummy untuk uji CRUD dan encoding XSS.",
+    "status": "draft"
+  },
+  "agenda": {
+    "title": "AUDIT_DEMO_Agenda Uji",
+    "description": "Data agenda dummy.",
+    "location": "Lokasi Uji",
+    "status": "draft"
+  },
+  "teacher": {
+    "name": "AUDIT_DEMO_Guru Uji",
+    "position": "Guru Pengujian",
+    "status": "inactive"
+  },
+  "achievement": {
+    "title": "AUDIT_DEMO_Prestasi Uji",
+    "rank": 999,
+    "description": "Data prestasi dummy."
+  },
+  "galleryAlbum": {
+    "title": "AUDIT_DEMO_Album Uji",
+    "description": "Album dummy; gunakan gambar sintetis."
+  },
+  "contact": {
+    "name": "AUDIT_DEMO_Pengunjung",
+    "email": "audit-demo@example.invalid",
+    "subject": "AUDIT_DEMO_Pesan",
+    "message": "Pesan dummy."
+  },
+  "ppdb": {
+    "student_name": "AUDIT_DEMO_Calon Siswa",
+    "parent_name": "AUDIT_DEMO_Wali",
+    "email": "audit-demo@example.invalid",
+    "phone": "0000000000"
+  },
+  "cleanup": "Hapus hanya record prefix AUDIT_DEMO_ dari database khusus pengujian setelah verifikasi."
+}

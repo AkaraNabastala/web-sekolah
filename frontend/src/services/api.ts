@@ -22,16 +22,18 @@ import {
 
 export const api = axios.create({
   baseURL: '/api',
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Attach JWT token to requests if available
+// Session JWT berada di cookie HttpOnly; JavaScript hanya mengirim token CSRF non-HttpOnly.
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('caruy_admin_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (typeof document !== 'undefined' && !['get', 'head', 'options'].includes((config.method || 'get').toLowerCase())) {
+    const csrfCookie = document.cookie.split('; ').find(part => part.startsWith('caruy_csrf='));
+    const csrfToken = csrfCookie ? decodeURIComponent(csrfCookie.slice('caruy_csrf='.length)) : '';
+    if (csrfToken) config.headers['X-CSRF-Token'] = csrfToken;
   }
   return config;
 });
@@ -72,7 +74,8 @@ export const schoolApi = {
 
   // Auth
   login: (credentials: { username: string; password: string }) =>
-    api.post<{ success: boolean; token: string; user: AdminUser; message: string }>('/auth/login', credentials).then(r => r.data),
+    api.post<{ success: boolean; user: AdminUser; message: string }>('/auth/login', credentials).then(r => r.data),
+  logout: () => api.post<{ success: boolean; message: string }>('/auth/logout').then(r => r.data),
   getMe: () => api.get<{ success: boolean; user: AdminUser }>('/auth/me').then(r => r.data.user),
   updateAdminProfile: (data: any) => api.put<{ success: boolean; message: string; user: AdminUser }>('/auth/profile', data).then(r => r.data),
   changePassword: (data: { currentPassword: string; newPassword: string }) => api.put<{ success: boolean; message: string }>('/auth/password', data).then(r => r.data),

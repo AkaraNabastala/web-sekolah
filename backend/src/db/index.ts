@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
+import { fileURLToPath } from 'url';
 
-const DATA_DIR = path.resolve(process.cwd(), 'database');
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+const BACKEND_ROOT = path.resolve(moduleDir, '../../');
+const DATA_DIR = path.join(BACKEND_ROOT, 'database');
 const DATA_FILE = path.join(DATA_DIR, 'data.json');
 
 // Ensure database directory exists
@@ -398,6 +401,12 @@ class Database {
   }
 
   private loadData(): DbState {
+    // JSON fallback hanya untuk development. Production tidak membaca atau membuat
+    // database/data.json; seluruh operasi data wajib melalui MySQL.
+    if (process.env.NODE_ENV === 'production') {
+      return getInitialData();
+    }
+
     try {
       if (fs.existsSync(DATA_FILE)) {
         const raw = fs.readFileSync(DATA_FILE, 'utf-8');
@@ -412,6 +421,7 @@ class Database {
   }
 
   private saveData(data: DbState) {
+    if (process.env.NODE_ENV === 'production') return;
     try {
       fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
     } catch (err) {

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { SchoolLogo } from '../../components/common/SchoolLogo';
+import { SEO } from '../../components/common/SEO';
 import { Toaster } from '../../components/common/Toaster';
 import { toast } from '../../hooks/useToast';
 import {
   LayoutDashboard,
   Building2,
+  UserRound,
   BookOpen,
   Compass,
   Newspaper,
@@ -29,6 +31,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { schoolApi } from '../../services/api';
+import { ADMISSION_LABEL } from '../../config/admissions';
 
 export const AdminLayout: React.FC = () => {
   const { admin, isAuthenticated, isLoading, logout } = useAuth();
@@ -38,14 +41,16 @@ export const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && admin?.role === 'superadmin') {
       schoolApi.getAdminMessages()
         .then(res => {
           setUnreadCount(res.filter(m => !m.is_read).length);
         })
-        .catch(() => {});
+        .catch(error => {
+          console.error('Gagal memuat jumlah pesan belum dibaca:', error);
+        });
     }
-  }, [isAuthenticated, location.pathname]);
+  }, [isAuthenticated, admin?.role, location.pathname]);
 
   if (isLoading) {
     return (
@@ -63,6 +68,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Dashboard Utama', path: '/admin', icon: LayoutDashboard },
     { label: 'Statistik Pengunjung', path: '/admin/statistik', icon: Eye },
     { label: 'Profil Sekolah', path: '/admin/profil', icon: Building2 },
+    { label: 'Sambutan Kepala Sekolah', path: '/admin/sambutan', icon: UserRound },
     { label: 'Sejarah Sekolah', path: '/admin/sejarah', icon: BookOpen },
     { label: 'Visi & Misi', path: '/admin/visi-misi', icon: Compass },
     { label: 'Struktur Organisasi', path: '/admin/organisasi', icon: GraduationCap },
@@ -73,11 +79,26 @@ export const AdminLayout: React.FC = () => {
     { label: 'Galeri & Dokumentasi', path: '/admin/galeri', icon: Image },
     { label: 'Prestasi Sekolah', path: '/admin/prestasi', icon: Trophy },
     { label: 'Fasilitas Belajar', path: '/admin/fasilitas', icon: Landmark },
-    { label: 'Pengaturan PPDB', path: '/admin/ppdb', icon: FileText },
+    { label: `Pengaturan ${ADMISSION_LABEL}`, path: '/admin/ppdb', icon: FileText },
     { label: 'Pesan Masuk', path: '/admin/pesan', icon: Mail, badge: unreadCount },
     { label: 'Pengaturan Website', path: '/admin/pengaturan', icon: Settings },
     { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }
   ];
+
+  const visibleMenuItems = menuItems.filter(item => {
+    if (admin?.role === 'superadmin') return true;
+    if (admin?.role === 'admin_ppdb') return ['/admin', '/admin/ppdb'].includes(item.path);
+    if (admin?.role === 'admin_konten') {
+      return [
+        '/admin', '/admin/profil', '/admin/sambutan', '/admin/sejarah', '/admin/visi-misi',
+        '/admin/organisasi', '/admin/guru-staf', '/admin/program', '/admin/berita',
+        '/admin/agenda', '/admin/galeri', '/admin/prestasi', '/admin/fasilitas'
+      ].includes(item.path);
+    }
+    return false;
+  });
+
+  // Semua modul tetap tersedia di dashboard admin, termasuk modul yang disembunyikan dari publik.
 
   const handleLogout = () => {
     logout();
@@ -86,7 +107,9 @@ export const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
+    <>
+      <SEO title="SMP Islam Caruy" />
+      <div className="min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
       {/* Global Toaster — mounted once at layout level */}
       <Toaster />
       {/* SIDEBAR FOR DESKTOP */}
@@ -114,7 +137,7 @@ export const AdminLayout: React.FC = () => {
             Menu Manajemen
           </p>
 
-          {menuItems.map((item) => {
+          {visibleMenuItems.map((item) => {
             const Icon = item.icon;
             const active = location.pathname === item.path;
 
@@ -222,6 +245,7 @@ export const AdminLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
-    </div>
+      </div>
+    </>
   );
 };

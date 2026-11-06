@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Lock, User, AlertCircle, ShieldCheck, ArrowRight, School } from 'lucide-react';
+import { Lock, User, AlertCircle, ShieldCheck, ArrowRight } from 'lucide-react';
 import axios from 'axios';
+import { SchoolLogo } from '../../components/common/SchoolLogo';
+import { SEO } from '../../components/common/SEO';
 
 export const AdminLogin: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -16,6 +18,7 @@ export const AdminLogin: React.FC = () => {
   const [setupEmail, setSetupEmail] = useState('');
   const [setupUsername, setSetupUsername] = useState('');
   const [setupPassword, setSetupPassword] = useState('');
+  const [setupToken, setSetupToken] = useState('');
   const [setupMessage, setSetupMessage] = useState<string | null>(null);
 
   const { login, isAuthenticated } = useAuth();
@@ -31,7 +34,7 @@ export const AdminLogin: React.FC = () => {
     // Periksa status inisialisasi administrator
     axios.get('/api/setup/status')
       .then(res => {
-        if (res.data && res.data.initialized === false) {
+        if (res.data?.initialized === false && res.data?.setupEnabled === true) {
           setIsSetupNeeded(true);
         }
       })
@@ -72,8 +75,8 @@ export const AdminLogin: React.FC = () => {
       return;
     }
 
-    if (setupPassword.length < 8) {
-      setError('Kata sandi harus minimal 8 karakter.');
+    if (setupPassword.length < 12) {
+      setError('Kata sandi harus minimal 12 karakter.');
       return;
     }
 
@@ -84,10 +87,12 @@ export const AdminLogin: React.FC = () => {
         email: setupEmail,
         username: setupUsername,
         password: setupPassword
-      });
+      }, { headers: { 'X-Admin-Setup-Token': setupToken } });
 
       if (res.data.success) {
         setSetupMessage('Administrator utama berhasil dibuat! Silakan masuk dengan akun yang baru Anda daftarkan.');
+        setSetupToken('');
+        setSetupPassword('');
         setIsSetupNeeded(false);
         setUsername(setupUsername);
         setPassword('');
@@ -102,15 +107,15 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <>
+      <SEO title="SMP Islam Caruy" />
+      <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 z-0 opacity-10 bg-[radial-gradient(#15803d_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="flex justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-lg shadow-emerald-700/30">
-            <School className="w-9 h-9" />
-          </div>
+          <SchoolLogo size="xl" showText={false} />
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
           SMP ISLAM CARUY
@@ -150,7 +155,6 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={setupFullName}
                   onChange={(e) => setSetupFullName(e.target.value)}
-                  placeholder="Nama Lengkap Administrator"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
@@ -162,7 +166,6 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={setupEmail}
                   onChange={(e) => setSetupEmail(e.target.value)}
-                  placeholder="admin@smpislamcaruy.sch.id"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
@@ -174,19 +177,31 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={setupUsername}
                   onChange={(e) => setSetupUsername(e.target.value)}
-                  placeholder="Pilih username unik"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi (Min. 8 Karakter)</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Token Setup Administrator</label>
+                <input
+                  type="password"
+                  required
+                  minLength={32}
+                  value={setupToken}
+                  onChange={(e) => setSetupToken(e.target.value)}
+                  autoComplete="off"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
+                />
+                <p className="mt-1 text-[11px] text-slate-500">Token harus sama dengan ADMIN_SETUP_TOKEN yang disimpan operator di environment server.</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi (Min. 12 Karakter)</label>
                 <input
                   type="password"
                   required
                   value={setupPassword}
                   onChange={(e) => setSetupPassword(e.target.value)}
-                  placeholder="••••••••"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
@@ -215,7 +230,6 @@ export const AdminLogin: React.FC = () => {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Masukkan username atau email"
                     className="block w-full pl-10 pr-3.5 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 text-sm transition-all"
                   />
                 </div>
@@ -234,7 +248,6 @@ export const AdminLogin: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
                     className="block w-full pl-10 pr-3.5 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 text-sm transition-all"
                   />
                 </div>
@@ -270,7 +283,8 @@ export const AdminLogin: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

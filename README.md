@@ -10,38 +10,29 @@ Proyek ini telah direkonstruksi menjadi arsitektur modular yang memisahkan front
 
 ```text
 web-sekolah/
-├── frontend/                     # Client Application (React 19, Vite 7, Tailwind CSS v4, TypeScript)
-│   ├── public/                   # Asset statis & favicon
+├── frontend/                   # Aplikasi React + Vite
+│   ├── public/
 │   ├── src/
-│   │   ├── components/           # Komponen UI, Navbar dropdown & accordion mobile, Footer
-│   │   ├── context/              # AuthContext (JWT) & SchoolContext
-│   │   ├── pages/
-│   │   │   ├── public/           # Halaman publik (Beranda, Profil, Guru, Berita, Galeri, Fasilitas, PPDB, Kontak)
-│   │   │   └── admin/            # Dashboard Admin & Statistik Pengunjung
-│   │   └── services/             # Axios REST API Client
-│   ├── package.json              # Dependensi frontend
-│   └── vite.config.ts            # Proxy API development & build config
-│
-├── backend/                      # API Backend Service (Node.js, Express, TypeScript, Multer, ExcelJS)
+│   ├── package.json
+│   └── vite.config.ts
+├── backend/                    # API Express + TypeScript
 │   ├── src/
-│   │   ├── config/               # database.ts (MySQL2 Connection Pool & Health Check)
-│   │   ├── middleware/           # auth.ts (JWT Auth & Role Guard)
-│   │   ├── routes/               # api.ts (Endpoints publik, admin CRUD, upload, tracking)
-│   │   ├── services/             # StatisticsService.ts (Pengunjung unik, sesi, ekspor XLSX/CSV)
-│   │   ├── utils/                # privacy.ts (SHA-256 IP anonymization)
-│   │   ├── scripts/              # setupAdmin.ts (CLI setup superadmin pertama)
-│   │   └── server.ts             # Express server runtime
-│   ├── uploads/                  # Penyimpanan berkas terunggah (gambar & dokumen)
-│   └── package.json              # Dependensi backend
-│
-├── database/
-│   ├── schema.sql                # Skema DDL MySQL 8.0+ (20 tabel relasional)
-│   └── seeds/
-│       └── seed.sql              # Data inisialisasi awal (tanpa password default)
-│
-├── .env.example                  # Template variabel lingkungan
-├── .gitignore                    # Rule pengabaian file sensitif
-└── README.md                     # Dokumentasi panduan
+│   │   ├── config/
+│   │   ├── db/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   ├── scripts/
+│   │   └── server.ts
+│   ├── database/               # schema, seed, dan offline store
+│   ├── uploads/
+│   └── package.json
+├── scripts/                    # Orkestrasi development dan build produksi
+├── .env.example
+├── .gitignore
+└── README.md
 ```
 
 ---
@@ -79,45 +70,44 @@ Sesuaikan konfigurasi koneksi MySQL (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NA
 ### 3. Migrasi Database MySQL
 Jalankan skema basis data pada server MySQL Anda:
 ```bash
-mysql -u root -p < database/schema.sql
-mysql -u root -p < database/seeds/seed.sql
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS \`web-sekolah\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p web-sekolah < backend/database/schema.sql
+mysql -u root -p web-sekolah < backend/database/seeds/seed.sql
 ```
 
-### 4. Menjalankan Backend (Development)
+### 4. Instalasi dependensi
+Jalankan dari root proyek:
 ```bash
-cd backend
 npm install
-npm run dev
+npm --prefix backend install
+npm --prefix frontend install
 ```
-Backend akan aktif di `http://localhost:5000`.
 
-### 5. Menjalankan Frontend (Development)
-Buka terminal baru:
+### 5. Menjalankan Development
+Cukup dari root proyek:
 ```bash
-cd frontend
-npm install --legacy-peer-deps
 npm run dev
 ```
-Frontend akan aktif di `http://localhost:5173`. Permintaan `/api` dan `/uploads` secara otomatis diteruskan (*proxy*) ke backend di port 5000.
+Satu perintah ini menjalankan dua proses terpisah:
+- Backend Express: `http://localhost:5000`
+- Frontend Vite: `http://localhost:5173`
+
+Vite meneruskan permintaan `/api` dan `/uploads` ke backend port 5000. Jika ingin menjalankan satu layanan saja, gunakan `npm run dev:backend` atau `npm run dev:frontend`.
 
 ---
 
 ## 📦 Build Produksi & Deployment
 
-### Build Kompilasi:
+Build seluruh aplikasi dan siapkan paket server:
 ```bash
-# Build Frontend
-cd frontend
-npm run build
-
-# Build Backend
-cd ../backend
 npm run build
 ```
+Perintah tersebut membangun frontend dan backend, lalu membuat paket hasil build di folder `deployment/`. Folder ini adalah artefak hasil generate, bukan sumber kode yang diedit manual.
 
-### Menjalankan Server Produksi:
+Untuk menjalankan paket produksi:
 ```bash
-cd backend
+cd deployment
+npm install --omit=dev
 npm start
 ```
 

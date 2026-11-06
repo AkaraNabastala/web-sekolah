@@ -129,16 +129,13 @@ export const ManagePrograms: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Program & Ekstrakurikuler</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola program unggulan sekolah, bimbingan tahfidz, dan kegiatan ekstrakurikuler santri.
-          </p>
         </div>
         <button
           onClick={handleOpenCreate}
           className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Program Baru</span>
+          <span>Program</span>
         </button>
       </div>
 
@@ -149,7 +146,6 @@ export const ManagePrograms: React.FC = () => {
         <Search className="w-4 h-4 text-stone-400" />
         <input
           type="text"
-          placeholder="Cari program atau ekstrakurikuler..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full text-xs bg-transparent focus:outline-none text-stone-800"
@@ -229,7 +225,7 @@ export const ManagePrograms: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-stone-100 space-y-5">
             <div className="flex items-center justify-between border-b border-stone-100 pb-4">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Ubah Program / Ekstrakurikuler' : 'Tambah Program Baru'}
+                {editingId ? 'Ubah Program' : 'Tambah Program'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
@@ -244,7 +240,6 @@ export const ManagePrograms: React.FC = () => {
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="Contoh: Bimbingan Tahfidz Al-Quran"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
@@ -269,7 +264,6 @@ export const ManagePrograms: React.FC = () => {
                     type="text"
                     value={form.instructor}
                     onChange={(e) => setForm({ ...form, instructor: e.target.value })}
-                    placeholder="Ustadz / Pembina"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
@@ -281,7 +275,6 @@ export const ManagePrograms: React.FC = () => {
                   type="text"
                   value={form.schedule_info}
                   onChange={(e) => setForm({ ...form, schedule_info: e.target.value })}
-                  placeholder="Contoh: Setiap Jumat Pukul 14.00 - 16.00 WIB"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
@@ -293,7 +286,6 @@ export const ManagePrograms: React.FC = () => {
                     type="text"
                     value={form.photo}
                     onChange={(e) => setForm({ ...form, photo: e.target.value })}
-                    placeholder="URL gambar atau unggah file..."
                     className="flex-1 px-3.5 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none"
                   />
                   <label className="cursor-pointer bg-stone-100 hover:bg-stone-200 px-3 py-2 rounded-xl text-xs font-semibold text-stone-700 transition-colors">
@@ -309,7 +301,6 @@ export const ManagePrograms: React.FC = () => {
                   rows={3}
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Penjelasan tujuan dan manfaat program bagi santri..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>

@@ -4,13 +4,14 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "build": "vite build",
+    "dev": "tsx scripts/dev.ts",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm run build:production",
     "build:production": "tsx scripts/buildProduction.ts",
-    "start": "node server.ts",
-    "lint": "eslint ."
+    "start": "node deployment/server.js",
+    "lint": "eslint .",
+    "audit:all": "node scripts/auditAll.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

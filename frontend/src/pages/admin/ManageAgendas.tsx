@@ -110,17 +110,14 @@ export const ManageAgendas: React.FC = () => {
     <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Agenda & Pengumuman Sekolah</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola kalender kegiatan santri, rapat wali murid, ujian, dan pengumuman resmi SMP Islam Caruy.
-          </p>
+          <h1 className="text-2xl font-bold text-stone-900">Agenda & Pengumuman</h1>
         </div>
         <button
           onClick={handleOpenCreate}
           className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Agenda Baru</span>
+          <span>Agenda</span>
         </button>
       </div>
 
@@ -131,7 +128,6 @@ export const ManageAgendas: React.FC = () => {
         <Search className="w-4 h-4 text-stone-400" />
         <input
           type="text"
-          placeholder="Cari agenda berdasarkan judul atau lokasi..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full text-xs bg-transparent focus:outline-none text-stone-800"
@@ -220,7 +216,7 @@ export const ManageAgendas: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-stone-100 space-y-6">
             <div className="flex items-center justify-between border-b border-stone-100 pb-4">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Ubah Agenda Kegiatan' : 'Tambah Agenda Baru'}
+                {editingId ? 'Ubah Agenda' : 'Tambah Agenda'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
@@ -235,7 +231,6 @@ export const ManageAgendas: React.FC = () => {
                   required
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  placeholder="Contoh: Rapat Pembagian Raport Semester Ganjil"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
@@ -257,7 +252,6 @@ export const ManageAgendas: React.FC = () => {
                     type="text"
                     value={form.start_time}
                     onChange={(e) => setForm({ ...form, start_time: e.target.value })}
-                    placeholder="08:00"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
@@ -267,7 +261,6 @@ export const ManageAgendas: React.FC = () => {
                     type="text"
                     value={form.end_time}
                     onChange={(e) => setForm({ ...form, end_time: e.target.value })}
-                    placeholder="Selesai"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
@@ -280,7 +273,6 @@ export const ManageAgendas: React.FC = () => {
                     type="text"
                     value={form.location}
                     onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    placeholder="Kampus SMP Islam Caruy"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
@@ -290,7 +282,6 @@ export const ManageAgendas: React.FC = () => {
                     type="text"
                     value={form.organizer}
                     onChange={(e) => setForm({ ...form, organizer: e.target.value })}
-                    placeholder="Panitia Sekolah / Kesiswaan"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
@@ -302,7 +293,6 @@ export const ManageAgendas: React.FC = () => {
                   rows={3}
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Informasi pelengkap mengenai agenda atau pengumuman ini..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>

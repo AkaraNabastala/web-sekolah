@@ -91,9 +91,6 @@ export const ManageAchievements: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Prestasi Sekolah</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Dokumentasikan piagam, piala kejuaraan, dan capaian membanggakan para santri.
-          </p>
         </div>
 
         <button
@@ -101,7 +98,7 @@ export const ManageAchievements: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Prestasi</span>
+          <span>Prestasi</span>
         </button>
       </div>
 
@@ -180,7 +177,6 @@ export const ManageAchievements: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Misal: Juara 1 MTQ Pelajar Tingkat Kabupaten"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -204,7 +200,6 @@ export const ManageAchievements: React.FC = () => {
                   <input
                     type="text"
                     required
-                    placeholder="Misal: Juara 1 / Medali Perak"
                     value={form.rank}
                     onChange={(e) => setForm({ ...form, rank: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -231,7 +226,6 @@ export const ManageAchievements: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
                   <input
                     type="text"
-                    placeholder="Akademik / Seni / dll."
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -253,7 +247,6 @@ export const ManageAchievements: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Instansi Penyelenggara</label>
                 <input
                   type="text"
-                  placeholder="Misal: Kemenag / Disdikpora Cilacap"
                   value={form.organizer}
                   onChange={(e) => setForm({ ...form, organizer: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"

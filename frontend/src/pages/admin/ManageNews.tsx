@@ -150,10 +150,7 @@ export const ManageNews: React.FC = () => {
     <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Manajemen Berita & Artikel</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Publikasikan agenda, prestasi siswa, liputan kegiatan, dan pengumuman resmi sekolah.
-          </p>
+          <h1 className="text-2xl font-bold text-stone-900">Berita & Artikel</h1>
         </div>
 
         <button
@@ -161,7 +158,7 @@ export const ManageNews: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Tulis Warta Baru</span>
+          <span>Berita</span>
         </button>
       </div>
 
@@ -174,7 +171,6 @@ export const ManageNews: React.FC = () => {
             <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Cari judul artikel..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50/50"
@@ -262,7 +258,7 @@ export const ManageNews: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 flex flex-col">
             <div className="p-6 border-b border-stone-100 flex justify-between items-center sticky top-0 bg-white z-10">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Edit Warta Berita' : 'Tulis Berita Baru'}
+                {editingId ? 'Ubah Berita' : 'Tambah Berita'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
@@ -277,7 +273,6 @@ export const ManageNews: React.FC = () => {
                   required
                   value={formData.title}
                   onChange={handleTitleChange}
-                  placeholder="Masukkan judul artikel yang menarik..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
               </div>
@@ -313,7 +308,6 @@ export const ManageNews: React.FC = () => {
                   rows={2}
                   value={formData.summary}
                   onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                  placeholder="Ringkasan 1-2 kalimat untuk preview..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
               </div>
@@ -325,7 +319,6 @@ export const ManageNews: React.FC = () => {
                   required
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Tuliskan isi berita selengkapnya (gunakan enter untuk paragraf)..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
                 />
               </div>
@@ -338,7 +331,6 @@ export const ManageNews: React.FC = () => {
                       type="text"
                       value={formData.thumbnail}
                       onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
-                      placeholder="https://... atau upload file"
                       className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                     />
                     <label className="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1 shrink-0">

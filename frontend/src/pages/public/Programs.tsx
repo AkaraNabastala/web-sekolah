@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { PageHeader } from '../../components/common/PageHeader';
 import { SEO } from '../../components/common/SEO';
 import { ScrollReveal } from '../../components/common/ScrollReveal';
@@ -6,16 +7,39 @@ import { schoolApi } from '../../services/api';
 import { Award, BookOpen, Clock, Users, Check, Sparkles } from 'lucide-react';
 
 export const Programs: React.FC = () => {
+  const { pathname } = useLocation();
+  const routeCategory = pathname === '/kurikulum'
+    ? 'akademik'
+    : pathname === '/ekstrakurikuler'
+      ? 'ekstrakurikuler'
+      : 'unggulan';
+  const pageTitle = pathname === '/kurikulum'
+    ? 'Kurikulum & Program Akademik'
+    : pathname === '/ekstrakurikuler'
+      ? 'Ekstrakurikuler'
+      : 'Program Unggulan';
+  const pageDescription = pathname === '/kurikulum'
+    ? 'Informasi kurikulum lengkap akan ditampilkan setelah data resmi sekolah dimasukkan. Daftar di bawah ini memuat program akademik yang tercatat di sistem.'
+    : pathname === '/ekstrakurikuler'
+      ? 'Daftar kegiatan ekstrakurikuler yang dikelola dan dipublikasikan sekolah.'
+      : 'Program unggulan sekolah yang dikelola dan dipublikasikan melalui sistem informasi sekolah.';
   const [programs, setPrograms] = useState<any[]>([]);
-  const [selectedCat, setSelectedCat] = useState('all');
+  const [selectedCat, setSelectedCat] = useState(routeCategory);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    setSelectedCat(routeCategory);
+    setLoading(true);
     schoolApi.getPrograms()
       .then(res => setPrograms(res))
-      .catch(() => setPrograms([]))
+      .catch(err => {
+        console.error('Gagal memuat daftar program:', err);
+        setLoadError('Daftar program belum dapat dimuat. Silakan coba beberapa saat lagi.');
+        setPrograms([]);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [routeCategory]);
 
   const categories = [
     { id: 'all', label: 'Semua Program' },
@@ -32,17 +56,17 @@ export const Programs: React.FC = () => {
   return (
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] min-h-screen text-[#2C332D]">
       <SEO
-        title="Kurikulum & Program Unggulan"
-        description="Program pendidikan terpadu, tahfidz Al-Quran bersanad, dan ekstrakurikuler santri SMP Islam Caruy."
+        title={pageTitle}
+        description={pageDescription}
       />
 
       <PageHeader
-        title="Akademik & Program Unggulan"
-        subtitle="Memadukan kurikulum terpadu berwawasan iptek dengan pembiasaan adab Qurani dan kepanduan."
+        title={pageTitle}
+        subtitle={pageDescription}
         breadcrumbs={[
           { label: 'Beranda', href: '/' },
           { label: 'Akademik', href: '#' },
-          { label: 'Program Unggulan', href: '/program' }
+          { label: pageTitle, href: pathname }
         ]}
       />
 
@@ -67,6 +91,10 @@ export const Programs: React.FC = () => {
         {/* Grid of Programs */}
         {loading ? (
           <div className="py-16 text-center text-sm text-[#7A827B]">Memuat daftar program...</div>
+        ) : loadError ? (
+          <div role="alert" className="py-12 text-center text-sm text-amber-800">{loadError}</div>
+        ) : filtered.length === 0 ? (
+          <div className="py-16 text-center text-sm text-[#7A827B]">Belum ada data untuk kategori ini.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map((item, idx) => (

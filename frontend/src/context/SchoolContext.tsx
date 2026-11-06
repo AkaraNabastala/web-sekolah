@@ -37,6 +37,16 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     refreshData();
   }, [refreshData]);
 
+  // Apply the active school's palette as shared design tokens for public components.
+  useEffect(() => {
+    if (!settings) return;
+    const root = document.documentElement;
+    root.style.setProperty('--school-primary', settings.primary_color || '#1B3B2B');
+    root.style.setProperty('--school-secondary', settings.secondary_color || '#E5C178');
+    root.style.setProperty('--school-accent-orange', settings.accent_orange || '#C87941');
+    root.style.setProperty('--school-accent-blue', settings.accent_blue || '#547C91');
+  }, [settings]);
+
   const updateCachedProfile = (newProfile: SchoolProfile) => {
     setProfile(newProfile);
   };

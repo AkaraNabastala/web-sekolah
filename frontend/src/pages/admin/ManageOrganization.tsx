@@ -105,9 +105,6 @@ export const ManageOrganization: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Struktur Organisasi</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Atur hierarki komite sekolah, kepala sekolah, wakil kepala sekolah, dan staf pimpinan.
-          </p>
         </div>
 
         <button
@@ -115,7 +112,7 @@ export const ManageOrganization: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Pejabat / Anggota</span>
+          <span>Anggota</span>
         </button>
       </div>
 
@@ -200,7 +197,6 @@ export const ManageOrganization: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Misal: Waka Kesiswaan, Ka. TU, dll."
                   value={form.position}
                   onChange={(e) => setForm({ ...form, position: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"

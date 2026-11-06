@@ -44,12 +44,17 @@ async function buildProduction() {
     logStep('2/6: Kompilasi & Build Frontend (Vite Production)');
     runCmd('npm run build', path.join(ROOT_DIR, 'frontend'));
 
-    // 3. Bersihkan & Siapkan folder deployment
+    // 3. Siapkan folder deployment tanpa menghapus data runtime milik operator.
     logStep('3/6: Menyiapkan Struktur Direktori deployment/');
-    if (fs.existsSync(DEPLOY_DIR)) {
-      fs.rmSync(DEPLOY_DIR, { recursive: true, force: true });
-    }
     fs.mkdirSync(DEPLOY_DIR, { recursive: true });
+    // Hanya output build yang dibuat ulang. Pertahankan .env, uploads, logs,
+    // backup, dan file operasional lain yang mungkin sudah ada di deployment/.
+    for (const generatedDir of ['public', 'backend']) {
+      const generatedPath = path.join(DEPLOY_DIR, generatedDir);
+      if (fs.existsSync(generatedPath)) {
+        fs.rmSync(generatedPath, { recursive: true, force: true });
+      }
+    }
     fs.mkdirSync(path.join(DEPLOY_DIR, 'public'), { recursive: true });
     fs.mkdirSync(path.join(DEPLOY_DIR, 'uploads'), { recursive: true });
     fs.mkdirSync(path.join(DEPLOY_DIR, 'logs'), { recursive: true });
@@ -61,9 +66,10 @@ async function buildProduction() {
     copyRecursive(path.join(ROOT_DIR, 'frontend', 'dist'), path.join(DEPLOY_DIR, 'public'));
     // Salin backend dist ke deployment/backend
     copyRecursive(path.join(ROOT_DIR, 'backend', 'dist'), path.join(DEPLOY_DIR, 'backend'));
-    // Salin schema database & fallback data.json (tanpa credential)
-    copyRecursive(path.join(ROOT_DIR, 'database', 'schema.sql'), path.join(DEPLOY_DIR, 'database', 'schema.sql'));
-    copyRecursive(path.join(ROOT_DIR, 'database', 'data.json'), path.join(DEPLOY_DIR, 'database', 'data.json'));
+    // Salin hanya skema dan seed SQL. Data fallback JSON hanya untuk development
+    // dan tidak boleh ikut masuk ke paket produksi.
+    copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'schema.sql'), path.join(DEPLOY_DIR, 'database', 'schema.sql'));
+    copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'seeds'), path.join(DEPLOY_DIR, 'database', 'seeds'));
 
     // 5. Generate package.json dan server entry point khusus deployment
     logStep('5/6: Menyiapkan Production Server Runner & Ketergantungan Bersih');
@@ -104,7 +110,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './backend/routes/api.js';
-import { testMySQLConnection, getMySQLStatus } from './backend/config/database.js';
+import { testMySQLConnection } from './backend/config/database.js';
 import { logger } from './backend/utils/logger.js';
 import { runMigrations } from './backend/scripts/migrate.js';
 
@@ -112,14 +118,38 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.disable('x-powered-by');
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-app.use(cors());
+// This generated runner is production-only: never fall back to localhost origins.
+const configuredOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
+const allowedOrigins = configuredOrigins;
+if (allowedOrigins.length === 0) {
+  throw new Error('CORS_ORIGINS wajib diisi dengan origin frontend resmi sebelum server produksi dijalankan.');
+}
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(null, false);
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static uploads directory
-const uploadsDir = path.resolve(process.cwd(), 'uploads');
+const uploadsDir = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -141,22 +171,15 @@ app.get('/api/health', (_req, res) => {
 // Database & System status
 app.get('/api/system/database-status', async (_req, res) => {
   const test = await testMySQLConnection();
-  const config = getMySQLStatus();
   res.json({
     success: true,
     environment: 'production',
     mysql: {
-      configured: config.configured,
-      connected: test.connected,
-      message: test.message,
-      host: config.host,
-      port: config.port,
-      database: config.database
+      connected: test.connected
     },
     fallback_storage: {
-      engine: 'Atomic Persistent JSON Relational Store',
-      status: 'Active & Synchronized',
-      file: 'database/data.json'
+      enabled: process.env.ALLOW_JSON_FALLBACK === 'true' && process.env.NODE_ENV !== 'production',
+      status: 'Development offline only'
     }
   });
 });
@@ -173,16 +196,32 @@ app.get('{*path}', (req, res, next) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
 
+app.use((err, req, res, next) => {
+  logger.error('ApiError', 'Permintaan API gagal diproses.', {
+    method: req.method,
+    path: req.path,
+    code: err?.code
+  });
+  if (res.headersSent) return next(err);
+  res.status(500).json({
+    success: false,
+    message: 'Terjadi kesalahan pada server. Silakan periksa log backend.'
+  });
+});
+
 // Boot & Lifecycle
 async function startProductionServer() {
   logger.info('ProductionServer', 'Memulai Server Produksi SMP Islam Caruy...');
 
   const dbCheck = await testMySQLConnection();
-  if (dbCheck.connected) {
-    logger.info('ProductionServer', dbCheck.message);
-    await runMigrations();
-  } else {
-    logger.warn('ProductionServer', \`MySQL: \${dbCheck.message}. Fallback data.json aktif.\`);
+  if (!dbCheck.connected) {
+    throw new Error(\`MySQL wajib tersedia pada production: \${dbCheck.message}\`);
+  }
+
+  logger.info('ProductionServer', dbCheck.message);
+  const migration = await runMigrations();
+  if (!migration.success) {
+    throw new Error(\`Database migration gagal: \${migration.message}\`);
   }
 
   const server = app.listen(PORT, '0.0.0.0', () => {
@@ -229,6 +268,8 @@ cp .env.example .env
 \`\`\`
 Sesuaikan nilai variabel lingkungan dengan konfigurasi hosting/database Anda.
 
+**Wajib untuk produksi:** atur NODE_ENV=production dan isi CORS_ORIGINS dengan origin frontend resmi, misalnya https://domain-sekolah-anda (gunakan domain sebenarnya, tanpa path). Server produksi menolak start jika CORS_ORIGINS kosong.
+
 ## 2. Instalasi Dependensi
 Jalankan di server hosting:
 \`\`\`bash
@@ -256,6 +297,9 @@ npm run setup-admin
       if (fs.existsSync(path.join(DEPLOY_DIR, forbidden))) {
         throw new Error(`PERINGATAN KEAMANAN: Ditemukan berkas terlarang ${forbidden} pada paket deployment!`);
       }
+    }
+    if (fs.existsSync(path.join(DEPLOY_DIR, 'database', 'data.json'))) {
+      throw new Error('PERINGATAN KEAMANAN: database/data.json tidak boleh masuk ke paket produksi.');
     }
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);

@@ -3,6 +3,7 @@ import { schoolApi } from '../../services/api';
 import { PPDBInfo } from '../../types';
 import { Save, CheckCircle, AlertCircle, Plus, Trash2, Calendar, FileText } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
+import { ADMISSION_LABEL } from '../../config/admissions';
 
 export const ManagePPDB: React.FC = () => {
   const [ppdb, setPpdb] = useState<PPDBInfo | null>(null);
@@ -20,27 +21,24 @@ export const ManagePPDB: React.FC = () => {
     try {
       const res = await schoolApi.updatePPDB(ppdb);
       if (res.success) {
-        toast.success('Pengaturan PPDB berhasil disimpan!');
+        toast.success(`Pengaturan ${ADMISSION_LABEL} berhasil disimpan!`);
       }
     } catch (err) {
-      toast.error('Gagal menyimpan pengaturan PPDB.');
+      toast.error(`Gagal menyimpan pengaturan ${ADMISSION_LABEL}.`);
     } finally {
       setSaving(false);
     }
   };
 
   if (!ppdb) {
-    return <div className="p-8 text-center text-xs text-stone-500 font-poppins">Memuat data PPDB...</div>;
+    return <div className="p-8 text-center text-xs text-stone-500 font-poppins">Memuat data {ADMISSION_LABEL}...</div>;
   }
 
   return (
     <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Manajemen PPDB (Penerimaan Santri)</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Atur status pembukaan pendaftaran, jadwal seleksi, persyaratan berkas, dan transparansi rincian biaya.
-          </p>
+          <h1 className="text-2xl font-bold text-stone-900">Pengaturan {ADMISSION_LABEL}</h1>
         </div>
       </div>
 
@@ -99,7 +97,7 @@ export const ManagePPDB: React.FC = () => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-stone-700">Ringkasan Sambutan PPDB</label>
+            <label className="text-xs font-bold text-stone-700">Ringkasan Pendaftaran</label>
             <textarea
               rows={3}
               value={ppdb.overview}
@@ -199,7 +197,6 @@ export const ManagePPDB: React.FC = () => {
                   <div key={idx} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-stone-50 p-2.5 rounded-xl border border-stone-200">
                     <input
                       type="text"
-                      placeholder="Nama komponen (misal: Seragam Lengkap)"
                       value={fee.item}
                       onChange={(e) => {
                         const newF = [...ppdb.fees_items];
@@ -210,7 +207,6 @@ export const ManagePPDB: React.FC = () => {
                     />
                     <input
                       type="text"
-                      placeholder="Nominal (Rp ...)"
                       value={fee.nominal}
                       onChange={(e) => {
                         const newF = [...ppdb.fees_items];
@@ -221,7 +217,6 @@ export const ManagePPDB: React.FC = () => {
                     />
                     <input
                       type="text"
-                      placeholder="Catatan"
                       value={fee.note || ''}
                       onChange={(e) => {
                         const newF = [...ppdb.fees_items];
@@ -253,7 +248,7 @@ export const ManagePPDB: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider px-8 py-3.5 rounded-xl shadow-md transition-all flex items-center gap-2"
         >
           <Save className="w-4 h-4" />
-          <span>{saving ? 'Menyimpan...' : 'Simpan Seluruh Pengaturan PPDB'}</span>
+          <span>{saving ? 'Menyimpan...' : 'Simpan Pengaturan'}</span>
         </button>
       </form>
     </div>
