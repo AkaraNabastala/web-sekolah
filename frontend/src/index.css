@@ -86,3 +86,32 @@ section {
 .admin-shell .text-amber-600 {
   color: var(--school-secondary) !important;
 }
+
+/* Map warna literal dari komponen lama ke token tema sekolah. */
+.public-shell [class*="bg-[#1B3B2B]"],
+.public-shell [class*="bg-[#132A1E]"],
+.public-shell [class*="bg-[#2A5C40]"] {
+  background-color: var(--school-primary) !important;
+}
+.public-shell [class*="text-[#1B3B2B]"],
+.public-shell [class*="text-[#132A1E]"],
+.public-shell [class*="text-[#2A5C40]"],
+.public-shell [class*="text-[#1D4A32]"] {
+  color: var(--school-primary) !important;
+}
+.public-shell [class*="border-[#1B3B2B]"],
+.public-shell [class*="border-[#2A5C40]"] {
+  border-color: var(--school-primary) !important;
+}
+.public-shell [class*="bg-[#E5C178]"],
+.public-shell [class*="bg-[#E8CF94]"],
+.public-shell [class*="bg-[#DEBD7A]"] {
+  background-color: var(--school-secondary) !important;
+}
+.public-shell [class*="text-[#E5C178]"],
+.public-shell [class*="text-[#DEBD7A]"] {
+  color: var(--school-secondary) !important;
+}
+.public-shell [class*="border-[#E5C178]"] {
+  border-color: var(--school-secondary) !important;
+}
