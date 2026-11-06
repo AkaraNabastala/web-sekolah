@@ -48,7 +48,7 @@ export const PPDB: React.FC = () => {
     try {
       const documents: Record<string, string> = {};
       for (const [label, file] of Object.entries(documentFiles)) {
-        if (file) documents[label] = (await schoolApi.uploadAdmissionDocument(file)).fileUrl;
+        if (file) documents[label] = (await schoolApi.uploadAdmissionDocument(file)).fileKey;
       }
       const result = await schoolApi.submitAdmissionApplication({
         candidate_name: formData.candidateName, birth_place: formData.birthPlace,
