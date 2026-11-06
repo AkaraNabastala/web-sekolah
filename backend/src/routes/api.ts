@@ -1818,7 +1818,6 @@ apiRouter.get('/admin/content-categories', requireContentAdmin, async (req: Requ
   const scope = String(req.query.scope || '');
   if (!['news','program','facility'].includes(scope)) return res.status(400).json({ success:false, message:'Jenis kategori tidak valid.' });
   try {
-    const table = scope === 'news' ? 'news_categories' : 'content_categories';
     const [rows]: any = scope === 'news'
       ? await getPool().query('SELECT id, name, slug, description FROM news_categories ORDER BY name ASC')
       : await getPool().query('SELECT id, name, slug, description FROM content_categories WHERE scope = ? ORDER BY name ASC', [scope]);
