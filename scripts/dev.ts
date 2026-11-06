@@ -13,7 +13,7 @@ function startService(label: string, directory: string) {
   const child = spawn(npmCommand, ['run', 'dev'], {
     cwd: path.join(rootDir, directory),
     stdio: 'inherit',
-    env: process.env
+    env: directory === 'backend' ? { ...process.env, PORT: '5000' } : { ...process.env, PORT: undefined }
   });
   children.push(child);
   child.on('error', error => {
