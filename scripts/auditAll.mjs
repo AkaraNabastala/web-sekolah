@@ -11,7 +11,7 @@ const read=f=>{const p=path.join(root,f);return fs.existsSync(p)?fs.readFileSync
 const exists=f=>fs.existsSync(path.join(root,f));
 console.log('\n=== AUDIT WEBSITE SMP ISLAM CARUY ===\nMODE: SAFE READ-ONLY\n');
 const server=read('backend/src/server.ts')||'', api=read('backend/src/routes/api.ts')||'';
-const auth=read('backend/src/middleware/auth.ts')||'', ctx=read('frontend/src/context/AuthContext.tsx')||'';
+const auth=read('backend/src/middleware/auth.ts')||'', featureFlags=read('backend/src/middleware/featureFlags.ts')||'', ctx=read('frontend/src/context/AuthContext.tsx')||'';
 const frontendApi=read('frontend/src/services/api.ts')||'', app=read('frontend/src/App.tsx')||'';
 const rate=/rateLimit|rate-limit|express-rate-limit/.test(api+server);
 add('Keamanan','Rate limit login',rate?'PERLU_VERIFIKASI':'PERLU_PERBAIKAN',rate?'Indikasi rate limit ditemukan; verifikasi route login benar-benar dilindungi.':'Belum ditemukan penerapan rate limit di api.ts/server.ts.','high');
@@ -20,9 +20,9 @@ add('Keamanan','CORS',corsOpen?'PERLU_PERBAIKAN':'PERLU_VERIFIKASI',corsOpen?'or
 const uploadSignatureValidation=/MAGIC_BYTES_VALIDATION/.test(api)&&/randomUUID/.test(api)&&/fileSize:\s*10\s*\*\s*1024\s*\*\s*1024/.test(api);
 add('Keamanan','Validasi isi upload',uploadSignatureValidation?'TERINDIKASI':'PERLU_PERBAIKAN',uploadSignatureValidation?'Pemeriksaan signature file, nama acak, dan batas 10 MB ditemukan; tetap uji file valid dan file palsu secara langsung.':'Belum ditemukan pemeriksaan signature file, nama acak, dan batas ukuran yang memadai.','high');
 add('Keamanan','Token di localStorage',/localStorage\.setItem\(['"]caruy_admin_token/.test(ctx+frontendApi)?'PERLU_PERBAIKAN':'PERLU_VERIFIKASI','Pertimbangkan cookie HttpOnly + perlindungan CSRF untuk mengurangi dampak XSS.','high');
-add('Keamanan','Masa berlaku JWT','PERLU_VERIFIKASI','Tinjau durasi token, pencabutan sesi, rotasi secret, dan invalidasi setelah perubahan password/role.','medium');
+const jwtSession=/expiresIn:\s*'8h'/.test(api)&&/auth_version/.test(api+auth)&&/issuer:\s*'smp-islam-caruy'/.test(api)&&/audience:\s*'admin-panel'/.test(api);\nadd('Keamanan','Masa berlaku JWT',jwtSession?'TERINDIKASI':'PERLU_VERIFIKASI',jwtSession?'JWT 8 jam, issuer/audience, status akun aktif, dan auth_version untuk pencabutan sesi ditemukan; uji rotasi secara langsung.':'Tinjau durasi token, pencabutan sesi, rotasi secret, dan invalidasi setelah perubahan password/role.','medium');
 add('Keamanan','Verifikasi JWT',/jwt\.verify/.test(auth)?'TERINDIKASI':'PERLU_PERBAIKAN','Tetap audit otorisasi per endpoint dan status akun dari database.','medium');
-add('Keamanan','Proteksi feature flags backend',/feature_flags/.test(api)?'PERLU_VERIFIKASI':'PERLU_PERBAIKAN','Pastikan API publik menolak modul nonaktif; proteksi route frontend saja tidak cukup.','high');
+const featureFlagGuard=/requireFeatureEnabled/.test(api)&&/feature_flags/.test(featureFlags);\nadd('Keamanan','Proteksi feature flags backend',featureFlagGuard?'TERINDIKASI':'PERLU_PERBAIKAN','Middleware backend memeriksa feature flags pada endpoint publik dan admin; uji modul nonaktif secara langsung.','high');
 const routes=[...api.matchAll(/apiRouter\.(get|post|put|patch|delete)\(\s*['"]([^'"]+)/g)];
 add('Fungsi','Inventaris route API','TERINDIKASI','Ditemukan '+routes.length+' deklarasi route langsung di api.ts; router terpisah perlu ikut diaudit.');
 const seen=new Set(),dups=new Set();
@@ -31,7 +31,7 @@ add('Fungsi','Duplikasi route',dups.size?'PERLU_PERBAIKAN':'TERINDIKASI',dups.si
 const base=process.env.AUDIT_BASE_URL||'http://127.0.0.1:3000';
 const paths=['/api/health','/api/school-profile','/api/school-history','/api/vision-mission','/api/organization','/api/teachers','/api/staff','/api/news','/api/news/categories','/api/gallery','/api/gallery/albums','/api/achievements','/api/facilities','/api/ppdb','/api/settings','/api/agendas','/api/programs'];
 let reachable=0;
-for(const p of paths){try{const r=await fetch(new URL(p,base),{method:'GET',signal:AbortSignal.timeout(5000)});reachable++;add('Fungsi','GET '+p,r.ok?'LULUS_HTTP':'PERLU_PERBAIKAN','HTTP '+r.status+' dari '+base,r.ok?'info':'high');}catch(e){add('Fungsi','GET '+p,'TIDAK_DIUJI',(e?.message||'backend tidak terjangkau')+'. Jalankan backend lalu ulangi.','medium');}}
+for(const p of paths){try{const r=await fetch(new URL(p,base),{method:'GET',signal:AbortSignal.timeout(5000)});const body=await r.clone().json().catch(()=>null);const disabled=r.status===403&&body?.code==='FEATURE_DISABLED';const ok=r.ok||disabled;if(ok)reachable++;add('Fungsi','GET '+p,ok?'LULUS_HTTP':'PERLU_PERBAIKAN',disabled?'HTTP 403: modul dinonaktifkan sesuai feature flags.':'HTTP '+r.status+' dari '+base,ok?'info':'high');}catch(e){add('Fungsi','GET '+p,'TIDAK_DIUJI',(e?.message||'backend tidak terjangkau')+'. Jalankan backend lalu ulangi.','medium');}}
 add('Fungsi','Cakupan endpoint publik',reachable===paths.length?'LULUS_HTTP':'TIDAK_LENGKAP',reachable+'/'+paths.length+' endpoint merespons; 2xx belum membuktikan isi data benar.');
 add('Desain','Halaman publik dan admin',/PublicLayout/.test(app)&&/AdminLayout/.test(app)?'TERINDIKASI':'PERLU_PERBAIKAN','Pemeriksaan source saja; belum memvalidasi render.');
 add('Desain','Uji viewport','PERLU_UJI_BROWSER','Periksa 1440, 1024, 768, 390, dan 360 px: overflow, menu, tabel, modal, form.','medium');
