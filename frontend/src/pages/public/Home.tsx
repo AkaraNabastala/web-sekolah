@@ -442,49 +442,23 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 5. NILAI DAN KARAKTER PENDIDIKAN */}
-      <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <ScrollReveal animation="fade-up" className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#2A5C40]">
-              Pondasi Karakter
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1F2621] tracking-tight">
-              Nilai Utama Pendidikan SMP Islam Caruy
-            </h2>
-            <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed">
-              Nilai-nilai utama yang diterapkan dalam kegiatan belajar dan keseharian warga sekolah.
-            </p>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(visionMission?.core_values && visionMission.core_values.length > 0 ? visionMission.core_values : [
-              { title: 'Integritas & Taqwa', desc: 'Menjadikan iman dan ketakwaan kepada Allah SWT sebagai landasan setiap langkah dan perbuatan.' },
-              { title: 'Akhlakul Karimah', desc: 'Membudayakan sikap santun, rendah hati, menghormati guru dan orang tua, serta menyayangi sesama.' },
-              { title: 'Keunggulan Akademik', desc: 'Mendorong daya nalar kritis, rasa ingin tahu yang tinggi, dan semangat pantang menyerah.' },
-              { title: 'Kemandirian & Disiplin', desc: 'Membentuk pribadi yang bertanggung jawab, jujur, tertib, dan mampu memimpin diri sendiri.' }
-            ]).map((val, idx) => (
-              <ScrollReveal
-                key={idx}
-                animation="fade-up"
-                delay={idx * 100}
-                className="bg-[#FAF8F5] p-6 rounded-2xl border border-[#ECE7DD] space-y-3 hover:border-[#2A5C40] transition-colors"
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#E8EFEA] text-[#1D4A32] flex items-center justify-center font-bold">
-                  {idx === 0 ? <HeartHandshake className="w-5 h-5" /> :
-                   idx === 1 ? <Smile className="w-5 h-5" /> :
-                   idx === 2 ? <GraduationCap className="w-5 h-5" /> :
-                   <ShieldCheck className="w-5 h-5" />}
-                </div>
-                <h3 className="font-bold text-base text-[#1F2621]">{val.title}</h3>
-                <p className="text-xs text-[#5C645D] leading-relaxed font-normal">
-                  {val.desc}
-                </p>
-              </ScrollReveal>
-            ))}
+      {isFeatureEnabled('coreValues') && (visionMission?.core_values?.length ?? 0) > 0 && (
+        <section className="border-b border-stone-200 bg-white px-6 py-16 sm:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl space-y-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-2xl font-semibold text-stone-900 sm:text-3xl">Nilai Utama Sekolah</h2>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {visionMission?.core_values?.map((value, index) => (
+                <article key={index} className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
+                  <h3 className="font-semibold text-stone-900">{value.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">{value.desc}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {isFeatureEnabled('programs') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
