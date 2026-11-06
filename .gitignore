@@ -24,6 +24,7 @@ backup_snapshot/
 # Runtime Uploads & Media
 uploads/
 */uploads/
+backend/private-admission-uploads/
 !uploads/.gitkeep
 !backend/uploads/.gitkeep
 
