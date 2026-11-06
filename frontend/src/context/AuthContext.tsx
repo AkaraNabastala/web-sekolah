@@ -24,6 +24,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('caruy_admin_token');
     localStorage.removeItem('caruy_admin_user');
 
+    // Pengunjung publik dan halaman login tidak membutuhkan sesi admin.
+    // Periksa cookie hanya ketika URL awal memang berada di area dashboard.
+    const currentPath = window.location.pathname;
+    if (!currentPath.startsWith('/admin') || currentPath === '/admin/login') {
+      setIsLoading(false);
+      return;
+    }
+
     let active = true;
     schoolApi.getMe()
       .then(user => { if (active) setAdmin(user); })
