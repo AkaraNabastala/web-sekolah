@@ -5,8 +5,12 @@ import {
   MapPin,
   Phone,
   Mail,
-  ShieldCheck,
   ChevronRight,
+  Instagram,
+  Facebook,
+  Youtube,
+  Music2,
+  MessageCircle,
 } from 'lucide-react';
 import { SchoolLogo } from './SchoolLogo';
 import { useSchool } from '../../context/SchoolContext';
@@ -33,7 +37,7 @@ export const Footer: React.FC = () => {
 
       {/* Main Footer Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-12 border-b border-emerald-900/80">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-white/15">
           {/* Column 1: School Identity & Description (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
             <SchoolLogo size="lg" lightText />
@@ -41,17 +45,7 @@ export const Footer: React.FC = () => {
               {profile?.description || settings?.tagline || 'Informasi dan profil resmi sekolah.'}
             </p>
 
-            <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
-              <span className="bg-emerald-900/80 text-amber-300 px-3 py-1 rounded-full border border-emerald-800 font-medium">
-                NPSN: {profile?.npsn || 'Dalam Pembaruan'}
-              </span>
-              <span className="bg-emerald-900/80 text-emerald-300 px-3 py-1 rounded-full border border-emerald-800 font-medium">
-                Akreditasi: {profile?.accreditation || 'Dalam Proses Pembaruan'}
-              </span>
-              <span className="bg-emerald-900/80 text-emerald-300 px-3 py-1 rounded-full border border-emerald-800 font-medium">
-                Status: {profile?.status || 'Swasta'}
-              </span>
-            </div>
+            
 
             {/* Social Media Links */}
             <div className="flex items-center gap-3 pt-3">
@@ -62,7 +56,7 @@ export const Footer: React.FC = () => {
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="Instagram"
               >
-                <i className="ri-instagram-line text-base"></i>
+                <Instagram className="w-4 h-4" />
               </a>}
               {settings?.facebook_url && <a
                 href={settings.facebook_url}
@@ -71,7 +65,7 @@ export const Footer: React.FC = () => {
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="Facebook"
               >
-                <i className="ri-facebook-fill text-base"></i>
+                <Facebook className="w-4 h-4" />
               </a>}
               {settings?.youtube_url && <a
                 href={settings.youtube_url}
@@ -80,7 +74,16 @@ export const Footer: React.FC = () => {
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="YouTube"
               >
-                <i className="ri-youtube-fill text-base"></i>
+                <Youtube className="w-4 h-4" />
+              </a>}
+              {settings?.tiktok_url && <a
+                href={settings.tiktok_url}
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center text-white"
+                aria-label="TikTok"
+              >
+                <Music2 className="w-4 h-4" />
               </a>}
               {profile?.whatsapp && <a
                 href={profile?.whatsapp ? `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}` : undefined}
@@ -88,14 +91,14 @@ export const Footer: React.FC = () => {
                 rel="noreferrer"
                 className="px-3.5 py-1.5 rounded-full bg-emerald-700/80 hover:bg-emerald-600 text-white font-medium text-xs flex items-center gap-1.5 transition-all shadow-sm"
               >
-                <span>WhatsApp Admin</span>
+                <MessageCircle className="w-4 h-4" /><span>WhatsApp</span>
               </a>}
             </div>
           </div>
 
           {/* Column 2: Navigasi Cepat (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-400"></span>
               Navigasi Halaman
             </h4>
@@ -147,7 +150,7 @@ export const Footer: React.FC = () => {
 
           {/* Column 3: Fasilitas & PPDB (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-400"></span>
               Layanan & Info
             </h4>
@@ -187,15 +190,15 @@ export const Footer: React.FC = () => {
 
           {/* Column 4: Kontak & Lokasi (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-              Sekretariat & Jam Kerja
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-white/70"></span>
+              Kontak Sekolah
             </h4>
 
             <div className="space-y-2.5 text-xs text-emerald-200/80">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>{profile?.address || 'Alamat sekolah belum diatur'}</span>
+                {profile?.address && <span>{profile.address}</span>}
               </div>
               {profile?.phone && <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-amber-400 shrink-0" />
@@ -205,7 +208,7 @@ export const Footer: React.FC = () => {
                 <Mail className="w-4 h-4 text-amber-400 shrink-0" />
                 <a href={`mailto:${profile.email}`} className="hover:text-white">{profile.email}</a>
               </div>}
-              <p className="text-[11px] text-emerald-300">Informasi layanan mengikuti jadwal operasional sekolah.</p>
+              
             </div>
           </div>
         </div>
