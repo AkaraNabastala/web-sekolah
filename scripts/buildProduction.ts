@@ -255,7 +255,7 @@ cp .env.example .env
 \`\`\`
 Sesuaikan nilai variabel lingkungan dengan konfigurasi hosting/database Anda.
 
-**Wajib untuk produksi:** atur `NODE_ENV=production` dan isi `CORS_ORIGINS` dengan origin frontend resmi, misalnya `https://domain-sekolah-anda` (gunakan domain sebenarnya, tanpa path). Server produksi menolak start jika `CORS_ORIGINS` kosong.
+**Wajib untuk produksi:** atur NODE_ENV=production dan isi CORS_ORIGINS dengan origin frontend resmi, misalnya https://domain-sekolah-anda (gunakan domain sebenarnya, tanpa path). Server produksi menolak start jika CORS_ORIGINS kosong.
 
 ## 2. Instalasi Dependensi
 Jalankan di server hosting:
