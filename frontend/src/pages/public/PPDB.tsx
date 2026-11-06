@@ -17,7 +17,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 
-export const PPDB: React.FC = () => {
+const applyAdmissionLabel = (value?: string | null) => value ? value.replace(/\\bPPDB\\b/gi, ADMISSION_LABEL) : '';\n\nexport const PPDB: React.FC = () => {
   const [ppdb, setPpdb] = useState<PPDBInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
@@ -88,7 +88,7 @@ export const PPDB: React.FC = () => {
             </h2>
 
             <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed font-normal">
-              {ppdb?.overview || `Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
+              {applyAdmissionLabel(ppdb?.overview) || `Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-4">
@@ -131,9 +131,9 @@ export const PPDB: React.FC = () => {
                 <div className="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-110 transition-transform">
                   {st.step}
                 </div>
-                <h4 className="font-bold text-stone-900 text-base">{st.title}</h4>
+                <h4 className="font-bold text-stone-900 text-base">{applyAdmissionLabel(st.title)}</h4>
                 <p className="text-xs text-stone-600 font-normal leading-relaxed">
-                  {st.desc}
+                  {applyAdmissionLabel(st.desc)}
                 </p>
               </div>
             ))}
@@ -150,7 +150,6 @@ export const PPDB: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-stone-900">Persyaratan Dokumen</h3>
-                <p className="text-xs text-stone-500 font-normal">Berkas yang disiapkan orang tua/wali</p>
               </div>
             </div>
 
@@ -158,7 +157,7 @@ export const PPDB: React.FC = () => {
               {ppdb?.requirements.map((req, idx) => (
                 <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-stone-700 leading-relaxed font-normal">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{req}</span>
+                  <span>{applyAdmissionLabel(req)}</span>
                 </li>
               ))}
             </ul>
@@ -172,7 +171,6 @@ export const PPDB: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-stone-900">Jadwal & Agenda {ADMISSION_LABEL}</h3>
-                <p className="text-xs text-stone-500 font-normal">Gelombang pendaftaran dan tahapan</p>
               </div>
             </div>
 
@@ -180,13 +178,13 @@ export const PPDB: React.FC = () => {
               {ppdb?.schedules.map((sch, idx) => (
                 <div key={idx} className="p-3.5 rounded-xl bg-stone-50 border border-stone-100 space-y-1">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-stone-900">{sch.phase}</span>
+                    <span className="font-bold text-stone-900">{applyAdmissionLabel(sch.phase)}</span>
                     <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
                       {sch.period}
                     </span>
                   </div>
                   {sch.notes && (
-                    <p className="text-[11px] text-stone-500 font-normal">{sch.notes}</p>
+                    <p className="text-[11px] text-stone-500 font-normal">{applyAdmissionLabel(sch.notes)}</p>
                   )}
                 </div>
               ))}
@@ -212,7 +210,7 @@ export const PPDB: React.FC = () => {
             </div>
 
             <p className="text-xs sm:text-sm text-stone-600 font-normal leading-relaxed">
-              {ppdb.fees_description}
+              {applyAdmissionLabel(ppdb.fees_description)}
             </p>
 
             <div className="overflow-x-auto">
@@ -227,9 +225,9 @@ export const PPDB: React.FC = () => {
                 <tbody className="divide-y divide-stone-100 font-normal">
                   {ppdb.fees_items.map((fee, idx) => (
                     <tr key={idx} className="hover:bg-stone-50/50">
-                      <td className="py-3.5 px-4 font-medium text-stone-900">{fee.item}</td>
+                      <td className="py-3.5 px-4 font-medium text-stone-900">{applyAdmissionLabel(fee.item)}</td>
                       <td className="py-3.5 px-4 font-bold text-emerald-800">{fee.nominal}</td>
-                      <td className="py-3.5 px-4 text-stone-500">{fee.note || '-'}</td>
+                      <td className="py-3.5 px-4 text-stone-500">{applyAdmissionLabel(fee.note) || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
