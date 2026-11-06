@@ -24,6 +24,7 @@ import { Facilities } from './pages/public/Facilities';
 import { PPDB } from './pages/public/PPDB';
 import { Contact } from './pages/public/Contact';
 import { AgendaList } from './pages/public/AgendaList';
+import { Announcements } from './pages/public/Announcements';
 import { Programs } from './pages/public/Programs';
 import { DesignPreview } from './pages/public/DesignPreview';
 import { DesignPreviewV2 } from './pages/public/DesignPreviewV2';
@@ -40,6 +41,7 @@ import { ManageHistory } from './pages/admin/ManageHistory';
 import { ManageVisionMission } from './pages/admin/ManageVisionMission';
 import { ManageNews } from './pages/admin/ManageNews';
 import { ManageAgendas } from './pages/admin/ManageAgendas';
+import { ManageAnnouncements } from './pages/admin/ManageAnnouncements';
 import { ManagePrograms } from './pages/admin/ManagePrograms';
 import { ManageTeachers } from './pages/admin/ManageTeachers';
 import { ManageOrganization } from './pages/admin/ManageOrganization';
@@ -119,7 +121,7 @@ export const App: React.FC = () => {
             <Route path="/berita/:slug" element={<PublicLayout><FeatureRoute feature="news"><NewsDetail /></FeatureRoute></PublicLayout>} />
             <Route path="/agenda" element={<PublicLayout><FeatureRoute feature="agenda"><AgendaList /></FeatureRoute></PublicLayout>} />
             <Route path="/kegiatan" element={<PublicLayout><FeatureRoute feature="agenda"><AgendaList /></FeatureRoute></PublicLayout>} />
-            <Route path="/pengumuman" element={<FeatureRoute feature="news"><Navigate to="/berita?kategori=pengumuman-resmi" replace /></FeatureRoute>} />
+            <Route path="/pengumuman" element={<PublicLayout><Announcements /></PublicLayout>} />
             <Route path="/program" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
             <Route path="/kurikulum" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
             <Route path="/ekstrakurikuler" element={<PublicLayout><FeatureRoute feature="programs"><Programs /></FeatureRoute></PublicLayout>} />
@@ -148,6 +150,7 @@ export const App: React.FC = () => {
               <Route path="visi-misi" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageVisionMission /></RoleRoute>} />
               <Route path="berita" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageNews /></RoleRoute>} />
               <Route path="agenda" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageAgendas /></RoleRoute>} />
+              <Route path="pengumuman" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageAnnouncements /></RoleRoute>} />
               <Route path="program" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManagePrograms /></RoleRoute>} />
               <Route path="guru-staf" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageTeachers /></RoleRoute>} />
               <Route path="organisasi" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageOrganization /></RoleRoute>} />
