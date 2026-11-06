@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import defaultLogo from '../../assets/logo.png';
+import { useSchool } from '../../context/SchoolContext';
 
 interface SEOProps {
   title: string;
@@ -11,11 +13,16 @@ export const SEO: React.FC<SEOProps> = ({
   title,
   description = 'Portal Resmi SMP Islam Caruy - Lembaga Pendidikan Menengah Pertama Islam Modern, Unggul dalam IPTEK dan Berakhlakul Karimah di Desa Caruy, Kec. Cipari, Cilacap.',
   ogType = 'website',
-  ogImage = '/src/assets/logo.png'
+  ogImage
 }) => {
+  const { settings, profile } = useSchool();
+  const schoolName = settings?.school_name || profile?.name || 'SMP Islam Caruy';
+  const resolvedOgImage = ogImage || settings?.logo_url || defaultLogo;
+
   useEffect(() => {
-    // Set document title
-    const fullTitle = `${title} | SMP Islam Caruy`;
+    // Keep browser and social-share titles focused on the school identity.
+    void title;
+    const fullTitle = schoolName;
     document.title = fullTitle;
 
     // Helper to update or create meta tags
@@ -42,10 +49,10 @@ export const SEO: React.FC<SEOProps> = ({
     setMetaTag('meta[property="og:title"]', 'content', fullTitle);
     setMetaTag('meta[property="og:description"]', 'content', description);
     setMetaTag('meta[property="og:type"]', 'content', ogType);
-    if (ogImage) {
-      setMetaTag('meta[property="og:image"]', 'content', ogImage);
+    if (resolvedOgImage) {
+      setMetaTag('meta[property="og:image"]', 'content', resolvedOgImage);
     }
-  }, [title, description, ogType, ogImage]);
+  }, [schoolName, title, description, ogType, resolvedOgImage]);
 
   return null;
 };
