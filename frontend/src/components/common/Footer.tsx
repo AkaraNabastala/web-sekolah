@@ -4,7 +4,6 @@ import {
   MapPin,
   Phone,
   Mail,
-  Clock,
   ShieldCheck,
   ChevronRight,
 } from 'lucide-react';
@@ -197,25 +196,15 @@ export const Footer: React.FC = () => {
                 <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <span>{profile?.address || 'Alamat sekolah belum diatur'}</span>
               </div>
-              <div className="flex items-center gap-2.5">
+              {profile?.phone && <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href={`tel:${profile?.phone || ''}`} className="hover:text-white">
-                  {profile?.phone}
-                </a>
-              </div>
-              <div className="flex items-center gap-2.5">
+                <a href={`tel:${profile.phone}`} className="hover:text-white">{profile.phone}</a>
+              </div>}
+              {profile?.email && <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href={`mailto:${profile?.email || ''}`} className="hover:text-white">
-                  {profile?.email}
-                </a>
-              </div>
-              <div className="flex items-start gap-2.5 pt-1">
-                <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-emerald-100">Jam Pelayanan Kantor:</p>
-                  <p className="text-[11px] text-emerald-300">Senin - Kamis & Sabtu: 07.00 - 14.00 WIB</p>
-                  <p className="text-[11px] text-emerald-300">Jumat: 07.00 - 11.00 WIB (Ahad Libur)</p>
-                </div>
+                <a href={`mailto:${profile.email}`} className="hover:text-white">{profile.email}</a>
+              </div>}
+              <p className="text-[11px] text-emerald-300">Informasi layanan mengikuti jadwal operasional sekolah.</p>
               </div>
             </div>
           </div>
