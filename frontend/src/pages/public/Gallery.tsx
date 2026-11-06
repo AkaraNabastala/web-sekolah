@@ -19,7 +19,21 @@ export const Gallery: React.FC = () => {
       .finally(() => setLoading(false));
   }, [category]);
 
-  const categories = ['Semua', 'Akademik', 'Keagamaan', 'Kesiswaan', 'Umum'];
+  const categories = ['Semua', ...Array.from(new Set(mediaList.map(item => item.category).filter(Boolean)))];
+
+  useEffect(() => {
+    if (!selectedMedia) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelectedMedia(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [selectedMedia]);
 
   return (
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
@@ -104,24 +118,24 @@ export const Gallery: React.FC = () => {
         {/* LIGHTBOX MODAL */}
         {selectedMedia && (
           <div
-            className="fixed inset-0 z-50 bg-stone-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-[100] bg-stone-950/95 backdrop-blur-md flex items-center justify-center p-2 sm:p-5"
             onClick={() => setSelectedMedia(null)}
           >
             <div
-              className="bg-white rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl border border-stone-100 relative"
+              className="bg-white rounded-2xl max-w-6xl w-full max-h-[94vh] overflow-hidden shadow-2xl border border-white/10 relative flex flex-col md:flex-row"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setSelectedMedia(null)}
-                className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-stone-900/80 text-white flex items-center justify-center hover:bg-stone-900 transition-colors"
+                className="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black transition-colors"
                 aria-label="Tutup Preview"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="max-h-[60vh] bg-stone-950 flex items-center justify-center overflow-hidden">
+              <div className="w-full md:w-[62%] h-[42vh] md:h-[88vh] max-h-[88vh] bg-stone-950 flex items-center justify-center overflow-hidden shrink-0">
                 {selectedMedia.media_type === 'video' && selectedMedia.video_url ? (
-                  <div className="w-full aspect-video">
+                  <div className="w-full h-full aspect-video">
                     {selectedMedia.video_url.includes('youtube.com') || selectedMedia.video_url.includes('youtu.be') ? (
                       <iframe
                         src={`https://www.youtube.com/embed/${selectedMedia.video_url.split('v=')[1] || 'dQw4w9WgXcQ'}`}
@@ -137,21 +151,21 @@ export const Gallery: React.FC = () => {
                   <img
                     src={selectedMedia.file_url}
                     alt={selectedMedia.title}
-                    className="w-full max-h-[60vh] object-contain"
+                    className="w-full h-full object-contain"
                   />
                 )}
               </div>
 
-              <div className="p-6 space-y-2">
+              <div className="flex-1 min-w-0 overflow-y-auto p-6 sm:p-8 space-y-4 text-left">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
                     {selectedMedia.category}
                   </span>
-                  <span className="text-xs text-stone-400">• SMP Islam Caruy Documentation</span>
+                  <span className="text-xs text-stone-400">Dokumentasi sekolah</span>
                 </div>
                 <h3 className="text-lg font-bold text-stone-900">{selectedMedia.title}</h3>
                 {selectedMedia.caption && (
-                  <p className="text-xs sm:text-sm text-stone-600 font-normal leading-relaxed">
+                  <p className="text-sm text-stone-600 font-normal leading-7 whitespace-pre-line">
                     {selectedMedia.caption}
                   </p>
                 )}
