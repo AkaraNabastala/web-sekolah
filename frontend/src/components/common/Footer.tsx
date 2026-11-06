@@ -7,8 +7,6 @@ import {
   Clock,
   ShieldCheck,
   ChevronRight,
-  ExternalLink,
-  LogIn
 } from 'lucide-react';
 import { SchoolLogo } from './SchoolLogo';
 import { useSchool } from '../../context/SchoolContext';
@@ -17,7 +15,7 @@ export const Footer: React.FC = () => {
   const { profile, settings } = useSchool();
 
   return (
-    <footer className="bg-emerald-950 text-white font-poppins relative overflow-hidden border-t-4 border-amber-400">
+    <footer className="text-white font-poppins relative overflow-hidden border-t-4" style={{ backgroundColor: 'var(--school-primary)', borderTopColor: 'var(--school-secondary)' }}>
       {/* Decorative Islamic Arch Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
@@ -28,7 +26,7 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-4 space-y-4">
             <SchoolLogo size="lg" lightText />
             <p className="text-emerald-200/90 text-xs leading-relaxed font-normal mt-3">
-              SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta di bawah naungan yayasan pendidikan Islam yang mengintegrasikan Kurikulum Nasional Terpadu dengan nilai-nilai kepesantrenan, tahfidz Al-Quran, dan budi pekerti luhur.
+              {profile?.description || settings?.tagline || 'Informasi dan profil resmi sekolah.'}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
@@ -45,41 +43,41 @@ export const Footer: React.FC = () => {
 
             {/* Social Media Links */}
             <div className="flex items-center gap-3 pt-3">
-              <a
-                href={settings?.instagram_url || 'https://instagram.com/smpislamcaruy'}
+              {settings?.instagram_url && <a
+                href={settings.instagram_url}
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="Instagram"
               >
                 <i className="ri-instagram-line text-base"></i>
-              </a>
-              <a
-                href={settings?.facebook_url || 'https://facebook.com/smpislamcaruy'}
+              </a>}
+              {settings?.facebook_url && <a
+                href={settings.facebook_url}
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="Facebook"
               >
                 <i className="ri-facebook-fill text-base"></i>
-              </a>
-              <a
-                href={settings?.youtube_url || 'https://youtube.com/@smpislamcaruy'}
+              </a>}
+              {settings?.youtube_url && <a
+                href={settings.youtube_url}
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="YouTube"
               >
                 <i className="ri-youtube-fill text-base"></i>
-              </a>
-              <a
-                href={`https://wa.me/${profile?.whatsapp || '6282132972773'}`}
+              </a>}
+              {profile?.whatsapp && <a
+                href={profile?.whatsapp ? `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}` : undefined}
                 target="_blank"
                 rel="noreferrer"
                 className="px-3.5 py-1.5 rounded-full bg-emerald-700/80 hover:bg-emerald-600 text-white font-medium text-xs flex items-center gap-1.5 transition-all shadow-sm"
               >
                 <span>WhatsApp Admin</span>
-              </a>
+              </a>}
             </div>
           </div>
 
@@ -185,18 +183,18 @@ export const Footer: React.FC = () => {
             <div className="space-y-2.5 text-xs text-emerald-200/80">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>{profile?.address || 'Jl. Raya Caruy No. 12, Desa Caruy, Kec. Cipari, Kabupaten Cilacap, Jawa Tengah 53262'}</span>
+                <span>{profile?.address || 'Alamat sekolah belum diatur'}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href={`tel:${profile?.phone || '0821-3297-2773'}`} className="hover:text-white">
-                  {profile?.phone || '0821-3297-2773'}
+                <a href={`tel:${profile?.phone || ''}`} className="hover:text-white">
+                  {profile?.phone}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href={`mailto:${profile?.email || 'info@smpislamcaruy.sch.id'}`} className="hover:text-white">
-                  {profile?.email || 'info@smpislamcaruy.sch.id'}
+                <a href={`mailto:${profile?.email || ''}`} className="hover:text-white">
+                  {profile?.email}
                 </a>
               </div>
               <div className="flex items-start gap-2.5 pt-1">
@@ -217,22 +215,10 @@ export const Footer: React.FC = () => {
             {settings?.footer_text || '© 2026 SMP Islam Caruy. Seluruh hak cipta dilindungi undang-undang.'}
           </p>
 
-          <div className="flex items-center gap-6">
-            <Link to="/kontak" className="hover:text-white transition-colors">
-              Peta Lokasi
-            </Link>
-            <span className="text-emerald-800">•</span>
-            <Link to="/ppdb" className="hover:text-white transition-colors">
-              Alur PPDB
-            </Link>
-            <span className="text-emerald-800">•</span>
-            <Link
-              to="/admin/login"
-              className="inline-flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-semibold transition-colors"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>Login Admin</span>
-            </Link>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link to="/kontak" className="hover:text-white transition-colors">Kontak Sekolah</Link>
+            <span className="text-white/30">•</span>
+            <span className="text-white/70">Website sekolah dikembangkan oleh <a href="https://nabastala.com" target="_blank" rel="noreferrer" className="font-semibold hover:underline" style={{ color: 'var(--school-secondary)' }}>Nabastala</a></span>
           </div>
         </div>
       </div>
