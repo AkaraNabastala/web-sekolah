@@ -203,6 +203,12 @@ const validateUploadContent = async (req: Request, res: Response, next: (err?: a
 
 
 const ADMISSION_UPLOAD_DIR = process.env.ADMISSION_UPLOAD_DIR || path.join(backendRoot, 'private-admission-uploads');
+const publicUploadPath = path.resolve(UPLOAD_DIR);
+const privateAdmissionPath = path.resolve(ADMISSION_UPLOAD_DIR);
+const privatePathRelativeToPublic = path.relative(publicUploadPath, privateAdmissionPath);
+if (privatePathRelativeToPublic === '' || (!privatePathRelativeToPublic.startsWith('..') && !path.isAbsolute(privatePathRelativeToPublic))) {
+  throw new Error('ADMISSION_UPLOAD_DIR harus berada di luar direktori unggahan publik.');
+}
 if (!fs.existsSync(ADMISSION_UPLOAD_DIR)) fs.mkdirSync(ADMISSION_UPLOAD_DIR, { recursive: true, mode: 0o700 });
 const admissionStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, ADMISSION_UPLOAD_DIR),
