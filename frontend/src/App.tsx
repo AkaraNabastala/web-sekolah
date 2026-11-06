@@ -49,6 +49,7 @@ import { ManageGallery } from './pages/admin/ManageGallery';
 import { ManageAchievements } from './pages/admin/ManageAchievements';
 import { ManageFacilities } from './pages/admin/ManageFacilities';
 import { ManagePPDB } from './pages/admin/ManagePPDB';
+import { ManageAdmissionApplications } from './pages/admin/ManageAdmissionApplications';
 import { ManageMessages } from './pages/admin/ManageMessages';
 import { ManageSettings } from './pages/admin/ManageSettings';
 import { ManageAccount } from './pages/admin/ManageAccount';
@@ -158,6 +159,7 @@ export const App: React.FC = () => {
               <Route path="prestasi" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageAchievements /></RoleRoute>} />
               <Route path="fasilitas" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageFacilities /></RoleRoute>} />
               <Route path="ppdb" element={<RoleRoute roles={PPDB_ADMIN_ROLES}><ManagePPDB /></RoleRoute>} />
+              <Route path="penerimaan" element={<RoleRoute roles={PPDB_ADMIN_ROLES}><ManageAdmissionApplications /></RoleRoute>} />
               <Route path="pesan" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageMessages /></RoleRoute>} />
               <Route path="pengaturan" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageSettings /></RoleRoute>} />
               <Route path="akun" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageAccount /></RoleRoute>} />
