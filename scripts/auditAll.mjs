@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+// Safe read-only audit. Never writes to MySQL or mutates website data.
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+const root=process.cwd(), reportDir=path.join(root,'audit-reports');
+fs.mkdirSync(reportDir,{recursive:true});
+const checks=[];
+const add=(area,name,status,detail,severity='info')=>checks.push({area,name,status,severity,detail});
+const read=f=>{const p=path.join(root,f);return fs.existsSync(p)?fs.readFileSync(p,'utf8'):null};
+const exists=f=>fs.existsSync(path.join(root,f));
+console.log('\n=== AUDIT WEBSITE SMP ISLAM CARUY ===\nMODE: SAFE READ-ONLY\n');
+const server=read('backend/src/server.ts')||'', api=read('backend/src/routes/api.ts')||'';
+const auth=read('backend/src/middleware/auth.ts')||'', ctx=read('frontend/src/context/AuthContext.tsx')||'';
+const frontendApi=read('frontend/src/services/api.ts')||'', app=read('frontend/src/App.tsx')||'';
+const rate=/rateLimit|rate-limit|express-rate-limit/.test(api+server);
+add('Keamanan','Rate limit login',rate?'PERLU_VERIFIKASI':'PERLU_PERBAIKAN',rate?'Indikasi rate limit ditemukan; verifikasi route login benar-benar dilindungi.':'Belum ditemukan penerapan rate limit di api.ts/server.ts.','high');
+const corsOpen=/origin\s*:\s*true/.test(server);
+add('Keamanan','CORS',corsOpen?'PERLU_PERBAIKAN':'PERLU_VERIFIKASI',corsOpen?'origin:true terlalu luas; batasi ke domain resmi.':'Periksa allowlist origin produksi.','high');
+const mimeOnly=/file\.mimetype/.test(api)&&!/file-type|fileTypeFromBuffer|magic.?number/i.test(api);
+add('Keamanan','Validasi isi upload',mimeOnly?'PERLU_PERBAIKAN':'PERLU_VERIFIKASI','Periksa signature file, ukuran, nama acak, lokasi penyimpanan, dan larangan eksekusi.','high');
+add('Keamanan','Token di localStorage',/localStorage\.setItem\(['"]caruy_admin_token/.test(ctx+frontendApi)?'PERLU_PERBAIKAN':'PERLU_VERIFIKASI','Pertimbangkan cookie HttpOnly + perlindungan CSRF untuk mengurangi dampak XSS.','high');
+add('Keamanan','Masa berlaku JWT','PERLU_VERIFIKASI','Tinjau durasi token, pencabutan sesi, rotasi secret, dan invalidasi setelah perubahan password/role.','medium');
+add('Keamanan','Verifikasi JWT',/jwt\.verify/.test(auth)?'TERINDIKASI':'PERLU_PERBAIKAN','Tetap audit otorisasi per endpoint dan status akun dari database.','medium');
+add('Keamanan','Proteksi feature flags backend',/feature_flags/.test(api)?'PERLU_VERIFIKASI':'PERLU_PERBAIKAN','Pastikan API publik menolak modul nonaktif; proteksi route frontend saja tidak cukup.','high');
+const routes=[...api.matchAll(/apiRouter\.(get|post|put|patch|delete)\(\s*['"]([^'"]+)/g)];
+add('Fungsi','Inventaris route API','TERINDIKASI','Ditemukan '+routes.length+' deklarasi route langsung di api.ts; router terpisah perlu ikut diaudit.');
+const seen=new Set(),dups=new Set();
+for(const m of routes){const k=m[1].toUpperCase()+' '+m[2];if(seen.has(k))dups.add(k);seen.add(k);}
+add('Fungsi','Duplikasi route',dups.size?'PERLU_PERBAIKAN':'TERINDIKASI',dups.size?[...dups].join(', '):'Tidak ada duplikasi literal pada api.ts.');
+const base=process.env.AUDIT_BASE_URL||'http://127.0.0.1:3000';
+const paths=['/api/health','/api/school-profile','/api/school-history','/api/vision-mission','/api/organization','/api/teachers','/api/staff','/api/news','/api/news/categories','/api/gallery','/api/gallery/albums','/api/achievements','/api/facilities','/api/ppdb','/api/settings','/api/agendas','/api/programs'];
+let reachable=0;
+for(const p of paths){try{const r=await fetch(new URL(p,base),{method:'GET',signal:AbortSignal.timeout(5000)});reachable++;add('Fungsi','GET '+p,r.ok?'LULUS_HTTP':'PERLU_PERBAIKAN','HTTP '+r.status+' dari '+base,r.ok?'info':'high');}catch(e){add('Fungsi','GET '+p,'TIDAK_DIUJI',(e?.message||'backend tidak terjangkau')+'. Jalankan backend lalu ulangi.','medium');}}
+add('Fungsi','Cakupan endpoint publik',reachable===paths.length?'LULUS_HTTP':'TIDAK_LENGKAP',reachable+'/'+paths.length+' endpoint merespons; 2xx belum membuktikan isi data benar.');
+add('Desain','Halaman publik dan admin',/PublicLayout/.test(app)&&/AdminLayout/.test(app)?'TERINDIKASI':'PERLU_PERBAIKAN','Pemeriksaan source saja; belum memvalidasi render.');
+add('Desain','Uji viewport','PERLU_UJI_BROWSER','Periksa 1440, 1024, 768, 390, dan 360 px: overflow, menu, tabel, modal, form.','medium');
+const html=read('frontend/index.html')||'';
+add('Performa/SEO/Aksesibilitas','Metadata dasar',/<title[\s>]/i.test(html)&&/name=["']description["']/i.test(html)?'TERINDIKASI':'PERLU_PERBAIKAN','Periksa juga metadata per halaman, canonical, Open Graph, sitemap, robots.');
+add('Performa/SEO/Aksesibilitas','Aksesibilitas','PERLU_UJI_MANUAL','Uji kontras, label form, alt, fokus keyboard, landmark, dan screen reader.','medium');
+const pkg=JSON.parse(read('package.json')||'{}');
+add('Produksi','Script build',pkg.scripts?.build?'TERINDIKASI':'PERLU_PERBAIKAN','Script: '+(pkg.scripts?.build||'tidak tersedia'));
+add('Produksi','Template environment',exists('backend/.env.example')||exists('.env.example')?'TERINDIKASI':'PERLU_DILENGKAPI','Template membantu konfigurasi tanpa membagikan rahasia.');
+add('Produksi','Backup dan restore',exists('docs/backup-restore.md')?'TERINDIKASI':'PERLU_DILENGKAPI','Backup/restore nyata belum diuji.','high');
+console.log('\nMenjalankan npm run build...');
+const build=spawnSync('npm',['run','build'],{cwd:root,stdio:'inherit',shell:process.platform==='win32'});
+add('Produksi','Build proyek',build.status===0?'LULUS':'GAGAL',build.status===0?'Build exit code 0.':'Build gagal; exit code '+build.status+'.',build.status===0?'info':'critical');
+const summary={generatedAt:new Date().toISOString(),mode:'SAFE_READ_ONLY',baseUrl:base,totals:{checks:checks.length,pass:checks.filter(x=>['LULUS','LULUS_HTTP','TERINDIKASI'].includes(x.status)).length,needsWork:checks.filter(x=>['PERLU_PERBAIKAN','GAGAL','PERLU_DILENGKAPI'].includes(x.status)).length,manual:checks.filter(x=>['PERLU_VERIFIKASI','PERLU_UJI_BROWSER','PERLU_UJI_MANUAL','TIDAK_DIUJI','TIDAK_LENGKAP'].includes(x.status)).length},checks};
+const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+const jp=path.join(reportDir,'audit-'+stamp+'.json'),mp=path.join(reportDir,'audit-'+stamp+'.md');
+fs.writeFileSync(jp,JSON.stringify(summary,null,2));
+const lines=['# Laporan Audit Website SMP Islam Caruy','','- Waktu: '+summary.generatedAt,'- Mode: SAFE READ-ONLY','- Target API: '+base,'- Total: '+summary.totals.checks,'- Lulus/terindikasi: '+summary.totals.pass,'- Perlu perbaikan: '+summary.totals.needsWork,'- Pemeriksaan lanjutan: '+summary.totals.manual,'','| Kelompok | Pemeriksaan | Status | Detail |','|---|---|---|---|'];
+for(const c of checks)lines.push('| '+c.area+' | '+c.name+' | **'+c.status+'** | '+c.detail.replace(/\|/g,'\\|')+' |');
+lines.push('','> Bukan sertifikasi keamanan/penetration test. Uji browser visual, CRUD mutatif, role matrix lengkap, dan backup/restore belum dijalankan.');
+fs.writeFileSync(mp,lines.join('\n'));
+console.log('\nRingkasan: '+JSON.stringify(summary.totals));
+console.log('Laporan: '+path.relative(root,mp)+' dan '+path.relative(root,jp));
+process.exitCode=build.status===0?0:1;
