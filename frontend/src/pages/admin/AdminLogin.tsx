@@ -155,7 +155,6 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={setupFullName}
                   onChange={(e) => setSetupFullName(e.target.value)}
-                  placeholder="Nama Lengkap Administrator"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
@@ -167,7 +166,6 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={setupEmail}
                   onChange={(e) => setSetupEmail(e.target.value)}
-                  placeholder="admin@smpislamcaruy.sch.id"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
@@ -179,7 +177,6 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={setupUsername}
                   onChange={(e) => setSetupUsername(e.target.value)}
-                  placeholder="Pilih username unik"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
@@ -192,7 +189,6 @@ export const AdminLogin: React.FC = () => {
                   minLength={32}
                   value={setupToken}
                   onChange={(e) => setSetupToken(e.target.value)}
-                  placeholder="Masukkan token dari konfigurasi server"
                   autoComplete="off"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
@@ -206,7 +202,6 @@ export const AdminLogin: React.FC = () => {
                   required
                   value={setupPassword}
                   onChange={(e) => setSetupPassword(e.target.value)}
-                  placeholder="••••••••"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
                 />
               </div>
@@ -235,7 +230,6 @@ export const AdminLogin: React.FC = () => {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Masukkan username atau email"
                     className="block w-full pl-10 pr-3.5 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 text-sm transition-all"
                   />
                 </div>
@@ -254,7 +248,6 @@ export const AdminLogin: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
                     className="block w-full pl-10 pr-3.5 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 text-sm transition-all"
                   />
                 </div>
