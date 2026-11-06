@@ -6,15 +6,11 @@ import { PPDBInfo } from '../../types';
 import { SEO } from '../../components/common/SEO';
 import { ADMISSION_LABEL } from '../../config/admissions';
 import {
-  Sparkles,
   Calendar,
   CheckCircle2,
   FileText,
   PhoneCall,
-  DollarSign,
-  ArrowRight,
-  Send,
-  HelpCircle
+  Send
 } from 'lucide-react';
 
 const applyAdmissionLabel = (value?: string | null) =>
@@ -22,7 +18,7 @@ const applyAdmissionLabel = (value?: string | null) =>
 
 export const PPDB: React.FC = () => {
   const [ppdb, setPpdb] = useState<PPDBInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [applicationCode, setApplicationCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
