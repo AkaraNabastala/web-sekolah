@@ -2,6 +2,7 @@ import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { schoolApi } from '../../services/api';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import {
   Save,
   Lock,
@@ -146,9 +147,7 @@ export const ManageAccount: React.FC = () => {
     <div className="space-y-8 font-poppins pb-12">
       <div>
         <h1 className="text-2xl font-bold text-stone-900">Keamanan & Akun Administrator</h1>
-        <p className="text-xs text-stone-500 font-normal mt-0.5">
-          Kelola profil pengelola, amankan akses dengan hashing bcrypt, dan konfigurasi hak akses peran pengguna sekolah.
-        </p>
+        
       </div>
 
       
@@ -245,7 +244,6 @@ export const ManageAccount: React.FC = () => {
                 required
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Masukkan kata sandi lama"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
             </div>
@@ -258,7 +256,6 @@ export const ManageAccount: React.FC = () => {
                 minLength={6}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimal 6 karakter"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
             </div>
@@ -271,7 +268,6 @@ export const ManageAccount: React.FC = () => {
                 minLength={6}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Ulangi kata sandi baru"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
             </div>
@@ -295,9 +291,7 @@ export const ManageAccount: React.FC = () => {
             <Shield className="w-5 h-5 text-emerald-700" />
             <div>
               <h2 className="text-base font-bold text-stone-900">Struktur Pengguna & Peran Sistem (Role Management)</h2>
-              <p className="text-[11px] text-stone-400 font-normal">
-                Saat ini cukup 1 akun admin aktif, namun arsitektur sistem telah mendukung penambahan peran (Superadmin, Admin Konten, Admin PPDB) di kemudian hari.
-              </p>
+              
             </div>
           </div>
 
@@ -346,7 +340,7 @@ export const ManageAccount: React.FC = () => {
                         ? 'bg-emerald-100 text-emerald-800'
                         : 'bg-amber-100 text-amber-800'
                     }`}>
-                      {user.role === 'superadmin' ? 'Superadmin' : user.role === 'admin_konten' ? 'Admin Konten' : 'Admin PPDB'}
+                      {user.role === 'superadmin' ? 'Superadmin' : user.role === 'admin_konten' ? 'Admin Konten' : `Admin ${ADMISSION_LABEL}`}
                     </span>
                   </td>
                   <td className="p-3 text-stone-600 text-[11px]">
@@ -354,7 +348,7 @@ export const ManageAccount: React.FC = () => {
                       ? 'Seluruh Akses Penuh (Full Access)'
                       : user.role === 'admin_konten'
                       ? 'Berita, Profil, Guru, Prestasi, Galeri'
-                      : 'Data PPDB & Verifikasi Siswa'}
+                      : `Data ${ADMISSION_LABEL} & Verifikasi Siswa`}
                   </td>
                   <td className="p-3">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-800">
@@ -401,7 +395,6 @@ export const ManageAccount: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Contoh: Ustadz Ahmad, S.Pd"
                   value={newUser.full_name}
                   onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -414,7 +407,6 @@ export const ManageAccount: React.FC = () => {
                   <input
                     type="text"
                     required
-                    placeholder="namauser"
                     value={newUser.username}
                     onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -429,7 +421,7 @@ export const ManageAccount: React.FC = () => {
                   >
                     <option value="admin_konten">Admin Konten</option>
                     <option value="superadmin">Super Administrator</option>
-                    <option value="admin_ppdb">Admin PPDB</option>
+                    <option value="admin_ppdb">{`Admin ${ADMISSION_LABEL}`}</option>
                   </select>
                 </div>
               </div>
@@ -439,7 +431,6 @@ export const ManageAccount: React.FC = () => {
                 <input
                   type="email"
                   required
-                  placeholder="pengelola@smpislamcaruy.sch.id"
                   value={newUser.email}
                   onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -452,7 +443,6 @@ export const ManageAccount: React.FC = () => {
                   type="password"
                   required
                   minLength={6}
-                  placeholder="Masukkan kata sandi awal"
                   value={newUser.password}
                   onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"

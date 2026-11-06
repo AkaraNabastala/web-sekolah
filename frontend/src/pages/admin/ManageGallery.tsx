@@ -91,9 +91,6 @@ export const ManageGallery: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Galeri Media</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola dokumentasi foto kegiatan belajar, peringatan hari besar Islam, dan video profil sekolah.
-          </p>
         </div>
 
         <button
@@ -166,7 +163,6 @@ export const ManageGallery: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Misal: Praktikum Mikroskop Lab IPA"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -224,7 +220,6 @@ export const ManageGallery: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">URL Tautan Video (YouTube)</label>
                   <input
                     type="text"
-                    placeholder="https://www.youtube.com/watch?v=..."
                     value={form.video_url}
                     onChange={(e) => setForm({ ...form, video_url: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -236,7 +231,6 @@ export const ManageGallery: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Keterangan / Caption</label>
                 <textarea
                   rows={2}
-                  placeholder="Keterangan singkat kegiatan..."
                   value={form.caption}
                   onChange={(e) => setForm({ ...form, caption: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"

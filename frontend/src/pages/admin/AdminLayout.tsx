@@ -31,6 +31,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { schoolApi } from '../../services/api';
+import { ADMISSION_LABEL } from '../../config/admissions';
 
 export const AdminLayout: React.FC = () => {
   const { admin, isAuthenticated, isLoading, logout } = useAuth();
@@ -78,7 +79,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Galeri & Dokumentasi', path: '/admin/galeri', icon: Image },
     { label: 'Prestasi Sekolah', path: '/admin/prestasi', icon: Trophy },
     { label: 'Fasilitas Belajar', path: '/admin/fasilitas', icon: Landmark },
-    { label: 'Pengaturan PPDB', path: '/admin/ppdb', icon: FileText },
+    { label: `Pengaturan ${ADMISSION_LABEL}`, path: '/admin/ppdb', icon: FileText },
     { label: 'Pesan Masuk', path: '/admin/pesan', icon: Mail, badge: unreadCount },
     { label: 'Pengaturan Website', path: '/admin/pengaturan', icon: Settings },
     { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }

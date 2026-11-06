@@ -170,9 +170,6 @@ export const ManageTeachers: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Guru & Tenaga Kependidikan</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola profil pendidik, mata pelajaran, riwayat pendidikan, dan staf tata usaha sekolah.
-          </p>
         </div>
 
         <button
@@ -180,7 +177,7 @@ export const ManageTeachers: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>{activeTab === 'teachers' ? 'Tambah Guru' : 'Tambah Staf'}</span>
+          <span>{activeTab === 'teachers' ? 'Guru' : 'Staf'}</span>
         </button>
       </div>
 

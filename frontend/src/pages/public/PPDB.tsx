@@ -4,6 +4,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { schoolApi } from '../../services/api';
 import { PPDBInfo } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import {
   Sparkles,
   Calendar,
@@ -15,6 +16,9 @@ import {
   Send,
   HelpCircle
 } from 'lucide-react';
+
+const applyAdmissionLabel = (value?: string | null) =>
+  value ? value.replace(/\bPPDB\b/gi, ADMISSION_LABEL) : '';
 
 export const PPDB: React.FC = () => {
   const [ppdb, setPpdb] = useState<PPDBInfo | null>(null);
@@ -39,7 +43,7 @@ export const PPDB: React.FC = () => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const waText = encodeURIComponent(
-      `*PENDAFTARAN ONLINE PPDB SMP ISLAM CARUY*\n` +
+      `*PENDAFTARAN ONLINE ${ADMISSION_LABEL} SMP ISLAM CARUY*\n` +
       `----------------------------------------\n` +
       `Nama Calon Siswa: ${formData.candidateName}\n` +
       `Asal Sekolah (SD/MI): ${formData.originSchool}\n` +
@@ -59,14 +63,14 @@ export const PPDB: React.FC = () => {
   return (
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
-        title="Informasi PPDB 2026/2027"
-        description="Penerimaan Peserta Didik Baru (PPDB) SMP Islam Caruy - Syarat pendaftaran, jalur beasiswa tahfidz, jadwal gelombang, rincian biaya, dan pra-registrasi online."
+        title={`${ADMISSION_LABEL} ${ppdb?.academic_year || '2026/2027'}`}
+        description={`Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
       />
       <PageHeader
-        title={`PPDB Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`}
+        title={`${ADMISSION_LABEL} Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`}
         subtitle="Penerimaan Peserta Didik Baru SMP Islam Caruy. Mari bergabung membina generasi berkarakter Qurani."
         badge="Penerimaan Santri Baru"
-        breadcrumbs={[{ label: 'Informasi PPDB' }]}
+        breadcrumbs={[{ label: ADMISSION_LABEL }]}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 space-y-12">
@@ -87,7 +91,7 @@ export const PPDB: React.FC = () => {
             </h2>
 
             <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed font-normal">
-              {ppdb?.overview || 'Penerimaan Peserta Didik Baru (PPDB) SMP Islam Caruy telah dibuka resmi. Tersedia beasiswa prestasi dan jalur tahfidz Al-Quran.'}
+              {applyAdmissionLabel(ppdb?.overview) || `Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-4">
@@ -130,9 +134,9 @@ export const PPDB: React.FC = () => {
                 <div className="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-110 transition-transform">
                   {st.step}
                 </div>
-                <h4 className="font-bold text-stone-900 text-base">{st.title}</h4>
+                <h4 className="font-bold text-stone-900 text-base">{applyAdmissionLabel(st.title)}</h4>
                 <p className="text-xs text-stone-600 font-normal leading-relaxed">
-                  {st.desc}
+                  {applyAdmissionLabel(st.desc)}
                 </p>
               </div>
             ))}
@@ -149,7 +153,6 @@ export const PPDB: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-stone-900">Persyaratan Dokumen</h3>
-                <p className="text-xs text-stone-500 font-normal">Berkas yang disiapkan orang tua/wali</p>
               </div>
             </div>
 
@@ -157,7 +160,7 @@ export const PPDB: React.FC = () => {
               {ppdb?.requirements.map((req, idx) => (
                 <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-stone-700 leading-relaxed font-normal">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{req}</span>
+                  <span>{applyAdmissionLabel(req)}</span>
                 </li>
               ))}
             </ul>
@@ -170,8 +173,7 @@ export const PPDB: React.FC = () => {
                 <Calendar className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-stone-900">Jadwal & Agenda PPDB</h3>
-                <p className="text-xs text-stone-500 font-normal">Gelombang pendaftaran dan tahapan</p>
+                <h3 className="text-xl font-bold text-stone-900">Jadwal & Agenda {ADMISSION_LABEL}</h3>
               </div>
             </div>
 
@@ -179,13 +181,13 @@ export const PPDB: React.FC = () => {
               {ppdb?.schedules.map((sch, idx) => (
                 <div key={idx} className="p-3.5 rounded-xl bg-stone-50 border border-stone-100 space-y-1">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-stone-900">{sch.phase}</span>
+                    <span className="font-bold text-stone-900">{applyAdmissionLabel(sch.phase)}</span>
                     <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
                       {sch.period}
                     </span>
                   </div>
                   {sch.notes && (
-                    <p className="text-[11px] text-stone-500 font-normal">{sch.notes}</p>
+                    <p className="text-[11px] text-stone-500 font-normal">{applyAdmissionLabel(sch.notes)}</p>
                   )}
                 </div>
               ))}
@@ -211,7 +213,7 @@ export const PPDB: React.FC = () => {
             </div>
 
             <p className="text-xs sm:text-sm text-stone-600 font-normal leading-relaxed">
-              {ppdb.fees_description}
+              {applyAdmissionLabel(ppdb.fees_description)}
             </p>
 
             <div className="overflow-x-auto">
@@ -226,9 +228,9 @@ export const PPDB: React.FC = () => {
                 <tbody className="divide-y divide-stone-100 font-normal">
                   {ppdb.fees_items.map((fee, idx) => (
                     <tr key={idx} className="hover:bg-stone-50/50">
-                      <td className="py-3.5 px-4 font-medium text-stone-900">{fee.item}</td>
+                      <td className="py-3.5 px-4 font-medium text-stone-900">{applyAdmissionLabel(fee.item)}</td>
                       <td className="py-3.5 px-4 font-bold text-emerald-800">{fee.nominal}</td>
-                      <td className="py-3.5 px-4 text-stone-500">{fee.note || '-'}</td>
+                      <td className="py-3.5 px-4 text-stone-500">{applyAdmissionLabel(fee.note) || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -244,10 +246,9 @@ export const PPDB: React.FC = () => {
               Registrasi Cepat
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
-              Formulir Pra-Pendaftaran PPDB Online
+              Formulir Pra-Pendaftaran {ADMISSION_LABEL} Online
             </h3>
             <p className="text-xs sm:text-sm text-stone-500 font-normal">
-              Isi data awal calon santri untuk langsung terhubung dengan panitia PPDB melalui WhatsApp resmi sekolah.
             </p>
           </div>
 
@@ -258,7 +259,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Nama lengkap ananda"
                   value={formData.candidateName}
                   onChange={(e) => setFormData({ ...formData, candidateName: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -270,7 +270,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Nama sekolah dasar asal"
                   value={formData.originSchool}
                   onChange={(e) => setFormData({ ...formData, originSchool: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -284,7 +283,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Nama orang tua/wali"
                   value={formData.parentName}
                   onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -296,7 +294,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="tel"
                   required
-                  placeholder="Contoh: 081234567890"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -321,7 +318,6 @@ export const PPDB: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Pertanyaan atau Catatan Khusus</label>
               <textarea
                 rows={3}
-                placeholder="Tuliskan jika ada prestasi sebelumnya atau hal yang ingin ditanyakan..."
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"

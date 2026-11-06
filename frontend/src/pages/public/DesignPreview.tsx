@@ -16,6 +16,7 @@ import {
   School
 } from 'lucide-react';
 import { SEO } from '../../components/common/SEO';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import { useSchool } from '../../context/SchoolContext';
 
 export const DesignPreview: React.FC = () => {
@@ -152,7 +153,7 @@ export const DesignPreview: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-2.5">
                     <span className="inline-flex items-center gap-1.5 bg-amber-400 text-emerald-950 px-3.5 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-md">
                       <Sparkles className="w-3.5 h-3.5" />
-                      PPDB 2026/2027 DIBUKA
+                      {ADMISSION_LABEL} 2026/2027 DIBUKA
                     </span>
                     <span className="inline-flex items-center gap-1.5 bg-emerald-900/80 border border-emerald-700/70 text-emerald-200 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                       <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
