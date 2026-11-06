@@ -59,6 +59,9 @@ add('Desain','Uji viewport','PERLU_UJI_BROWSER','Periksa 1440, 1024, 768, 390, d
 const html=read('frontend/index.html')||'';
 add('Performa/SEO/Aksesibilitas','Metadata dasar',/<title[\s>]/i.test(html)&&/name=["']description["']/i.test(html)?'TERINDIKASI':'PERLU_PERBAIKAN','Periksa juga metadata per halaman, canonical, Open Graph, sitemap, robots.');
 add('Performa/SEO/Aksesibilitas','Aksesibilitas','PERLU_UJI_MANUAL','Uji kontras, label form, alt, fokus keyboard, landmark, dan screen reader.','medium');
+const buildScript=read('scripts/buildProduction.ts')||'';
+const preservesDeploymentData=!/rmSync\(DEPLOY_DIR/.test(buildScript)&&/uploads/.test(buildScript)&&/logs/.test(buildScript);
+add('Produksi','Perlindungan data deployment',preservesDeploymentData?'TERINDIKASI':'PERLU_PERBAIKAN','Build hanya membuat ulang output public/backend dan mempertahankan konfigurasi, uploads, logs, serta backup deployment.','high');
 const pkg=JSON.parse(read('package.json')||'{}');
 add('Produksi','Script build',pkg.scripts?.build?'TERINDIKASI':'PERLU_PERBAIKAN','Script: '+(pkg.scripts?.build||'tidak tersedia'));
 add('Produksi','Template environment',exists('backend/.env.example')||exists('.env.example')?'TERINDIKASI':'PERLU_DILENGKAPI','Template membantu konfigurasi tanpa membagikan rahasia.');
