@@ -26,5 +26,7 @@ jobs:
         run: npm ci --prefix backend
       - name: Install frontend dependencies
         run: npm ci --prefix frontend
+      - name: Check audit script syntax
+        run: node --check scripts/auditAll.mjs
       - name: Build backend and frontend
         run: npm run build
