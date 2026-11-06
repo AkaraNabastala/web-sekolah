@@ -59,14 +59,14 @@ const upload = multer({
   }
 });
 
-// Jangan mempercayai MIME type dari browser. Periksa magic bytes sebelum file dipublikasikan.
+// MAGIC_BYTES_VALIDATION: Jangan mempercayai MIME type browser; periksa signature sebelum file dipublikasikan.
 const validateUploadContent = async (req: Request, res: Response, next: (err?: any) => void) => {
   const file = req.file;
   if (!file) {
     return res.status(400).json({ success: false, message: 'Tidak ada berkas yang diunggah.' });
   }
 
-  let handle: fs.promises.FileHandle | undefined;
+  let handle: Awaited<ReturnType<typeof fs.promises.open>> | undefined;
   try {
     handle = await fs.promises.open(file.path, 'r');
     const header = Buffer.alloc(16);
