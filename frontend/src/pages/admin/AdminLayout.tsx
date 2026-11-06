@@ -39,7 +39,7 @@ export const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && admin?.role === 'superadmin') {
       schoolApi.getAdminMessages()
         .then(res => {
           setUnreadCount(res.filter(m => !m.is_read).length);
@@ -48,7 +48,7 @@ export const AdminLayout: React.FC = () => {
           console.error('Gagal memuat jumlah pesan belum dibaca:', error);
         });
     }
-  }, [isAuthenticated, location.pathname]);
+  }, [isAuthenticated, admin?.role, location.pathname]);
 
   if (isLoading) {
     return (
