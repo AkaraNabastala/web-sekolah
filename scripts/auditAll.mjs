@@ -14,7 +14,8 @@ const server=read('backend/src/server.ts')||'', api=read('backend/src/routes/api
 const auth=read('backend/src/middleware/auth.ts')||'', featureFlags=read('backend/src/middleware/featureFlags.ts')||'', ctx=read('frontend/src/context/AuthContext.tsx')||'';
 const frontendApi=read('frontend/src/services/api.ts')||'', app=read('frontend/src/App.tsx')||'';
 const rate=/rateLimit|rate-limit|express-rate-limit/.test(api+server);
-add('Keamanan','Rate limit login',rate?'PERLU_VERIFIKASI':'PERLU_PERBAIKAN',rate?'Indikasi rate limit ditemukan; verifikasi route login benar-benar dilindungi.':'Belum ditemukan penerapan rate limit di api.ts/server.ts.','high');
+const loginRateProtected=/apiRouter\.post\(['"]\/auth\/login['"],\s*requireTrustedOrigin,\s*loginRateLimiter/.test(api);
+add('Keamanan','Rate limit login',loginRateProtected?'TERINDIKASI':rate?'PERLU_VERIFIKASI':'PERLU_PERBAIKAN',loginRateProtected?'Route login memakai limiter dan pemeriksaan Origin; tetap uji pembatasan percobaan secara langsung.':rate?'Indikasi rate limit ditemukan; verifikasi route login benar-benar dilindungi.':'Belum ditemukan penerapan rate limit di api.ts/server.ts.','high');
 const corsOpen=/origin\s*:\s*true/.test(server);
 add('Keamanan','CORS',corsOpen?'PERLU_PERBAIKAN':'PERLU_VERIFIKASI',corsOpen?'origin:true terlalu luas; batasi ke domain resmi.':'Periksa allowlist origin produksi.','high');
 const uploadSignatureValidation=/MAGIC_BYTES_VALIDATION/.test(api)&&/randomUUID/.test(api)&&/fileSize:\s*10\s*\*\s*1024\s*\*\s*1024/.test(api);
@@ -35,6 +36,11 @@ const splitAdminPages=exists('frontend/src/pages/admin/ManageHistory.tsx')&&exis
 add('Arsitektur','Pemisahan halaman admin',splitAdminPages?'TERINDIKASI':'PERLU_PERBAIKAN','Identitas, sambutan, sejarah, dan visi-misi memiliki file halaman tersendiri.','medium');
 const splitModels=exists('frontend/src/models/school.ts')&&exists('frontend/src/models/people.ts')&&exists('frontend/src/models/news.ts')&&exists('frontend/src/models/index.ts');
 add('Arsitektur','Pemisahan domain models',splitModels?'TERINDIKASI':'PERLU_PERBAIKAN','Interface domain dipisahkan ke frontend/src/models dan diekspor melalui barrel.','medium');
+const adminRouteLines=api.split('\n').filter(line=>/apiRouter\.(get|post|put|patch|delete)\(\s*['"]\/admin\//.test(line));
+const unguardedAdminRoutes=adminRouteLines.filter(line=>!/require(Admin|Superadmin|ContentAdmin|PpdbAdmin)/.test(line));
+const dashboardRoutes=read('backend/src/routes/dashboardRoutes.ts')||'';
+const dashboardGuarded=/dashboardRouter\.(get|post|put|patch|delete)\(/.test(dashboardRoutes)&&/requireAdmin/.test(dashboardRoutes);
+add('Keamanan','Proteksi route admin',unguardedAdminRoutes.length===0&&dashboardGuarded?'TERINDIKASI':'PERLU_PERBAIKAN',unguardedAdminRoutes.length===0?'Semua route admin langsung dan router dashboard memiliki middleware autentikasi/otorisasi.':'Route tanpa guard: '+unguardedAdminRoutes.length,'high');
 const routes=[...api.matchAll(/apiRouter\.(get|post|put|patch|delete)\(\s*['"]([^'"]+)/g)];
 add('Fungsi','Inventaris route API','TERINDIKASI','Ditemukan '+routes.length+' deklarasi route langsung di api.ts; router terpisah perlu ikut diaudit.');
 const seen=new Set(),dups=new Set();
