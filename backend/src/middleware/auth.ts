@@ -97,14 +97,20 @@ export function requireAdmin(req: AuthenticatedRequest, res: Response, next: Nex
   }).catch(next);
 }
 
-export function requireSuperadmin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  requireAdmin(req, res, () => {
-    if (req.user?.role !== 'superadmin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Hak akses tidak memadai. Fitur ini hanya untuk Superadmin.'
-      });
-    }
-    next();
-  });
+export function requireRoles(...allowedRoles: string[]) {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    requireAdmin(req, res, () => {
+      if (!req.user || !allowedRoles.includes(req.user.role)) {
+        return res.status(403).json({
+          success: false,
+          message: 'Hak akses tidak memadai untuk menjalankan fitur ini.'
+        });
+      }
+      return next();
+    });
+  };
 }
+
+export const requireSuperadmin = requireRoles('superadmin');
+export const requireContentAdmin = requireRoles('superadmin', 'admin_konten');
+export const requirePpdbAdmin = requireRoles('superadmin', 'admin_ppdb');
