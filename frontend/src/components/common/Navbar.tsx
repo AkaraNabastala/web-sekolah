@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { profile } = useSchool();
+  const { profile, settings } = useSchool();
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#ECE7DD] shadow-sm font-['Poppins',sans-serif]">
       {/* Top Bar Informasi Kontak & Legalitas */}
-      <div className="bg-[#132A1E] text-[#D5E0D7] text-xs py-2 px-4 sm:px-6 lg:px-8 border-b border-[#1D3B2B] hidden md:block">
+      <div className="text-[#D5E0D7] text-xs py-2 px-4 sm:px-6 lg:px-8 border-b hidden md:block" style={{ backgroundColor: "var(--school-primary)", borderColor: "var(--school-secondary)"">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
@@ -106,10 +106,10 @@ export const Navbar: React.FC = () => {
             </div>
             <div>
               <span className="text-base sm:text-lg font-black tracking-tight text-[#1F2621] block leading-tight">
-                SMP ISLAM CARUY
+                {settings?.school_name || profile?.name || 'Nama Sekolah'}
               </span>
               <span className="text-[11px] font-semibold text-[#2A5C40] tracking-wide block uppercase">
-                Cipari • Cilacap
+                {settings?.tagline || profile?.district || profile?.regency || 'Website Resmi Sekolah'}
               </span>
             </div>
           </Link>
