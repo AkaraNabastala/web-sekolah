@@ -1,157 +1,104 @@
 import React, { useEffect, useState } from 'react';
+import { Plus, Save, Trash2 } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
 import { schoolApi } from '../../services/api';
-import { SchoolProfile, SchoolVisionMission, SchoolHistory } from '../../types';
-import { useSchool } from '../../context/SchoolContext';
-import {
-  Save, CheckCircle, Building, User, Compass, BookOpen, Plus, Trash2,
-  AlertCircle, Upload, Calendar, Layers, Sparkles
-} from 'lucide-react';
+import { SchoolVisionMission } from '../../types';
+
+const fieldClass = "w-full rounded-xl border border-stone-200 bg-white px-3.5 py-3 text-sm text-stone-800 outline-none transition focus:border-[var(--school-primary)] focus:ring-2 focus:ring-stone-100";
 
 export const ManageVisionMission: React.FC = () => {
-  const [visionMission, setVisionMission] = useState<SchoolVisionMission | null>(null);
+  const [data, setData] = useState<SchoolVisionMission | null>(null);
   const [saving, setSaving] = useState(false);
-  useEffect(() => { schoolApi.getVisionMission().then(setVisionMission).catch(() => toast.error('Gagal memuat visi dan misi.')); }, []);
-  const handleSaveVisionMission = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!visionMission) return;
-    setSaving(true);
-    try { const res = await schoolApi.updateVisionMission(visionMission); if (res.success) toast.success('Visi, misi, dan tujuan berhasil diperbarui!'); }
-    catch { toast.error('Gagal menyimpan visi dan misi.'); }
-    finally { setSaving(false); }
+
+  useEffect(() => {
+    schoolApi.getVisionMission()
+      .then(result => setData({ ...result, missions: result.missions || [], goals: result.goals || [] }))
+      .catch(() => toast.error('Gagal memuat visi dan misi.'));
+  }, []);
+
+  const updateMission = (index: number, value: string) => {
+    if (!data) return;
+    const missions = [...(data.missions || [])];
+    missions[index] = value;
+    setData({ ...data, missions });
   };
+
+  const save = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!data) return;
+    setSaving(true);
+    try {
+      const result = await schoolApi.updateVisionMission(data);
+      if (result.success) toast.success('Visi dan misi berhasil disimpan.');
+    } catch {
+      toast.error('Gagal menyimpan visi dan misi.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!data) return <div className="p-8 text-center text-sm text-stone-500">Memuat data...</div>;
+
   return (
-    <div className="space-y-6 font-poppins pb-12">
-      <div>
-        <h1 className="text-2xl font-bold text-stone-900">Visi, Misi & Tujuan Sekolah</h1>
-        <p className="text-xs text-stone-500 font-normal mt-0.5">Kelola rumusan visi, misi, dan tujuan pendidikan SMP Islam Caruy.</p>
+    <div className="space-y-6 pb-12">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-stone-900">Visi dan Misi</h1>
+        <button form="vision-mission-form" type="submit" disabled={saving} className="inline-flex items-center gap-2 rounded-xl bg-[var(--school-primary)] px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">
+          <Save className="h-4 w-4" />{saving ? 'Menyimpan...' : 'Simpan'}
+        </button>
       </div>
-      {visionMission && (<form onSubmit={handleSaveVisionMission} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
-          <div className="border-b border-stone-100 pb-4">
-            <h2 className="text-base font-bold text-stone-900">Visi, Misi, Tujuan & Nilai Utama</h2>
-            <p className="text-xs text-stone-400 font-normal mt-0.5">Rumusan arah haluan pembinaan karakter peserta didik SMP Islam Caruy</p>
-          </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-stone-700">Rumusan Visi Sekolah</label>
-            <textarea
-              rows={3}
-              value={visionMission.vision}
-              onChange={(e) => setVisionMission({ ...visionMission, vision: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-medium"
-            />
-          </div>
+      <form id="vision-mission-form" onSubmit={save} className="space-y-6">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <section className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5 sm:p-6">
+            <h2 className="text-lg font-semibold text-stone-900">Visi</h2>
+            <textarea rows={8} value={data.vision || ''} onChange={event => setData({ ...data, vision: event.target.value })} className={fieldClass} />
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-stone-600">Motto (opsional)</label>
+              <input value={data.vision_motto || ''} onChange={event => setData({ ...data, vision_motto: event.target.value })} className={fieldClass} />
+            </div>
+          </section>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-stone-700">Motto Singkat Visi</label>
-            <input
-              type="text"
-              value={visionMission.vision_motto}
-              onChange={(e) => setVisionMission({ ...visionMission, vision_motto: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-            />
-          </div>
-
-          {/* CRUD DAFTAR MISI */}
-          <div className="space-y-3 pt-3 border-t border-stone-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-xs font-bold text-stone-800">Daftar Misi Sekolah</label>
-                <p className="text-[11px] text-stone-400">Langkah strategis perwujudan visi</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setVisionMission({ ...visionMission, missions: [...visionMission.missions, ''] })}
-                className="text-xs text-emerald-700 font-bold flex items-center gap-1 hover:underline bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Tambah Misi</span>
+          <section className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-stone-900">Misi</h2>
+              <button type="button" onClick={() => setData({ ...data, missions: [...(data.missions || []), ''] })} className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50">
+                <Plus className="h-4 w-4" />Tambah poin
               </button>
             </div>
+            <div className="max-h-[32rem] space-y-3 overflow-y-auto pr-1">
+              {(data.missions || []).map((mission, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <span className="mt-3 w-7 shrink-0 text-sm font-semibold text-stone-400">{index + 1}.</span>
+                  <textarea rows={3} value={mission} onChange={event => updateMission(index, event.target.value)} className={fieldClass} />
+                  <button type="button" onClick={() => setData({ ...data, missions: data.missions.filter((_, i) => i !== index) })} aria-label={`Hapus misi ${index + 1}`} className="mt-2 rounded-lg p-2 text-stone-400 hover:bg-red-50 hover:text-red-600">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+              {(!data.missions || data.missions.length === 0) && <p className="text-sm text-stone-400">Belum ada poin misi.</p>}
+            </div>
+          </section>
+        </div>
 
-            {visionMission.missions.map((m, idx) => (
-              <div key={idx} className="flex gap-2 items-center">
-                <span className="w-6 text-xs text-stone-400 font-bold">{idx + 1}.</span>
-                <input
-                  type="text"
-                  value={m}
-                  onChange={(e) => {
-                    const newM = [...visionMission.missions];
-                    newM[idx] = e.target.value;
-                    setVisionMission({ ...visionMission, missions: newM });
-                  }}
-                  className="flex-1 px-3 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const newM = visionMission.missions.filter((_, i) => i !== idx);
-                    setVisionMission({ ...visionMission, missions: newM });
-                  }}
-                  className="p-2 text-stone-400 hover:text-red-600 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
+        <section className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-stone-900">Tujuan Sekolah</h2>
+            <button type="button" onClick={() => setData({ ...data, goals: [...(data.goals || []), ''] })} className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50">
+              <Plus className="h-4 w-4" />Tambah tujuan
+            </button>
           </div>
-
-          {/* CRUD DAFTAR TUJUAN SEKOLAH */}
-          <div className="space-y-3 pt-3 border-t border-stone-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-xs font-bold text-stone-800">Tujuan Satuan Pendidikan</label>
-                <p className="text-[11px] text-stone-400">Target capaian lulusan dan kultur sekolah</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  const curGoals = visionMission.goals || [];
-                  setVisionMission({ ...visionMission, goals: [...curGoals, ''] });
-                }}
-                className="text-xs text-emerald-700 font-bold flex items-center gap-1 hover:underline bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Tambah Tujuan</span>
+          {(data.goals || []).map((goal, index) => (
+            <div key={index} className="flex items-start gap-2">
+              <span className="mt-3 w-7 shrink-0 text-sm font-semibold text-stone-400">{index + 1}.</span>
+              <textarea rows={2} value={goal} onChange={event => { const goals = [...(data.goals || [])]; goals[index] = event.target.value; setData({ ...data, goals }); }} className={fieldClass} />
+              <button type="button" onClick={() => setData({ ...data, goals: (data.goals || []).filter((_, i) => i !== index) })} aria-label={`Hapus tujuan ${index + 1}`} className="mt-2 rounded-lg p-2 text-stone-400 hover:bg-red-50 hover:text-red-600">
+                <Trash2 className="h-4 w-4" />
               </button>
             </div>
-
-            {(visionMission.goals || []).map((goal, idx) => (
-              <div key={idx} className="flex gap-2 items-center">
-                <span className="w-6 text-xs text-stone-400 font-bold">{idx + 1}.</span>
-                <input
-                  type="text"
-                  value={goal}
-                  onChange={(e) => {
-                    const newGoals = [...(visionMission.goals || [])];
-                    newGoals[idx] = e.target.value;
-                    setVisionMission({ ...visionMission, goals: newGoals });
-                  }}
-                  className="flex-1 px-3 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const newGoals = (visionMission.goals || []).filter((_, i) => i !== idx);
-                    setVisionMission({ ...visionMission, goals: newGoals });
-                  }}
-                  className="p-2 text-stone-400 hover:text-red-600 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl shadow-md transition-all flex items-center gap-2"
-          >
-            <Save className="w-4 h-4" />
-            <span>{saving ? 'Menyimpan...' : 'Simpan Visi & Misi'}</span>
-          </button>
-        </form>)}
+          ))}
+        </section>
+      </form>
     </div>
   );
 };
