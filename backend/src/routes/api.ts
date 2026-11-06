@@ -653,11 +653,14 @@ apiRouter.put('/admin/school-profile', requireAdmin, async (req: Request, res: R
   const pool = getPool();
   try {
     await pool.query(
-      `UPDATE school_profile SET name = ?, npsn = ?, accreditation = ?, headmaster_name = ?, headmaster_photo = ?, headmaster_welcome = ?, description = ?, address = ?, phone = ?, whatsapp = ?, email = ?, maps_embed_url = ?, updated_at = NOW() WHERE id = 1`,
+      `UPDATE school_profile SET name = ?, npsn = ?, education_level = ?, status = ?, accreditation = ?, founding_year = ?, headmaster_name = ?, headmaster_photo = ?, headmaster_welcome = ?, description = ?, address = ?, village = ?, district = ?, regency = ?, province = ?, postal_code = ?, phone = ?, whatsapp = ?, email = ?, maps_embed_url = ?, updated_at = NOW() WHERE id = 1`,
       [
-        req.body.name, req.body.npsn, req.body.accreditation, req.body.headmaster_name,
-        req.body.headmaster_photo, req.body.headmaster_welcome, req.body.description,
-        req.body.address, req.body.phone, req.body.whatsapp, req.body.email, req.body.maps_embed_url
+        req.body.name || 'SMP Islam Caruy', req.body.npsn || null, req.body.education_level || 'Sekolah Menengah Pertama (SMP)',
+        req.body.status || 'Swasta', req.body.accreditation || null, req.body.founding_year || null,
+        req.body.headmaster_name || '', req.body.headmaster_photo || null, req.body.headmaster_welcome || '',
+        req.body.description || '', req.body.address || '', req.body.village || '', req.body.district || '',
+        req.body.regency || '', req.body.province || '', req.body.postal_code || '', req.body.phone || '',
+        req.body.whatsapp || '', req.body.email || '', req.body.maps_embed_url || null
       ]
     );
   } catch (err: any) {
@@ -933,7 +936,7 @@ apiRouter.post('/admin/achievements', requireAdmin, async (req: Request, res: Re
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
-      `INSERT INTO achievements (title, student_or_team, level, category, rank_position, year, organizer, photo, description)
+      `INSERT INTO achievements (title, student_or_team, level, category, rank, year, organizer, photo, description)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [req.body.title, req.body.student_or_team || '', req.body.level || 'Kabupaten', req.body.category || 'Akademik', req.body.rank || req.body.rank_position || 'Juara 1', req.body.year || '2025', req.body.organizer || '', req.body.photo || null, req.body.description || '']
     );
@@ -956,7 +959,7 @@ apiRouter.put('/admin/achievements/:id', requireAdmin, async (req: Request, res:
   const pool = getPool();
   try {
     await pool.query(
-      `UPDATE achievements SET title = ?, student_or_team = ?, level = ?, category = ?, rank_position = ?, year = ?, organizer = ?, photo = ?, description = ? WHERE id = ?`,
+      `UPDATE achievements SET title = ?, student_or_team = ?, level = ?, category = ?, rank = ?, year = ?, organizer = ?, photo = ?, description = ? WHERE id = ?`,
       [req.body.title, req.body.student_or_team || '', req.body.level || 'Kabupaten', req.body.category || 'Akademik', req.body.rank || req.body.rank_position || 'Juara 1', req.body.year || '2025', req.body.organizer || '', req.body.photo || null, req.body.description || '', id]
     );
     return res.json({ success: true, message: 'Prestasi berhasil diperbarui.' });
@@ -1205,8 +1208,15 @@ apiRouter.put('/admin/ppdb', requireAdmin, async (req: Request, res: Response) =
   const pool = getPool();
   try {
     await pool.query(
-      `UPDATE ppdb_information SET academic_year = ?, is_open = ?, start_date = ?, end_date = ?, overview = ?, contact_person = ?, contact_phone = ?, contact_whatsapp = ?, updated_at = NOW() WHERE id = 1`,
-      [req.body.academic_year, req.body.is_open ? 1 : 0, req.body.start_date || null, req.body.end_date || null, req.body.overview, req.body.contact_person || '', req.body.contact_phone || '', req.body.contact_whatsapp || '']
+      `UPDATE ppdb_information SET academic_year = ?, is_open = ?, start_date = ?, end_date = ?, banner_image = ?, overview = ?, requirements = ?, schedules = ?, steps = ?, show_fees = ?, fees_description = ?, fees_items = ?, contact_person = ?, contact_phone = ?, contact_whatsapp = ?, registration_url = ?, updated_at = NOW() WHERE id = 1`,
+      [
+        req.body.academic_year || 'Belum ditentukan', req.body.is_open ? 1 : 0, req.body.start_date || null,
+        req.body.end_date || null, req.body.banner_image || null, req.body.overview || '',
+        JSON.stringify(req.body.requirements || []), JSON.stringify(req.body.schedules || []),
+        JSON.stringify(req.body.steps || []), req.body.show_fees ? 1 : 0, req.body.fees_description || '',
+        JSON.stringify(req.body.fees_items || []), req.body.contact_person || '', req.body.contact_phone || '',
+        req.body.contact_whatsapp || '', req.body.registration_url || '/ppdb#daftar-online'
+      ]
     );
   } catch (err: any) {
     logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
@@ -1228,18 +1238,22 @@ apiRouter.put('/admin/settings', requireAdmin, async (req: Request, res: Respons
   try {
     await pool.query(
       `UPDATE website_settings SET
-         school_name = ?, tagline = ?, hero_title = ?, hero_subtitle = ?,
-         primary_color = ?, secondary_color = ?, accent_orange = ?, accent_blue = ?,
-         feature_flags = ?, facebook_url = ?, instagram_url = ?, youtube_url = ?, tiktok_url = ?,
-         seo_title = ?, seo_description = ?, footer_text = ?, updated_at = NOW()
+         school_name = ?, tagline = ?, logo_url = ?, favicon_url = ?, hero_title = ?, hero_subtitle = ?, hero_image = ?,
+         primary_color = ?, secondary_color = ?, accent_orange = ?, accent_blue = ?, feature_flags = ?,
+         facebook_url = ?, instagram_url = ?, youtube_url = ?, tiktok_url = ?,
+         seo_title = ?, seo_description = ?, footer_text = ?,
+         stats_students = ?, stats_teachers = ?, stats_alumni = ?, stats_achievements = ?, updated_at = NOW()
        WHERE id = 1`,
       [
-        req.body.school_name, req.body.tagline || '', req.body.hero_title || '', req.body.hero_subtitle || '',
+        req.body.school_name || 'SMP Islam Caruy', req.body.tagline || '', req.body.logo_url || '',
+        req.body.favicon_url || '', req.body.hero_title || '', req.body.hero_subtitle || '', req.body.hero_image || '',
         req.body.primary_color || '#1B3B2B', req.body.secondary_color || '#E5C178',
         req.body.accent_orange || '#F97316', req.body.accent_blue || '#0284C7',
         JSON.stringify(req.body.feature_flags || {}), req.body.facebook_url || '',
         req.body.instagram_url || '', req.body.youtube_url || '', req.body.tiktok_url || '',
-        req.body.seo_title || '', req.body.seo_description || '', req.body.footer_text || ''
+        req.body.seo_title || '', req.body.seo_description || '', req.body.footer_text || '',
+        Number(req.body.stats_students) || 0, Number(req.body.stats_teachers) || 0,
+        Number(req.body.stats_alumni) || 0, Number(req.body.stats_achievements) || 0
       ]
     );
   } catch (err: any) {
