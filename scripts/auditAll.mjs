@@ -27,6 +27,14 @@ const dbSessionValidation=/jwt\.verify/.test(auth)&&/SELECT id, username, role, 
 add('Keamanan','Verifikasi JWT',dbSessionValidation?'TERINDIKASI':'PERLU_PERBAIKAN','JWT diverifikasi dan status akun/role/auth_version dibaca ulang dari database; role matrix tetap perlu diuji.','medium');
 const featureFlagGuard=/requireFeatureEnabled/.test(api)&&/feature_flags/.test(featureFlags);
 add('Keamanan','Proteksi feature flags backend',featureFlagGuard?'TERINDIKASI':'PERLU_PERBAIKAN','Middleware backend memeriksa feature flags pada endpoint publik dan admin; uji modul nonaktif secara langsung.','high');
+const roleMatrix=/requireContentAdmin/.test(api)&&/requirePpdbAdmin/.test(api)&&/requireSuperadmin/.test(api)&&/requireRoles/.test(auth);
+add('Keamanan','Otorisasi berdasarkan peran',roleMatrix?'TERINDIKASI':'PERLU_PERBAIKAN','API membedakan Superadmin, Admin Konten, dan Admin PPDB; uji akun tiap peran secara langsung.','high');
+const authVersionMigration=/auth_version/.test(read('backend/src/scripts/migrate.ts')||'')&&/auth_version/.test(read('backend/database/schema.sql')||'');
+add('Keamanan','Migrasi pencabutan sesi',authVersionMigration?'TERINDIKASI':'PERLU_PERBAIKAN','Skema dan migrasi menyediakan auth_version untuk mencabut sesi lama setelah perubahan password.','medium');
+const splitAdminPages=exists('frontend/src/pages/admin/ManageHistory.tsx')&&exists('frontend/src/pages/admin/ManageVisionMission.tsx')&&exists('frontend/src/pages/admin/ManageWelcome.tsx')&&!/initialTab/.test(read('frontend/src/pages/admin/ManageProfile.tsx')||'');
+add('Arsitektur','Pemisahan halaman admin',splitAdminPages?'TERINDIKASI':'PERLU_PERBAIKAN','Identitas, sambutan, sejarah, dan visi-misi memiliki file halaman tersendiri.','medium');
+const splitModels=exists('frontend/src/models/school.ts')&&exists('frontend/src/models/people.ts')&&exists('frontend/src/models/news.ts')&&exists('frontend/src/models/index.ts');
+add('Arsitektur','Pemisahan domain models',splitModels?'TERINDIKASI':'PERLU_PERBAIKAN','Interface domain dipisahkan ke frontend/src/models dan diekspor melalui barrel.','medium');
 const routes=[...api.matchAll(/apiRouter\.(get|post|put|patch|delete)\(\s*['"]([^'"]+)/g)];
 add('Fungsi','Inventaris route API','TERINDIKASI','Ditemukan '+routes.length+' deklarasi route langsung di api.ts; router terpisah perlu ikut diaudit.');
 const seen=new Set(),dups=new Set();
