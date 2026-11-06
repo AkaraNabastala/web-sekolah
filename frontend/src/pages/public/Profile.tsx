@@ -117,7 +117,7 @@ export const Profile: React.FC = () => {
               {profile?.description || 'SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di Desa Caruy, Kecamatan Cipari, Kabupaten Cilacap.'}
             </p>
             <p>
-              Penyelenggaraan pendidikan di SMP Islam Caruy dirancang dengan pendekatan holistik (menyeluruh). Di samping memenuhi kompetensi kurikulum nasional dari Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi, sekolah mengintegrasikan muatan lokal kepesantrenan seperti pembiasaan tadarus Al-Quran, Tahfidzul Quran terstruktur, bahasa Arab komunikatif, serta kajian fiqih ibadah praktis.
+              Pendidikan di SMP Islam Caruy mengikuti kurikulum nasional dengan penguatan pendidikan agama Islam, karakter, dan budi pekerti.
             </p>
             <p>
               Iklim sekolah yang asri, tenang, dan jauh dari kebisingan kota menciptakan suasana yang sangat kondusif untuk menumbuhkan minat belajar, kematangan budi pekerti, dan kepedulian sosial terhadap sesama.
