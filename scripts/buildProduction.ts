@@ -66,9 +66,10 @@ async function buildProduction() {
     copyRecursive(path.join(ROOT_DIR, 'frontend', 'dist'), path.join(DEPLOY_DIR, 'public'));
     // Salin backend dist ke deployment/backend
     copyRecursive(path.join(ROOT_DIR, 'backend', 'dist'), path.join(DEPLOY_DIR, 'backend'));
-    // Salin hanya skema dan seed SQL. Data fallback JSON hanya untuk development
-    // dan tidak boleh ikut masuk ke paket produksi.
+    // Salin skema, migrasi, dan seed SQL agar bootstrap produksi dapat
+    // menerapkan perubahan database. Data fallback JSON tetap dikecualikan.
     copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'schema.sql'), path.join(DEPLOY_DIR, 'database', 'schema.sql'));
+    copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'migrations'), path.join(DEPLOY_DIR, 'database', 'migrations'));
     copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'seeds'), path.join(DEPLOY_DIR, 'database', 'seeds'));
 
     // 5. Generate package.json dan server entry point khusus deployment
