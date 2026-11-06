@@ -69,6 +69,17 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
       logger.info('MigrationService', 'Kolom website_settings.feature_flags berhasil ditambahkan.');
     }
 
+    // 1c. Tambahkan versi autentikasi untuk pencabutan seluruh sesi setelah perubahan password.
+    const [authVersionColumns]: any = await pool.query(
+      `SELECT COUNT(*) AS total FROM information_schema.columns
+       WHERE table_schema = ? AND table_name = 'admins' AND column_name = 'auth_version'`,
+      [dbInfo.database]
+    );
+    if (Number(authVersionColumns[0]?.total || 0) === 0) {
+      await pool.query('ALTER TABLE admins ADD COLUMN auth_version INT NOT NULL DEFAULT 0');
+      logger.info('MigrationService', 'Kolom admins.auth_version berhasil ditambahkan.');
+    }
+
     // 1c. Inisialisasi record minimum yang dibutuhkan formulir admin.
     // Hanya membuat baris jika tabel benar-benar kosong; tidak mengimpor data demo dari data.json.
     await pool.query(
