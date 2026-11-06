@@ -222,7 +222,7 @@ export const ManageSettings: React.FC = () => {
             {FEATURE_OPTIONS.map(feature => (
               <label key={feature.key} className="flex items-start gap-3 p-3 rounded-xl border border-stone-200 hover:border-emerald-300 cursor-pointer">
                 <input type="checkbox" checked={normalizeFeatureFlags(settings.feature_flags)[feature.key] !== false} onChange={e => setSettings({ ...settings, feature_flags: { ...normalizeFeatureFlags(settings.feature_flags), [feature.key]: e.target.checked } })} className="mt-0.5 accent-emerald-700" />
-                <span><span className="block text-xs font-bold text-stone-800">{feature.label}</span><span className="block text-[11px] text-stone-500 mt-0.5">{feature.description}</span></span>
+                <span className="block text-xs font-bold text-stone-800">{feature.label}</span>
               </label>
             ))}
           </div>
