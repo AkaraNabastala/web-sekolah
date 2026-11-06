@@ -4,6 +4,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { schoolApi } from '../../services/api';
 import { Facility } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 import { Building, Users, CheckCircle, Shield } from 'lucide-react';
 
 export const Facilities: React.FC = () => {
@@ -95,9 +96,7 @@ export const Facilities: React.FC = () => {
                   )}
                 </div>
 
-                <p className="text-xs text-stone-600 font-normal leading-relaxed">
-                  {fac.description}
-                </p>
+                <RichTextContent value={fac.description} className="text-xs text-stone-600 font-normal leading-relaxed"/>
               </div>
             </div>
           ))}
