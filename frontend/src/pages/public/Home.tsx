@@ -907,59 +907,23 @@ export const Home: React.FC = () => {
 
       {/* 13. CALL TO ACTION / HUBUNGI SEKOLAH (RESMI & HANGAT) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#132A1E] text-white">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <ScrollReveal animation="fade-up" className="lg:col-span-8 space-y-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#E5C178]">
-              Layanan Informasi & Silaturahmi
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#FAF9F5] tracking-tight">
-              Kunjungi Kampus Kami atau Hubungi Sekretariat
-            </h2>
-            <p className="text-xs sm:text-sm text-[#D5E0D7] font-normal leading-relaxed max-w-xl">
-              Pintu silaturahmi SMP Islam Caruy senantiasa terbuka bagi calon orang tua/wali siswa, alumni, dan masyarakat luas yang ingin berkonsultasi mengenai pendidikan putra-putrinya.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-xs text-[#E6EFE9]">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#E5C178] shrink-0 mt-0.5" />
-                <span>{profile?.address || 'Desa Caruy, Kec. Cipari, Kabupaten Cilacap, Jawa Tengah 53262'}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <PhoneCall className="w-4 h-4 text-[#E5C178] shrink-0 mt-0.5" />
-                <span>WhatsApp / Telp: {profile?.phone || '0821-3297-2773'}</span>
-              </div>
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-12">
+          <div className="space-y-4 lg:col-span-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--school-secondary)]">Informasi Kontak</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">Hubungi Sekolah</h2>
+            <div className="grid grid-cols-1 gap-4 pt-2 text-sm text-white/80 sm:grid-cols-2">
+              {profile?.address && <div className="flex items-start gap-3"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--school-secondary)]" /><span>{profile.address}</span></div>}
+              {profile?.phone && <div className="flex items-start gap-3"><PhoneCall className="mt-0.5 h-4 w-4 shrink-0 text-[var(--school-secondary)]" /><a href={`tel:${profile.phone}`} className="hover:text-white">{profile.phone}</a></div>}
+              {profile?.email && <div className="flex items-start gap-3"><FileText className="mt-0.5 h-4 w-4 shrink-0 text-[var(--school-secondary)]" /><a href={`mailto:${profile.email}`} className="hover:text-white">{profile.email}</a></div>}
             </div>
-
-            <div className="pt-2">
-              <a
-                href="https://maps.app.goo.gl/bXeheSRzzDqizqT6A"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-xs font-semibold text-[#E8CF94] hover:underline"
-              >
-                <span>Buka di Google Maps (Navigasi Rute)</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal animation="fade-up" delay={200} className="lg:col-span-4 flex flex-col gap-3.5">
-            <Link
-              to="/kontak"
-              className="inline-flex items-center justify-center gap-2 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-xs uppercase tracking-wider px-7 py-4 rounded-xl shadow-md transition-all text-center"
-            >
-              <span>Kirim Pesan ke Sekolah</span>
-              <ArrowRight className="w-4 h-4" />
+            {profile?.maps_embed_url && <a href={profile.maps_embed_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--school-secondary)] hover:underline"><MapPin className="h-4 w-4" />Lihat lokasi sekolah</a>}
+          </div>
+          <div className="flex flex-col gap-3 lg:col-span-4">
+            <Link to="/kontak" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--school-secondary)] px-6 py-4 text-sm font-semibold text-stone-950 transition-colors hover:opacity-90">
+              <span>Hubungi Sekolah</span><ArrowRight className="h-4 w-4" />
             </Link>
-            <a
-              href={`https://wa.me/${(profile?.whatsapp || '6282132972773').replace(/[^0-9]/g, '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/20 font-medium text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all text-center"
-            >
-              <span>Chat WhatsApp Resmi</span>
-            </a>
-          </ScrollReveal>
+            {profile?.whatsapp && <a href={`https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-white/15"><PhoneCall className="h-4 w-4" /><span>WhatsApp Sekolah</span></a>}
+          </div>
         </div>
       </section>
     </div>
