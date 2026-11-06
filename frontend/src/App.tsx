@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { SchoolProvider, useSchool } from './context/SchoolContext';
 
 // Common Components
@@ -85,6 +85,15 @@ const FeatureRoute: React.FC<{ feature: string; children: React.ReactNode }> = (
   return flags && flags[feature] === false ? <Navigate to="/" replace /> : <>{children}</>;
 };
 
+const RoleRoute: React.FC<{ roles: string[]; children: React.ReactNode }> = ({ roles, children }) => {
+  const { admin } = useAuth();
+  return admin && roles.includes(admin.role) ? <>{children}</> : <Navigate to="/admin" replace />;
+};
+
+const CONTENT_ADMIN_ROLES = ['superadmin', 'admin_konten'];
+const PPDB_ADMIN_ROLES = ['superadmin', 'admin_ppdb'];
+const SUPERADMIN_ROLES = ['superadmin'];
+
 export const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -122,23 +131,23 @@ export const App: React.FC = () => {
             {/* PROTECTED ADMIN DASHBOARD ROUTES */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<DashboardHome />} />
-              <Route path="statistik" element={<VisitorStats />} />
-              <Route path="profil" element={<ManageProfile />} />
-              <Route path="sambutan" element={<ManageWelcome />} />
-              <Route path="sejarah" element={<ManageHistory />} />
-              <Route path="visi-misi" element={<ManageVisionMission />} />
-              <Route path="berita" element={<ManageNews />} />
-              <Route path="agenda" element={<ManageAgendas />} />
-              <Route path="program" element={<ManagePrograms />} />
-              <Route path="guru-staf" element={<ManageTeachers />} />
-              <Route path="organisasi" element={<ManageOrganization />} />
-              <Route path="galeri" element={<ManageGallery />} />
-              <Route path="prestasi" element={<ManageAchievements />} />
-              <Route path="fasilitas" element={<ManageFacilities />} />
-              <Route path="ppdb" element={<ManagePPDB />} />
-              <Route path="pesan" element={<ManageMessages />} />
-              <Route path="pengaturan" element={<ManageSettings />} />
-              <Route path="akun" element={<ManageAccount />} />
+              <Route path="statistik" element={<RoleRoute roles={SUPERADMIN_ROLES}><VisitorStats /></RoleRoute>} />
+              <Route path="profil" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageProfile /></RoleRoute>} />
+              <Route path="sambutan" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageWelcome /></RoleRoute>} />
+              <Route path="sejarah" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageHistory /></RoleRoute>} />
+              <Route path="visi-misi" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageVisionMission /></RoleRoute>} />
+              <Route path="berita" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageNews /></RoleRoute>} />
+              <Route path="agenda" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageAgendas /></RoleRoute>} />
+              <Route path="program" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManagePrograms /></RoleRoute>} />
+              <Route path="guru-staf" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageTeachers /></RoleRoute>} />
+              <Route path="organisasi" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageOrganization /></RoleRoute>} />
+              <Route path="galeri" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageGallery /></RoleRoute>} />
+              <Route path="prestasi" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageAchievements /></RoleRoute>} />
+              <Route path="fasilitas" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageFacilities /></RoleRoute>} />
+              <Route path="ppdb" element={<RoleRoute roles={PPDB_ADMIN_ROLES}><ManagePPDB /></RoleRoute>} />
+              <Route path="pesan" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageMessages /></RoleRoute>} />
+              <Route path="pengaturan" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageSettings /></RoleRoute>} />
+              <Route path="akun" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageAccount /></RoleRoute>} />
             </Route>
 
             {/* 404 NOT FOUND ROUTE */}
