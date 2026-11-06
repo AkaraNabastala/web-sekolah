@@ -18,7 +18,7 @@ export const FloatingWhatsApp: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const waNum = profile?.whatsapp?.replace(/\\D/g, '');
+  const waNum = profile?.whatsapp?.replace(/\D/g, '');
   const waMsg = encodeURIComponent('Assalamu’alaikum, saya ingin bertanya mengenai informasi sekolah.');
   const waUrl = waNum ? `https://wa.me/${waNum}?text=${waMsg}` : null;
 
