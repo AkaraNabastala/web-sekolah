@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PageHeader } from '../../components/common/PageHeader';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 import { SEO } from '../../components/common/SEO';
 import { ScrollReveal } from '../../components/common/ScrollReveal';
 import { schoolApi } from '../../services/api';
@@ -118,9 +119,7 @@ export const Programs: React.FC = () => {
 
                   <div className="p-6 space-y-3">
                     <h3 className="font-bold text-lg text-[#1F2621]">{item.name}</h3>
-                    <p className="text-xs text-[#5C645D] leading-relaxed font-normal">
-                      {item.description}
-                    </p>
+                    <RichTextContent value={item.description} className="text-xs text-[#5C645D] leading-relaxed font-normal"/>
                   </div>
                 </div>
 
