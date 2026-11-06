@@ -162,7 +162,138 @@ export const ManageAccount: React.FC = () => {
               <User className="w-5 h-5 text-emerald-700" />
               <div>
                 <h2 className="text-base font-bold text-stone-900">Informasi Profil Akun Aktif</h2>
+                <p className="text-[11px] text-stone-400 font-normal">Identitas administrator yang sedang masuk</p>
               </div>
+            </div>
+            <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full uppercase">
+              {admin?.role || 'Superadmin'}
+            </span>
+          </div>
+
+          <form onSubmit={handleUpdateProfile} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-stone-700">Nama Lengkap Pengelola</label>
+              <input
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-stone-700">Username Login</label>
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-stone-700">Alamat Email</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-stone-700">URL Avatar Foto Profil</label>
+              <input
+                type="text"
+                value={avatar}
+                onChange={(e) => setAvatar(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={savingProfile}
+              className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2"
+            >
+              <Save className="w-4 h-4" />
+              <span>{savingProfile ? 'Menyimpan...' : 'Perbarui Profil'}</span>
+            </button>
+          </form>
+        </div>
+
+        {/* Form Ganti Password */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
+          <div className="border-b border-stone-100 pb-4 flex items-center gap-3">
+            <Key className="w-5 h-5 text-amber-600" />
+            <div>
+              <h2 className="text-base font-bold text-stone-900">Ubah Kata Sandi (Password)</h2>
+              <p className="text-[11px] text-stone-400 font-normal">Disimpan dengan enkripsi Bcrypt 10 rounds</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleChangePassword} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-stone-700">Kata Sandi Saat Ini *</label>
+              <input
+                type="password"
+                required
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-stone-700">Kata Sandi Baru *</label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-stone-700">Konfirmasi Kata Sandi Baru *</label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={savingPassword}
+              className="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold text-xs uppercase tracking-wider px-6 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2"
+            >
+              <Lock className="w-4 h-4" />
+              <span>{savingPassword ? 'Menyimpan...' : 'Ubah Kata Sandi'}</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* Multi-User & Role Management Section */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 pb-4">
+          <div className="flex items-center gap-3">
+            <Shield className="w-5 h-5 text-emerald-700" />
+            <div>
+              <h2 className="text-base font-bold text-stone-900">Struktur Pengguna & Peran Sistem (Role Management)</h2>
+              
+            </div>
           </div>
 
           <button
