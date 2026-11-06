@@ -18,9 +18,9 @@ export const FloatingWhatsApp: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const waNum = profile?.whatsapp || '6282132972773';
-  const waMsg = encodeURIComponent('Assalamu’alaikum Admin SMP Islam Caruy, saya ingin bertanya seputar profil sekolah dan informasi PPDB.');
-  const waUrl = `https://wa.me/${waNum}?text=${waMsg}`;
+  const waNum = profile?.whatsapp?.replace(/\\D/g, '');
+  const waMsg = encodeURIComponent('Assalamu’alaikum, saya ingin bertanya mengenai informasi sekolah.');
+  const waUrl = waNum ? `https://wa.me/${waNum}?text=${waMsg}` : null;
 
   // Don't show in admin dashboard
   if (window.location.pathname.startsWith('/admin')) {
@@ -41,7 +41,7 @@ export const FloatingWhatsApp: React.FC = () => {
       )}
 
       {/* WhatsApp CTA Button */}
-      <a
+      {waUrl && <a
         href={waUrl}
         target="_blank"
         rel="noreferrer"
@@ -55,7 +55,7 @@ export const FloatingWhatsApp: React.FC = () => {
           <span className="text-[9px] uppercase tracking-wider text-emerald-100 font-medium">Layanan Cepat</span>
           <span className="text-xs font-bold">Chat WhatsApp</span>
         </div>
-      </a>
+      </a>}
     </div>
   );
 };
