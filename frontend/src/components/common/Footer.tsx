@@ -218,7 +218,7 @@ export const Footer: React.FC = () => {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link to="/kontak" className="hover:text-white transition-colors">Kontak Sekolah</Link>
             <span className="text-white/30">•</span>
-            <span className="text-white/70">Website sekolah dikembangkan oleh <a href="https://nabastala.com" target="_blank" rel="noreferrer" className="font-semibold hover:underline" style={{ color: 'var(--school-secondary)' }}>Nabastala</a></span>
+            <span className="text-white/70">Website sekolah dikembangkan oleh <span className="font-semibold" style={{ color: 'var(--school-secondary)' }}>Nabastala</span></span>
           </div>
         </div>
       </div>
