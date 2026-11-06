@@ -1819,12 +1819,12 @@ const ensureAdmissionPeriodOpen = async (_req: Request, res: Response, next: Nex
     return next();
   } catch (err:any) { return routeWriteError(res, 'AdmissionPeriodCheck', err); }
 };
-apiRouter.post('/admissions/upload', requireFeatureEnabled('ppdb'), admissionUploadLimiter, ensureAdmissionPeriodOpen, admissionUpload.single('file'), validateAdmissionUploadContent, (req: Request, res: Response) => {
+apiRouter.post('/admissions/upload', requireTrustedOrigin, requireFeatureEnabled('ppdb'), admissionUploadLimiter, ensureAdmissionPeriodOpen, admissionUpload.single('file'), validateAdmissionUploadContent, (req: Request, res: Response) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'Unggahan tidak berhasil.' });
   return res.status(201).json({ success: true, fileKey: req.file.filename, originalName: req.file.originalname });
 });
 
-apiRouter.post('/admissions/applications', requireFeatureEnabled('ppdb'), admissionSubmitLimiter, async (req: Request, res: Response) => {
+apiRouter.post('/admissions/applications', requireTrustedOrigin, requireFeatureEnabled('ppdb'), admissionSubmitLimiter, async (req: Request, res: Response) => {
   const body = req.body || {};
   const required = ['candidate_name', 'origin_school', 'parent_name', 'parent_phone'];
   if (required.some(key => typeof body[key] !== 'string' || !body[key].trim())) {
