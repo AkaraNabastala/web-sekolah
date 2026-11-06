@@ -1677,3 +1677,72 @@ apiRouter.delete('/admin/gallery/albums/:id', requireContentAdmin, requireFeatur
     return routeWriteError(res, 'AdminGalleryAlbumRoute', err);
   }
 });
+
+
+// Pengumuman sekolah — terpisah dari berita dan agenda.
+apiRouter.get('/announcements', async (_req: Request, res: Response) => {
+  try {
+    const [rows]: any = await getPool().query(
+      "SELECT id, title, slug, summary, content, category, cover_image, published_at FROM announcements WHERE status = 'published' AND (published_at IS NULL OR published_at <= NOW()) ORDER BY COALESCE(published_at, created_at) DESC"
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'AnnouncementsRoute', err, 'Gagal membaca pengumuman sekolah.');
+  }
+});
+
+apiRouter.get('/admin/announcements', requireContentAdmin, async (_req: Request, res: Response) => {
+  try {
+    const [rows]: any = await getPool().query('SELECT * FROM announcements ORDER BY updated_at DESC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminAnnouncementsList', err);
+  }
+});
+
+apiRouter.post('/admin/announcements', requireContentAdmin, async (req: Request, res: Response) => {
+  const title = String(req.body.title || '').trim();
+  const content = String(req.body.content || '').trim();
+  if (!title || !content) return res.status(400).json({ success: false, message: 'Judul dan isi pengumuman wajib diisi.' });
+  const slug = makeSlug(req.body.slug || title);
+  const status = ['draft', 'published', 'archived'].includes(req.body.status) ? req.body.status : 'draft';
+  try {
+    const [result]: any = await getPool().query(
+      'INSERT INTO announcements (title, slug, summary, content, category, cover_image, status, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, slug, req.body.summary || '', content, req.body.category || 'Umum', req.body.cover_image || null, status, status === 'published' ? new Date() : null]
+    );
+    return res.status(201).json({ success: true, message: 'Pengumuman berhasil dibuat.', data: { id: result.insertId, title, slug, status } });
+  } catch (err: any) {
+    if (err?.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'Slug pengumuman sudah digunakan.' });
+    return routeWriteError(res, 'AdminAnnouncementsCreate', err);
+  }
+});
+
+apiRouter.put('/admin/announcements/:id', requireContentAdmin, async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const title = String(req.body.title || '').trim();
+  const content = String(req.body.content || '').trim();
+  if (!Number.isInteger(id) || id < 1 || !title || !content) return res.status(400).json({ success: false, message: 'Data pengumuman tidak valid.' });
+  const status = ['draft', 'published', 'archived'].includes(req.body.status) ? req.body.status : 'draft';
+  try {
+    const [result]: any = await getPool().query(
+      'UPDATE announcements SET title = ?, slug = ?, summary = ?, content = ?, category = ?, cover_image = ?, status = ?, published_at = CASE WHEN ? = \'published\' THEN COALESCE(published_at, NOW()) ELSE NULL END WHERE id = ?',
+      [title, makeSlug(req.body.slug || title), req.body.summary || '', content, req.body.category || 'Umum', req.body.cover_image || null, status, status, id]
+    );
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Pengumuman tidak ditemukan.' });
+    return res.json({ success: true, message: 'Pengumuman berhasil diperbarui.' });
+  } catch (err: any) {
+    if (err?.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'Slug pengumuman sudah digunakan.' });
+    return routeWriteError(res, 'AdminAnnouncementsUpdate', err);
+  }
+});
+
+apiRouter.delete('/admin/announcements/:id', requireContentAdmin, async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await getPool().query('DELETE FROM announcements WHERE id = ?', [Number(req.params.id)]);
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Pengumuman tidak ditemukan.' });
+    return res.json({ success: true, message: 'Pengumuman berhasil dihapus.' });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminAnnouncementsDelete', err);
+  }
+});
