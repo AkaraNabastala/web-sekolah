@@ -1811,3 +1811,49 @@ apiRouter.put('/admin/admission-applications/:id', requirePpdbAdmin, async (req:
     return routeWriteError(res, 'AdmissionApplicationUpdate', err);
   }
 });
+
+
+// Kategori konten terpusat: berita, program, dan fasilitas.
+apiRouter.get('/admin/content-categories', requireContentAdmin, async (req: Request, res: Response) => {
+  const scope = String(req.query.scope || '');
+  if (!['news','program','facility'].includes(scope)) return res.status(400).json({ success:false, message:'Jenis kategori tidak valid.' });
+  try {
+    const table = scope === 'news' ? 'news_categories' : 'content_categories';
+    const [rows]: any = scope === 'news'
+      ? await getPool().query('SELECT id, name, slug, description FROM news_categories ORDER BY name ASC')
+      : await getPool().query('SELECT id, name, slug, description FROM content_categories WHERE scope = ? ORDER BY name ASC', [scope]);
+    return res.json({ success:true, data:rows });
+  } catch (err:any) { return routeWriteError(res,'ContentCategoriesList',err); }
+});
+
+apiRouter.post('/admin/content-categories', requireContentAdmin, async (req: Request, res: Response) => {
+  const scope=String(req.body.scope||'');
+  const name=String(req.body.name||'').trim();
+  if(!['news','program','facility'].includes(scope)||!name||name.length>100) return res.status(400).json({success:false,message:'Jenis dan nama kategori wajib valid.'});
+  const slug=makeSlug(req.body.slug||name);
+  try {
+    const [result]:any = scope==='news'
+      ? await getPool().query('INSERT INTO news_categories (name,slug,description) VALUES (?,?,?)',[name,slug,req.body.description||''])
+      : await getPool().query('INSERT INTO content_categories (scope,name,slug,description) VALUES (?,?,?,?)',[scope,name,slug,req.body.description||'']);
+    return res.status(201).json({success:true,message:'Kategori berhasil ditambahkan.',data:{id:result.insertId,name,slug}});
+  } catch(err:any) {
+    if(err?.code==='ER_DUP_ENTRY') return res.status(409).json({success:false,message:'Nama atau slug kategori sudah digunakan.'});
+    return routeWriteError(res,'ContentCategoriesCreate',err);
+  }
+});
+
+apiRouter.delete('/admin/content-categories/:scope/:id', requireContentAdmin, async (req: Request, res: Response) => {
+  const scope=String(req.params.scope||'');
+  const id=Number(req.params.id);
+  if(!['news','program','facility'].includes(scope)||!Number.isInteger(id)||id<1) return res.status(400).json({success:false,message:'Kategori tidak valid.'});
+  try {
+    const [result]:any = scope==='news'
+      ? await getPool().query('DELETE FROM news_categories WHERE id = ?',[id])
+      : await getPool().query('DELETE FROM content_categories WHERE id = ? AND scope = ?',[id,scope]);
+    if(!result.affectedRows) return res.status(404).json({success:false,message:'Kategori tidak ditemukan.'});
+    return res.json({success:true,message:'Kategori berhasil dihapus.'});
+  } catch(err:any) {
+    if(err?.code==='ER_ROW_IS_REFERENCED_2') return res.status(409).json({success:false,message:'Kategori masih digunakan oleh berita. Ubah kategori berita terkait terlebih dahulu.'});
+    return routeWriteError(res,'ContentCategoriesDelete',err);
+  }
+});
