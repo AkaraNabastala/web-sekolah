@@ -5,7 +5,7 @@ import { getPool } from '../config/database.js';
 import { JWT_SECRET, requireAdmin, requireSuperadmin, AuthenticatedRequest } from '../middleware/auth.js';
 import { hashVisitor, parseDeviceAndBrowser } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
@@ -42,12 +42,8 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const safeBase = path.basename(file.originalname, ext).replace(/[^\w-]/g, '_');
-    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    cb(null, `${safeBase}-${unique}${ext}`);
-  }
+  // Simpan sementara dengan nama acak; ekstensi final ditentukan dari signature file.
+  filename: (_req, _file, cb) => cb(null, `${randomUUID()}.upload`)
 });
 
 const upload = multer({
@@ -62,6 +58,63 @@ const upload = multer({
     }
   }
 });
+
+// Jangan mempercayai MIME type dari browser. Periksa magic bytes sebelum file dipublikasikan.
+const validateUploadContent = async (req: Request, res: Response, next: (err?: any) => void) => {
+  const file = req.file;
+  if (!file) {
+    return res.status(400).json({ success: false, message: 'Tidak ada berkas yang diunggah.' });
+  }
+
+  let handle: fs.promises.FileHandle | undefined;
+  try {
+    handle = await fs.promises.open(file.path, 'r');
+    const header = Buffer.alloc(16);
+    const { bytesRead } = await handle.read(header, 0, header.length, 0);
+    await handle.close();
+    handle = undefined;
+
+    const bytes = header.subarray(0, bytesRead);
+    let detected: { mimetype: string; extension: string } | null = null;
+
+    if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+      detected = { mimetype: 'image/jpeg', extension: '.jpg' };
+    } else if (bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
+      detected = { mimetype: 'image/png', extension: '.png' };
+    } else if (bytes.length >= 6 && ['GIF87a', 'GIF89a'].includes(bytes.subarray(0, 6).toString('ascii'))) {
+      detected = { mimetype: 'image/gif', extension: '.gif' };
+    } else if (bytes.length >= 12 && bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP') {
+      detected = { mimetype: 'image/webp', extension: '.webp' };
+    } else if (bytes.length >= 5 && bytes.subarray(0, 5).toString('ascii') === '%PDF-') {
+      detected = { mimetype: 'application/pdf', extension: '.pdf' };
+    } else if (bytes.length >= 8 && bytes.subarray(4, 8).toString('ascii') === 'ftyp') {
+      detected = { mimetype: 'video/mp4', extension: '.mp4' };
+    }
+
+    if (!detected || detected.mimetype !== file.mimetype) {
+      await fs.promises.unlink(file.path).catch(() => undefined);
+      return res.status(400).json({
+        success: false,
+        message: 'Isi berkas tidak sesuai dengan tipe yang diizinkan. Unggah gambar, PDF, atau MP4 yang valid.'
+      });
+    }
+
+    const safeFilename = `${randomUUID()}${detected.extension}`;
+    const safePath = path.join(UPLOAD_DIR, safeFilename);
+    await fs.promises.rename(file.path, safePath);
+    file.filename = safeFilename;
+    file.path = safePath;
+    file.mimetype = detected.mimetype;
+    next();
+  } catch (err) {
+    if (handle) await handle.close().catch(() => undefined);
+    await fs.promises.unlink(file.path).catch(() => undefined);
+    logger.error('UploadValidation', 'Gagal memvalidasi isi berkas unggahan.', {
+      message: (err as any)?.message
+    });
+    return res.status(500).json({ success: false, message: 'Berkas gagal divalidasi oleh server.' });
+  }
+};
 
 // ==========================================
 // 1. SETUP FIRST ADMIN (ONE-TIME LOCKED)
@@ -551,7 +604,7 @@ apiRouter.get('/settings', async (_req: Request, res: Response) => {
 // ==========================================
 // 5. UPLOAD FILE
 // ==========================================
-apiRouter.post('/upload', requireAdmin, upload.single('file'), (req: Request, res: Response) => {
+apiRouter.post('/upload', requireAdmin, upload.single('file'), validateUploadContent, (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'Tidak ada berkas yang diunggah.' });
   }
