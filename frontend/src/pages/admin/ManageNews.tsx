@@ -2,6 +2,7 @@ import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { NewsArticle, NewsCategory } from '../../types';
+import { RichTextEditor } from '../../components/common/RichTextEditor';
 import {
   Plus,
   Edit,
@@ -314,13 +315,7 @@ export const ManageNews: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Isi Lengkap Artikel *</label>
-                <textarea
-                  rows={8}
-                  required
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
-                />
+                <RichTextEditor rows={10} value={formData.content || ''} onChange={content => setFormData({ ...formData, content })} placeholder="Tulis isi berita dan gunakan toolbar untuk memformatnya."/>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
