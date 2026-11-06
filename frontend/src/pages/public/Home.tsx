@@ -40,6 +40,7 @@ import {
 import { SEO } from '../../components/common/SEO';
 import { SchoolLogo } from '../../components/common/SchoolLogo';
 import { ScrollReveal } from '../../components/common/ScrollReveal';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 
 interface HeroSlide {
   id: number;
@@ -385,7 +386,7 @@ export const Home: React.FC = () => {
               {isFeatureEnabled('vision') && visionMission?.vision && (
                 <article className="rounded-3xl bg-[var(--school-primary)] p-7 text-white sm:p-9">
                   <h3 className="mb-4 text-sm font-semibold text-[var(--school-secondary)]">Visi</h3>
-                  <p className="text-lg font-medium leading-relaxed sm:text-xl">{visionMission.vision}</p>
+                  <RichTextContent value={visionMission.vision} className="text-lg font-medium leading-relaxed sm:text-xl"/>
                   {visionMission.vision_motto && <p className="mt-5 border-t border-white/15 pt-4 text-sm text-white/75">{visionMission.vision_motto}</p>}
                 </article>
               )}
@@ -393,7 +394,7 @@ export const Home: React.FC = () => {
                 <article className="rounded-3xl border border-stone-200 bg-white p-7 sm:p-9">
                   <h3 className="mb-4 text-sm font-semibold text-stone-900">Misi</h3>
                   <ol className="list-decimal space-y-3 pl-5 marker:font-semibold marker:text-[var(--school-primary)]">
-                    {visionMission?.missions.map((mission, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-600">{mission}</li>)}
+                    {visionMission?.missions.map((mission, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-600"><RichTextContent value={mission}/></li>)}
                   </ol>
                 </article>
               )}
@@ -475,7 +476,7 @@ export const Home: React.FC = () => {
                   </div>
                   <h3 className="font-bold text-lg text-[#1F2621]">{prog.name}</h3>
                   <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed font-normal">
-                    {prog.description}
+                    <RichTextContent value={prog.description} className="text-sm"/>
                   </p>
                 </div>
                 {prog.schedule_info && (
@@ -533,7 +534,7 @@ export const Home: React.FC = () => {
                       {fac.name}
                     </h3>
                     <p className="text-xs text-[#5C645D] leading-relaxed line-clamp-2 mt-1 font-normal">
-                      {fac.description}
+                      <RichTextContent value={fac.description} className="text-sm"/>
                     </p>
                   </div>
                   <span className="text-[11px] font-semibold text-[#2A5C40] uppercase tracking-wider pt-2 block border-t border-[#F0EBE1]">
@@ -828,7 +829,7 @@ export const Home: React.FC = () => {
                   </div>
                   <h3 className="font-bold text-base text-[#1F2621] line-clamp-2">{ag.title}</h3>
                   {ag.description && (
-                    <p className="text-xs text-[#5C645D] font-normal line-clamp-2">{ag.description}</p>
+                    <RichTextContent value={ag.description} className="text-xs text-[#5C645D] font-normal line-clamp-2"/>
                   )}
                 </div>
                 <div className="pt-3 border-t border-[#F2EFE9] space-y-1 text-xs text-[#5C645D]">
