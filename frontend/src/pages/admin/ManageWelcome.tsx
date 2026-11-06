@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 
 export const ManageWelcome: React.FC = () => {
+  const { updateCachedProfile } = useSchool();
   const [profile, setProfile] = useState<SchoolProfile | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -25,7 +26,7 @@ export const ManageWelcome: React.FC = () => {
     e.preventDefault();
     if (!profile) return;
     setSaving(true);
-    try { const res = await schoolApi.updateProfile(profile); if (res.success) toast.success('Sambutan kepala sekolah berhasil disimpan!'); }
+    try { const res = await schoolApi.updateProfile(profile); if (res.success) { updateCachedProfile(res.data); toast.success('Sambutan kepala sekolah berhasil disimpan!'); } }
     catch { toast.error('Gagal menyimpan sambutan kepala sekolah.'); }
     finally { setSaving(false); }
   };
