@@ -1874,6 +1874,7 @@ apiRouter.get('/admin/admission-applications/:id/documents/:filename', requirePp
     const filePath = path.join(ADMISSION_UPLOAD_DIR, filename);
     if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: 'Berkas dokumen tidak tersedia.' });
     res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Cache-Control', 'private, no-store');
     return res.download(filePath, `dokumen-pendaftar-${id}${path.extname(filename)}`);
   } catch (err: any) {
     return routeWriteError(res, 'AdmissionDocumentDownload', err);
