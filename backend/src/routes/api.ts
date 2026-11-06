@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getPool } from '../config/database.js';
 import { JWT_SECRET, requireAdmin, requireSuperadmin, AuthenticatedRequest } from '../middleware/auth.js';
-import { hashVisitor, parseDeviceAndBrowser, getClientIp } from '../utils/privacy.js';
+import { hashVisitor, parseDeviceAndBrowser } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
 import { createHash } from 'crypto';
 import multer from 'multer';
@@ -653,7 +653,7 @@ apiRouter.put('/admin/school-profile', requireAdmin, async (req: Request, res: R
   const pool = getPool();
   try {
     await pool.query(
-      `UPDATE school_profile SET name = ?, npsn = ?, education_level = ?, status = ?, accreditation = ?, founding_year = ?, headmaster_name = ?, headmaster_photo = ?, headmaster_welcome = ?, description = ?, address = ?, village = ?, district = ?, regency = ?, province = ?, postal_code = ?, phone = ?, whatsapp = ?, email = ?, maps_embed_url = ?, updated_at = NOW() WHERE id = 1`,
+      `UPDATE school_profile SET name = ?, npsn = ?, education_level = ?, status = ?, accreditation = ?, founding_year = ?, headmaster_name = ?, headmaster_photo = ?, headmaster_welcome = ?, description = ?, address = ?, village = ?, district = ?, regency = ?, province = ?, postal_code = ?, phone = ?, whatsapp = ?, email = ?, maps_embed_url = ?, updated_at = NOW() WHERE id = (SELECT id FROM (SELECT id FROM school_profile ORDER BY id ASC LIMIT 1) AS selected_profile)`,
       [
         req.body.name || 'SMP Islam Caruy', req.body.npsn || null, req.body.education_level || 'Sekolah Menengah Pertama (SMP)',
         req.body.status || 'Swasta', req.body.accreditation || null, req.body.founding_year || null,
@@ -1211,7 +1211,7 @@ apiRouter.put('/admin/ppdb', requireAdmin, async (req: Request, res: Response) =
   const pool = getPool();
   try {
     await pool.query(
-      `UPDATE ppdb_information SET academic_year = ?, is_open = ?, start_date = ?, end_date = ?, banner_image = ?, overview = ?, requirements = ?, schedules = ?, steps = ?, show_fees = ?, fees_description = ?, fees_items = ?, contact_person = ?, contact_phone = ?, contact_whatsapp = ?, registration_url = ?, updated_at = NOW() WHERE id = 1`,
+      `UPDATE ppdb_information SET academic_year = ?, is_open = ?, start_date = ?, end_date = ?, banner_image = ?, overview = ?, requirements = ?, schedules = ?, steps = ?, show_fees = ?, fees_description = ?, fees_items = ?, contact_person = ?, contact_phone = ?, contact_whatsapp = ?, registration_url = ?, updated_at = NOW() WHERE id = (SELECT id FROM (SELECT id FROM ppdb_information ORDER BY id ASC LIMIT 1) AS selected_ppdb)`,
       [
         req.body.academic_year || 'Belum ditentukan', req.body.is_open ? 1 : 0, req.body.start_date || null,
         req.body.end_date || null, req.body.banner_image || null, req.body.overview || '',
@@ -1246,7 +1246,7 @@ apiRouter.put('/admin/settings', requireAdmin, async (req: Request, res: Respons
          facebook_url = ?, instagram_url = ?, youtube_url = ?, tiktok_url = ?,
          seo_title = ?, seo_description = ?, footer_text = ?,
          stats_students = ?, stats_teachers = ?, stats_alumni = ?, stats_achievements = ?, updated_at = NOW()
-       WHERE id = 1`,
+       WHERE id = (SELECT id FROM (SELECT id FROM website_settings ORDER BY id ASC LIMIT 1) AS selected_settings)`,
       [
         req.body.school_name || 'SMP Islam Caruy', req.body.tagline || '', req.body.logo_url || '',
         req.body.favicon_url || '', req.body.hero_title || '', req.body.hero_subtitle || '', req.body.hero_image || '',
