@@ -128,8 +128,12 @@ export const App: React.FC = () => {
             <Route path="/fasilitas" element={<PublicLayout><FeatureRoute feature="facilities"><Facilities /></FeatureRoute></PublicLayout>} />
             <Route path="/ppdb" element={<PublicLayout><FeatureRoute feature="ppdb"><PPDB /></FeatureRoute></PublicLayout>} />
             <Route path="/kontak" element={<PublicLayout><FeatureRoute feature="contact"><Contact /></FeatureRoute></PublicLayout>} />
-            <Route path="/design-preview" element={<PublicLayout><DesignPreview /></PublicLayout>} />
-            <Route path="/design-preview-v2" element={<PublicLayout><DesignPreviewV2 /></PublicLayout>} />
+            {import.meta.env.DEV && (
+              <>
+                <Route path="/design-preview" element={<PublicLayout><DesignPreview /></PublicLayout>} />
+                <Route path="/design-preview-v2" element={<PublicLayout><DesignPreviewV2 /></PublicLayout>} />
+              </>
+            )}
 
             {/* ADMIN LOGIN ROUTE */}
             <Route path="/admin/login" element={<AdminLogin />} />
