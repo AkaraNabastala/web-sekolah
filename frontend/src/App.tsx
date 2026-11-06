@@ -34,6 +34,9 @@ import { AdminLogin } from './pages/admin/AdminLogin';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { DashboardHome } from './pages/admin/DashboardHome';
 import { ManageProfile } from './pages/admin/ManageProfile';
+import { ManageWelcome } from './pages/admin/ManageWelcome';
+import { ManageHistory } from './pages/admin/ManageHistory';
+import { ManageVisionMission } from './pages/admin/ManageVisionMission';
 import { ManageNews } from './pages/admin/ManageNews';
 import { ManageAgendas } from './pages/admin/ManageAgendas';
 import { ManagePrograms } from './pages/admin/ManagePrograms';
@@ -120,9 +123,10 @@ export const App: React.FC = () => {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<DashboardHome />} />
               <Route path="statistik" element={<VisitorStats />} />
-              <Route path="profil" element={<ManageProfile initialTab="identitas" />} />
-              <Route path="sejarah" element={<ManageProfile initialTab="sejarah" />} />
-              <Route path="visi-misi" element={<ManageProfile initialTab="visimisi" />} />
+              <Route path="profil" element={<ManageProfile />} />
+              <Route path="sambutan" element={<ManageWelcome />} />
+              <Route path="sejarah" element={<ManageHistory />} />
+              <Route path="visi-misi" element={<ManageVisionMission />} />
               <Route path="berita" element={<ManageNews />} />
               <Route path="agenda" element={<ManageAgendas />} />
               <Route path="program" element={<ManagePrograms />} />
