@@ -2,6 +2,7 @@ import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { schoolApi } from '../../services/api';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import {
   Save,
   Lock,
@@ -146,9 +147,7 @@ export const ManageAccount: React.FC = () => {
     <div className="space-y-8 font-poppins pb-12">
       <div>
         <h1 className="text-2xl font-bold text-stone-900">Keamanan & Akun Administrator</h1>
-        <p className="text-xs text-stone-500 font-normal mt-0.5">
-          Kelola profil pengelola, amankan akses dengan hashing bcrypt, dan konfigurasi hak akses peran pengguna sekolah.
-        </p>
+        
       </div>
 
       
@@ -341,7 +340,7 @@ export const ManageAccount: React.FC = () => {
                         ? 'bg-emerald-100 text-emerald-800'
                         : 'bg-amber-100 text-amber-800'
                     }`}>
-                      {user.role === 'superadmin' ? 'Superadmin' : user.role === 'admin_konten' ? 'Admin Konten' : 'Admin PPDB'}
+                      {user.role === 'superadmin' ? 'Superadmin' : user.role === 'admin_konten' ? 'Admin Konten' : `Admin ${ADMISSION_LABEL}`}
                     </span>
                   </td>
                   <td className="p-3 text-stone-600 text-[11px]">
@@ -349,7 +348,7 @@ export const ManageAccount: React.FC = () => {
                       ? 'Seluruh Akses Penuh (Full Access)'
                       : user.role === 'admin_konten'
                       ? 'Berita, Profil, Guru, Prestasi, Galeri'
-                      : 'Data PPDB & Verifikasi Siswa'}
+                      : `Data ${ADMISSION_LABEL} & Verifikasi Siswa`}
                   </td>
                   <td className="p-3">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-800">
@@ -422,7 +421,7 @@ export const ManageAccount: React.FC = () => {
                   >
                     <option value="admin_konten">Admin Konten</option>
                     <option value="superadmin">Super Administrator</option>
-                    <option value="admin_ppdb">Admin PPDB</option>
+                    <option value="admin_ppdb">{`Admin ${ADMISSION_LABEL}`}</option>
                   </select>
                 </div>
               </div>
