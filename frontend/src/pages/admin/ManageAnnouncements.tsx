@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Search, Pencil, Trash2, Send, FileText } from 'lucide-react';
 import { schoolApi } from '../../services/api';
 import { toast } from '../../hooks/useToast';
+import { RichTextEditor } from '../../components/common/RichTextEditor';
 
 type Announcement = {
   id: number; title: string; slug: string; summary?: string; content: string;
@@ -67,7 +68,7 @@ export const ManageAnnouncements: React.FC = () => {
         <div className="flex items-center justify-between"><h2 className="text-lg font-bold">{editing ? 'Edit Pengumuman' : 'Pengumuman Baru'}</h2><button type="button" onClick={()=>setOpen(false)} className="text-stone-500">Tutup</button></div>
         <label className="block space-y-1 text-sm font-medium">Judul<input required className="w-full rounded-lg border p-3 font-normal" value={form.title} onChange={e=>setForm({...form,title:e.target.value,slug: editing ? form.slug : e.target.value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')})}/></label>
         <label className="block space-y-1 text-sm font-medium">Ringkasan<textarea rows={2} className="w-full rounded-lg border p-3 font-normal" value={form.summary} onChange={e=>setForm({...form,summary:e.target.value})}/></label>
-        <label className="block space-y-1 text-sm font-medium">Isi Pengumuman<textarea required rows={8} className="w-full rounded-lg border p-3 font-normal" value={form.content} onChange={e=>setForm({...form,content:e.target.value})}/></label>
+        <label className="block space-y-1 text-sm font-medium">Isi Pengumuman<RichTextEditor rows={8} value={form.content} onChange={content=>setForm({...form,content})}/></label>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block space-y-1 text-sm font-medium">Kategori<input className="w-full rounded-lg border p-3 font-normal" value={form.category} onChange={e=>setForm({...form,category:e.target.value})}/></label>
           <label className="block space-y-1 text-sm font-medium">Status<select className="w-full rounded-lg border p-3 font-normal" value={form.status} onChange={e=>setForm({...form,status:e.target.value as typeof form.status})}><option value="draft">Simpan sebagai draf</option><option value="published">Terbitkan</option><option value="archived">Arsip</option></select></label>
