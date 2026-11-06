@@ -44,12 +44,17 @@ async function buildProduction() {
     logStep('2/6: Kompilasi & Build Frontend (Vite Production)');
     runCmd('npm run build', path.join(ROOT_DIR, 'frontend'));
 
-    // 3. Bersihkan & Siapkan folder deployment
+    // 3. Siapkan folder deployment tanpa menghapus data runtime milik operator.
     logStep('3/6: Menyiapkan Struktur Direktori deployment/');
-    if (fs.existsSync(DEPLOY_DIR)) {
-      fs.rmSync(DEPLOY_DIR, { recursive: true, force: true });
-    }
     fs.mkdirSync(DEPLOY_DIR, { recursive: true });
+    // Hanya output build yang dibuat ulang. Pertahankan .env, uploads, logs,
+    // backup, dan file operasional lain yang mungkin sudah ada di deployment/.
+    for (const generatedDir of ['public', 'backend']) {
+      const generatedPath = path.join(DEPLOY_DIR, generatedDir);
+      if (fs.existsSync(generatedPath)) {
+        fs.rmSync(generatedPath, { recursive: true, force: true });
+      }
+    }
     fs.mkdirSync(path.join(DEPLOY_DIR, 'public'), { recursive: true });
     fs.mkdirSync(path.join(DEPLOY_DIR, 'uploads'), { recursive: true });
     fs.mkdirSync(path.join(DEPLOY_DIR, 'logs'), { recursive: true });
