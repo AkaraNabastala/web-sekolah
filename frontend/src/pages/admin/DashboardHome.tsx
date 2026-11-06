@@ -42,7 +42,6 @@ export const DashboardHome: React.FC = () => {
   const [activities, setActivities] = useState<AdminActivity[]>([]);
   const [recentMessages, setRecentMessages] = useState<ContactMessage[]>([]);
   const [recentNews, setRecentNews] = useState<NewsArticle[]>([]);
-  const [dbStatus, setDbStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
 
@@ -54,13 +53,12 @@ export const DashboardHome: React.FC = () => {
         schoolApi.getDashboardStats(),
         schoolApi.getAdminActivities(),
         schoolApi.getAdminMessages(),
-        schoolApi.getAdminNews(),
-        schoolApi.getDatabaseStatus()
+        schoolApi.getAdminNews()
       ]);
 
       if (!mounted) return;
 
-      const [statsResult, activitiesResult, messagesResult, newsResult, databaseResult] = results;
+      const [statsResult, activitiesResult, messagesResult, newsResult] = results;
 
       if (statsResult.status === 'fulfilled') {
         setStats(statsResult.value);
@@ -85,12 +83,6 @@ export const DashboardHome: React.FC = () => {
         setRecentNews(newsResult.value.slice(0, 5));
       } else {
         console.error('Dashboard news failed:', newsResult.reason);
-      }
-
-      if (databaseResult.status === 'fulfilled') {
-        setDbStatus(databaseResult.value);
-      } else {
-        console.error('Dashboard database status failed:', databaseResult.reason);
       }
 
       setLoading(false);
@@ -179,126 +171,14 @@ export const DashboardHome: React.FC = () => {
     }
   ];
 
-  const quickActions = [
-    { label: 'Tulis Berita Baru', icon: Newspaper, path: '/admin/berita', color: 'bg-emerald-600 hover:bg-emerald-700 text-white' },
-    { label: 'Tambah Guru / Staf', icon: Users, path: '/admin/guru-staf', color: 'bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold' },
-    { label: 'Atur Struktur Organisasi', icon: GraduationCap, path: '/admin/organisasi', color: 'bg-sky-600 hover:bg-sky-700 text-white' },
-    { label: 'Perbarui Visi, Misi & Profil', icon: BookOpen, path: '/admin/profil', color: 'bg-emerald-800 hover:bg-emerald-900 text-white' },
-    { label: 'Catat Prestasi Siswa', icon: Award, path: '/admin/prestasi', color: 'bg-orange-500 hover:bg-orange-600 text-white' },
-    { label: 'Unggah Foto Galeri', icon: Image, path: '/admin/galeri', color: 'bg-indigo-600 hover:bg-indigo-700 text-white' }
-  ];
 
   return (
     <div className="space-y-8 font-poppins pb-12">
-      {/* Top Welcome Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-emerald-800/60">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(#10B981_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
-
-        <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/80 border border-emerald-700/60 text-amber-300 text-[11px] font-bold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Sistem Manajemen Konten (CMS) SMP Islam Caruy</span>
-            </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight">
-              Selamat Datang di Dashboard Administrator
-            </h1>
-            <p className="text-xs sm:text-sm text-emerald-200/90 font-normal leading-relaxed">
-              Pusat kendali konten sekolah, statistik kunjungan, publikasi berita, profil pendidik, sarana pembelajaran, dan interaksi masyarakat secara terintegrasi.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <Link
-              to="/admin/berita"
-              className="bg-amber-400 hover:bg-amber-500 text-emerald-950 px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md hover:shadow-lg transform active:scale-95"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Tambah Berita</span>
-            </Link>
-            <Link
-              to="/"
-              target="_blank"
-              className="bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border border-white/20 backdrop-blur-sm"
-            >
-              <span>Buka Website Publik</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </div>
-
       {statsError && (
         <div role="alert" className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-900">
           {statsError}
         </div>
       )}
-
-      {/* Database Engine Architecture Indicator */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-stone-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-start sm:items-center gap-3.5">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-            dbStatus?.mysql?.connected
-              ? 'bg-emerald-100 text-emerald-700'
-              : 'bg-amber-100 text-amber-800'
-          }`}>
-            <Database className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-stone-900">
-                Penyimpanan Data: MySQL Relasional
-              </span>
-              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                dbStatus?.mysql?.connected
-                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                  : 'bg-amber-50 text-amber-900 border border-amber-300'
-              }`}>
-                {dbStatus?.mysql?.connected ? 'MySQL Aktif' : dbStatus ? 'MySQL Tidak Terhubung' : 'Status Belum Diketahui'}
-              </span>
-            </div>
-            <p className="text-[11px] text-stone-500 mt-0.5">
-              {dbStatus?.mysql?.connected
-                ? `Terhubung ke MySQL host ${dbStatus.mysql.host}:${dbStatus.mysql.port} (${dbStatus.mysql.database})`
-                : 'Status koneksi database belum tersedia. Statistik tidak akan diasumsikan atau dibuat-buat.'}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 text-[11px] text-stone-600 self-end sm:self-center font-medium">
-          <Server className="w-4 h-4 text-emerald-600" />
-          <span>Express Backend + React 19 Frontend</span>
-        </div>
-      </div>
-
-      {/* Akses Cepat Tombol Tambah Konten */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-stone-200/80 space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-bold text-stone-900">Aksi Cepat Pengelolaan Konten</h2>
-            <p className="text-[11px] text-stone-400 font-normal">Pintasan sekali klik untuk memperbarui data sekolah</p>
-          </div>
-          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-            Quick Actions
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-1">
-          {quickActions.map((action, idx) => {
-            const Icon = action.icon;
-            return (
-              <Link
-                key={idx}
-                to={action.path}
-                className={`${action.color} p-3 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5 text-xs font-semibold`}
-              >
-                <Icon className="w-5 h-5 shrink-0" />
-                <span className="text-[11px] leading-tight">{action.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
 
       {/* 8 Metric Summary Cards Grid */}
       <div className="space-y-3">
@@ -403,12 +283,6 @@ export const DashboardHome: React.FC = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="pt-2 border-t border-stone-100 flex justify-between text-xs text-stone-500">
-            <span>Sinkronisasi database</span>
-            <span className={`font-bold ${dbStatus?.mysql?.connected ? 'text-emerald-700' : 'text-amber-700'}`}>
-              {dbStatus?.mysql?.connected ? 'Terhubung' : dbStatus ? 'Tidak terhubung' : 'Belum diketahui'}
-            </span>
-          </div>
         </div>
       </div>
 
