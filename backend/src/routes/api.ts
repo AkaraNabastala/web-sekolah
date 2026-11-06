@@ -1819,14 +1819,6 @@ const ensureAdmissionPeriodOpen = async (_req: Request, res: Response, next: Nex
     return next();
   } catch (err:any) { return routeWriteError(res, 'AdmissionPeriodCheck', err); }
 };
-const admissionDocumentTypeGuard = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.file) return res.status(400).json({ success: false, message: 'Pilih dokumen terlebih dahulu.' });
-  if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(req.file.mimetype)) {
-    void fs.promises.unlink(req.file.path).catch(() => undefined);
-    return res.status(400).json({ success: false, message: 'Dokumen harus berupa PDF, JPG, PNG, atau WebP.' });
-  }
-  return next();
-};
 apiRouter.post('/admissions/upload', requireFeatureEnabled('ppdb'), admissionUploadLimiter, ensureAdmissionPeriodOpen, admissionUpload.single('file'), validateAdmissionUploadContent, (req: Request, res: Response) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'Unggahan tidak berhasil.' });
   return res.status(201).json({ success: true, fileKey: req.file.filename, originalName: req.file.originalname });
