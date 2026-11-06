@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useSchool } from '../../context/SchoolContext';
 import { SchoolLogo } from '../../components/common/SchoolLogo';
 import { Toaster } from '../../components/common/Toaster';
 import { toast } from '../../hooks/useToast';
@@ -32,6 +33,7 @@ import { schoolApi } from '../../services/api';
 
 export const AdminLayout: React.FC = () => {
   const { admin, isAuthenticated, isLoading, logout } = useAuth();
+  const { settings } = useSchool();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
@@ -81,6 +83,23 @@ export const AdminLayout: React.FC = () => {
     { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }
   ];
 
+  let featureFlags: any = settings?.feature_flags;
+  if (typeof featureFlags === 'string') {
+    try { featureFlags = JSON.parse(featureFlags); } catch { featureFlags = null; }
+  }
+  const menuFeatureMap: Record<string, string> = {
+    '/admin/sejarah': 'history', '/admin/organisasi': 'organization',
+    '/admin/guru-staf': 'teachers', '/admin/program': 'programs',
+    '/admin/berita': 'news', '/admin/agenda': 'agenda',
+    '/admin/galeri': 'gallery', '/admin/prestasi': 'achievements',
+    '/admin/fasilitas': 'facilities', '/admin/ppdb': 'ppdb',
+    '/admin/pesan': 'contact'
+  };
+  const visibleMenuItems = menuItems.filter(item => {
+    const feature = menuFeatureMap[item.path];
+    return !feature || featureFlags?.[feature] !== false;
+  });
+
   const handleLogout = () => {
     logout();
     toast.info('Anda telah keluar dari sesi admin.');
@@ -116,7 +135,7 @@ export const AdminLayout: React.FC = () => {
             Menu Manajemen
           </p>
 
-          {menuItems.map((item) => {
+          {visibleMenuItems.map((item) => {
             const Icon = item.icon;
             const active = location.pathname === item.path;
 
