@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import defaultLogo from '../../assets/logo.png';
+import { useSchool } from '../../context/SchoolContext';
 
 interface SchoolLogoProps {
   className?: string;
@@ -15,6 +16,11 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
   lightText = false
 }) => {
   const [imgError, setImgError] = useState(false);
+  const { settings, profile } = useSchool();
+  const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah';
+  const tagline = settings?.tagline || 'Website Resmi Sekolah';
+  const logoSrc = settings?.logo_url && !settings.logo_url.includes('/src/assets/logo.png') ? settings.logo_url : defaultLogo;
+  const initials = schoolName.split(/\\s+/).filter(Boolean).slice(0, 3).map(word => word[0]).join('').toUpperCase();
 
   const sizeClasses = {
     sm: 'w-8 h-8',
@@ -35,14 +41,14 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
       <div className={`relative ${sizeClasses[size]} shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-white/10 p-0.5 shadow-sm`}>
         {!imgError ? (
           <img
-            src={defaultLogo}
-            alt="Logo SMP Islam Caruy"
+            src={logoSrc}
+            alt={`Logo ${schoolName}`}
             onError={() => setImgError(true)}
             className="w-full h-full object-contain filter drop-shadow-sm"
           />
         ) : (
           <div className="w-full h-full bg-emerald-800 rounded-lg flex items-center justify-center text-amber-400 font-bold border border-amber-300/40">
-            <span className="text-xs">SIC</span>
+            <span className="text-xs">{initials}</span>
           </div>
         )}
       </div>
@@ -54,7 +60,7 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
             <span className="text-emerald-600 font-bold">CARUY</span>
           </div>
           <span className={`text-[9px] uppercase tracking-widest font-semibold ${lightText ? 'text-emerald-200' : 'text-emerald-700'}`}>
-            Cerdas • Berkarakter • Islami
+            {tagline}
           </span>
         </div>
       )}
