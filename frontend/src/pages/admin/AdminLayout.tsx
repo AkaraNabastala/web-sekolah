@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { SchoolLogo } from '../../components/common/SchoolLogo';
+import { SEO } from '../../components/common/SEO';
 import { Toaster } from '../../components/common/Toaster';
 import { toast } from '../../hooks/useToast';
 import {
@@ -105,7 +106,9 @@ export const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
+    <>
+      <SEO title="SMP Islam Caruy" />
+      <div className="min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
       {/* Global Toaster — mounted once at layout level */}
       <Toaster />
       {/* SIDEBAR FOR DESKTOP */}
@@ -241,6 +244,7 @@ export const AdminLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
