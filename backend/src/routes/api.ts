@@ -1746,3 +1746,68 @@ apiRouter.delete('/admin/announcements/:id', requireContentAdmin, async (req: Re
     return routeWriteError(res, 'AdminAnnouncementsDelete', err);
   }
 });
+
+
+// Pendaftaran peserta didik: berkas diunggah terpisah, lalu data pendaftar disimpan.
+const admissionUploadLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, standardHeaders: true, legacyHeaders: false });
+const admissionDocumentTypeGuard = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.file) return res.status(400).json({ success: false, message: 'Pilih dokumen terlebih dahulu.' });
+  if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(req.file.mimetype)) {
+    void fs.promises.unlink(req.file.path).catch(() => undefined);
+    return res.status(400).json({ success: false, message: 'Dokumen harus berupa PDF, JPG, PNG, atau WebP.' });
+  }
+  return next();
+};
+apiRouter.post('/admissions/upload', admissionUploadLimiter, upload.single('file'), admissionDocumentTypeGuard, validateUploadContent, (req: Request, res: Response) => {
+  if (!req.file) return res.status(400).json({ success: false, message: 'Unggahan tidak berhasil.' });
+  return res.status(201).json({ success: true, fileUrl: `/uploads/${req.file.filename}`, originalName: req.file.originalname });
+});
+
+apiRouter.post('/admissions/applications', publicContactRateLimiter, async (req: Request, res: Response) => {
+  const body = req.body || {};
+  const required = ['candidate_name', 'origin_school', 'parent_name', 'parent_phone'];
+  if (required.some(key => typeof body[key] !== 'string' || !body[key].trim())) {
+    return res.status(400).json({ success: false, message: 'Nama calon siswa, asal sekolah, nama orang tua, dan nomor telepon wajib diisi.' });
+  }
+  if (body.candidate_name.length > 150 || body.origin_school.length > 180 || body.parent_name.length > 150 || body.parent_phone.length > 40 || String(body.notes || '').length > 3000) {
+    return res.status(400).json({ success: false, message: 'Sebagian data melebihi batas panjang yang diizinkan.' });
+  }
+  const documents = body.documents && typeof body.documents === 'object' && !Array.isArray(body.documents) ? body.documents : {};
+  if (Object.keys(documents).length > 8 || Object.values(documents).some((url: any) => typeof url !== 'string' || !url.startsWith('/uploads/'))) {
+    return res.status(400).json({ success: false, message: 'Data dokumen tidak valid.' });
+  }
+  const applicationCode = `SPMB-${new Date().getFullYear()}-${randomBytes(3).toString('hex').toUpperCase()}`;
+  try {
+    const [result]: any = await getPool().query(
+      'INSERT INTO admission_applications (application_code, candidate_name, national_id, birth_place, birth_date, gender, origin_school, parent_name, parent_phone, address, program, notes, documents, academic_year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [applicationCode, body.candidate_name.trim(), body.national_id || null, body.birth_place || null, body.birth_date || null, ['L','P'].includes(body.gender) ? body.gender : null, body.origin_school.trim(), body.parent_name.trim(), body.parent_phone.trim(), body.address || null, body.program || 'Reguler', body.notes || '', JSON.stringify(documents), body.academic_year || null]
+    );
+    return res.status(201).json({ success: true, message: 'Pendaftaran berhasil dikirim.', data: { id: result.insertId, application_code: applicationCode, status: 'received' } });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdmissionApplicationCreate', err);
+  }
+});
+
+apiRouter.get('/admin/admission-applications', requirePpdbAdmin, async (_req: Request, res: Response) => {
+  try {
+    const [rows]: any = await getPool().query('SELECT * FROM admission_applications ORDER BY submitted_at DESC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdmissionApplicationList', err);
+  }
+});
+
+apiRouter.put('/admin/admission-applications/:id', requirePpdbAdmin, async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const status = String(req.body.status || '');
+  if (!Number.isInteger(id) || id < 1 || !['received','verified','accepted','rejected'].includes(status)) {
+    return res.status(400).json({ success: false, message: 'Status atau nomor pendaftaran tidak valid.' });
+  }
+  try {
+    const [result]: any = await getPool().query('UPDATE admission_applications SET status = ?, admin_notes = ? WHERE id = ?', [status, String(req.body.admin_notes || '').slice(0, 5000), id]);
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data pendaftar tidak ditemukan.' });
+    return res.json({ success: true, message: 'Pemeriksaan pendaftaran berhasil disimpan.' });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdmissionApplicationUpdate', err);
+  }
+});
