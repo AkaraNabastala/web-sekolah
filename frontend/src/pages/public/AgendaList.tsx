@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { PageHeader } from '../../components/common/PageHeader';
 import { SEO } from '../../components/common/SEO';
 import { ScrollReveal } from '../../components/common/ScrollReveal';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 import { schoolApi } from '../../services/api';
 import { Calendar, Clock, MapPin, Search, ChevronRight } from 'lucide-react';
 
@@ -115,9 +116,7 @@ export const AgendaList: React.FC = () => {
                       </div>
                       <h3 className="text-lg font-bold text-[#1F2621]">{item.title}</h3>
                       {item.description && (
-                        <p className="text-xs text-[#5C645D] leading-relaxed max-w-xl font-normal">
-                          {item.description}
-                        </p>
+                        <RichTextContent value={item.description} className="text-xs text-[#5C645D] leading-relaxed max-w-xl font-normal"/>
                       )}
                     </div>
                   </div>
