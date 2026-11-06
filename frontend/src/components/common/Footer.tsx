@@ -205,7 +205,6 @@ export const Footer: React.FC = () => {
                 <a href={`mailto:${profile.email}`} className="hover:text-white">{profile.email}</a>
               </div>}
               <p className="text-[11px] text-emerald-300">Informasi layanan mengikuti jadwal operasional sekolah.</p>
-              </div>
             </div>
           </div>
         </div>
