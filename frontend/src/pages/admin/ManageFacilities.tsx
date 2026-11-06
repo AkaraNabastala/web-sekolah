@@ -203,19 +203,11 @@ export const ManageFacilities: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
-                  <select
-                    value={form.category}
-                    onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                  >
-                    <option value="Ruang Belajar">Ruang Belajar</option>
-                    <option value="Laboratorium">Laboratorium</option>
-                    <option value="Perpustakaan">Perpustakaan</option>
-                    <option value="Fasilitas Ibadah">Fasilitas Ibadah</option>
-                    <option value="Lapangan">Lapangan</option>
-                    <option value="Kesehatan">Kesehatan</option>
-                    <option value="Fasilitas Penunjang">Fasilitas Penunjang</option>
-                  </select>
+                  <input type="text" list="facility-category-options" value={form.category || ''} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
+                  <datalist id="facility-category-options">
+                    {Array.from(new Set(facilities.map(item => item.category).filter(Boolean))).map(category => <option key={category} value={category} />)}
+                    {['Ruang Belajar', 'Laboratorium', 'Perpustakaan', 'Lapangan', 'Kesehatan'].map(category => <option key={category} value={category} />)}
+                  </datalist>
                 </div>
 
                 <div className="space-y-1.5">
