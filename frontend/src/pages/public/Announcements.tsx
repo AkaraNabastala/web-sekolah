@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PageHeader } from '../../components/common/PageHeader';
 import { SEO } from '../../components/common/SEO';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 import { schoolApi } from '../../services/api';
 import { CalendarDays, Bell } from 'lucide-react';
 
@@ -17,7 +18,7 @@ export const Announcements: React.FC = () => {
         <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-emerald-800"><Bell size={14}/><span>{item.category || 'Umum'}</span>{item.published_at && <><span>·</span><CalendarDays size={13}/><time>{new Date(item.published_at).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</time></>}</div>
         <h2 className="text-xl font-bold text-stone-900">{item.title}</h2>
         {item.summary && <p className="mt-2 text-sm text-stone-600">{item.summary}</p>}
-        <div className="mt-4 whitespace-pre-wrap text-sm leading-7 text-stone-700">{item.content}</div>
+        <RichTextContent value={item.content} className="mt-4 text-sm leading-7 text-stone-700"/>
       </article>) : <div className="rounded-2xl border border-stone-200 bg-white p-12 text-center text-sm text-stone-500">Belum ada pengumuman yang diterbitkan.</div>}
     </section>
   </div>;
