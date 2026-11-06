@@ -27,12 +27,10 @@ export const ManageProfile: React.FC = () => {
     <div className="space-y-6 font-poppins pb-12">
       <div>
         <h1 className="text-2xl font-bold text-stone-900">Identitas & Profil Sekolah</h1>
-        <p className="text-xs text-stone-500 font-normal mt-0.5">Kelola identitas resmi dan informasi pokok SMP Islam Caruy.</p>
       </div>
       {profile && (<form onSubmit={handleSaveProfile} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
             <h2 className="text-base font-bold text-stone-900">Identitas & Informasi Pokok Pendidikan</h2>
-            <p className="text-xs text-stone-400 font-normal mt-0.5">Informasi resmi yang tercantum di header, footer, dan halaman profil</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
