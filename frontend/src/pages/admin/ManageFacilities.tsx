@@ -3,6 +3,7 @@ import { schoolApi } from '../../services/api';
 import { Facility } from '../../types';
 import { Plus, Edit, Trash2, CheckCircle, AlertCircle, X, Building, Upload } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
+import { RichTextEditor } from '../../components/common/RichTextEditor';
 
 export const ManageFacilities: React.FC = () => {
   const [facilities, setFacilities] = useState<Facility[]>([]);
@@ -254,12 +255,7 @@ export const ManageFacilities: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Uraian / Spesifikasi</label>
-                <textarea
-                  rows={3}
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                />
+                <RichTextEditor rows={5} value={form.description || ''} onChange={description => setForm({ ...form, description })}/>
               </div>
 
               <div className="pt-4 border-t border-stone-100 flex justify-end gap-3">
