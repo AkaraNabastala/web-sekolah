@@ -348,11 +348,11 @@ export const PPDB: React.FC = () => {
             </label>
             <button
               type="submit"
-              disabled={submitting || !admissionOpen}
+              disabled={submitted || submitting || !admissionOpen}
               className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
-              <span>{submitting ? 'Mengirim Pendaftaran…' : admissionOpen ? 'Kirim Formulir Pendaftaran' : 'Pendaftaran Ditutup'}</span>
+              <span>{submitted ? 'Pendaftaran Terkirim' : submitting ? 'Mengirim Pendaftaran…' : admissionOpen ? 'Kirim Formulir Pendaftaran' : 'Pendaftaran Ditutup'}</span>
             </button>
           </form>
         </div>
