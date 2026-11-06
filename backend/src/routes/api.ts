@@ -89,6 +89,22 @@ const firstAdminSetupRateLimiter = rateLimit({
   message: { success: false, message: 'Terlalu banyak percobaan setup. Coba kembali satu jam lagi.' }
 });
 
+const publicContactRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Terlalu banyak pesan dari jaringan Anda. Silakan coba kembali nanti.' }
+});
+
+const visitorLogRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Terlalu banyak permintaan pencatatan kunjungan.' }
+});
+
 const loginRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -1443,10 +1459,17 @@ const makeSlug = (value: string) => String(value || '')
   .replace(/[\s-]+/g, '-');
 
 // Contact form
-apiRouter.post('/contact', async (req: Request, res: Response) => {
+apiRouter.post('/contact', publicContactRateLimiter, async (req: Request, res: Response) => {
   const { name, email, phone, subject, message } = req.body || {};
-  if (!name || !email || !subject || !message) {
+  if (typeof name !== 'string' || typeof email !== 'string' ||
+      typeof subject !== 'string' || typeof message !== 'string' ||
+      !name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
     return res.status(400).json({ success: false, message: 'Nama, email, subjek, dan pesan wajib diisi.' });
+  }
+  if (name.length > 100 || email.length > 100 || (phone && (typeof phone !== 'string' || phone.length > 40)) ||
+      subject.length > 180 || message.length > 5000 ||
+      !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email.trim())) {
+    return res.status(400).json({ success: false, message: 'Data pesan tidak valid atau melebihi batas panjang yang diizinkan.' });
   }
   try {
     const [result]: any = await getPool().query(
