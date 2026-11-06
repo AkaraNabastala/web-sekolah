@@ -111,14 +111,41 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
-    // 3. Verifikasi seluruh tabel aplikasi, bukan hanya beberapa tabel contoh.
+    // 3. Jalankan migrasi bertahap satu kali per file. Kolom yang sudah ada dilewati.
+    const migrationsDir = path.join(backendRoot, 'database', 'migrations');
+    if (fs.existsSync(migrationsDir)) {
+      const migrationFiles = fs.readdirSync(migrationsDir).filter(file => file.endsWith('.sql')).sort();
+      for (const migrationFile of migrationFiles) {
+        const [appliedRows]: any = await pool.query('SELECT id FROM migration_history WHERE migration_name = ? LIMIT 1', [migrationFile]);
+        if (appliedRows.length) continue;
+        const migrationRaw = fs.readFileSync(path.join(migrationsDir, migrationFile), 'utf8');
+        const migrationSql = migrationRaw.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*--.*$/gm, '');
+        const statements = migrationSql.split(';').map(statement => statement.trim()).filter(statement => statement.length > 0);
+        for (const statement of statements) {
+          // Membuat migrasi ADD COLUMN aman bila schema.sql sudah menyediakan kolom tersebut.
+          const addColumn = statement.match(/^ALTER\s+TABLE\s+`?([a-zA-Z0-9_]+)`?\s+ADD\s+COLUMN\s+`?([a-zA-Z0-9_]+)`?/i);
+          if (addColumn) {
+            const [columnRows]: any = await pool.query(
+              'SELECT COUNT(*) AS total FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?',
+              [dbInfo.database, addColumn[1], addColumn[2]]
+            );
+            if (Number(columnRows[0]?.total || 0) > 0) continue;
+          }
+          await pool.query(statement);
+        }
+        await pool.query('INSERT INTO migration_history (migration_name, batch) VALUES (?, 2)', [migrationFile]);
+        logger.info('MigrationService', `Migrasi ${migrationFile} berhasil diterapkan.`);
+      }
+    }
+
+    // 4. Verifikasi seluruh tabel aplikasi, bukan hanya beberapa tabel contoh.
     const requiredTables = [
       'admins', 'school_profile', 'school_history', 'school_vision_mission',
       'school_organization', 'teachers', 'staff', 'news_categories', 'news',
       'gallery_albums', 'gallery_media', 'achievements', 'facilities',
       'ppdb_information', 'contact_messages', 'website_settings',
       'visitor_sessions', 'visitor_pageviews', 'admin_activities',
-      'uploaded_files', 'agendas', 'programs', 'migration_history'
+      'uploaded_files', 'agendas', 'programs', 'announcements', 'content_categories', 'admission_applications', 'migration_history'
     ];
     const [rows]: any = await pool.query(
       `SELECT table_name FROM information_schema.tables
