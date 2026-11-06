@@ -96,7 +96,7 @@ export const App: React.FC = () => {
             <Route path="/visi-misi" element={<PublicLayout><VisionMission /></PublicLayout>} />
             <Route path="/organisasi" element={<PublicLayout><FeatureRoute feature="organization"><Organization /></FeatureRoute></PublicLayout>} />
             <Route path="/guru" element={<PublicLayout><FeatureRoute feature="teachers"><Teachers /></FeatureRoute></PublicLayout>} />
-            <Route path="/guru-staf" element={<PublicLayout><Teachers /></PublicLayout>} />
+            <Route path="/guru-staf" element={<PublicLayout><FeatureRoute feature="teachers"><Teachers /></FeatureRoute></PublicLayout>} />
             <Route path="/berita" element={<PublicLayout><FeatureRoute feature="news"><NewsList /></FeatureRoute></PublicLayout>} />
             <Route path="/berita/:slug" element={<PublicLayout><FeatureRoute feature="news"><NewsDetail /></FeatureRoute></PublicLayout>} />
             <Route path="/agenda" element={<PublicLayout><FeatureRoute feature="agenda"><AgendaList /></FeatureRoute></PublicLayout>} />
