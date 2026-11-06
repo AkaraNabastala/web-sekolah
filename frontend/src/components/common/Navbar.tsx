@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useSchool } from '../../context/SchoolContext';
 import { SchoolLogo } from './SchoolLogo';
+import { ADMISSION_LABEL } from '../../config/admissions';
 
 import {
   Menu,
@@ -161,7 +162,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Tentang Sekolah</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Identitas kelembagaan & legalitas</span>
                   </Link>
                   <Link
                     to="/sejarah" feature="history"
@@ -169,7 +169,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Sejarah & Kilas Balik</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Perjalanan madrasah sejak berdiri</span>
                   </Link>
                   <Link
                     to="/visi-misi"
@@ -177,7 +176,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Visi, Misi & Tujuan</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Arah panduan pembinaan adab santri</span>
                   </Link>
                   <Link
                     to="/guru" feature="teachers"
@@ -185,7 +183,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Guru & Tenaga Kependidikan</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Profil dewan pengajar & wali kelas</span>
                   </Link>
                   <Link
                     to="/fasilitas" feature="facilities"
@@ -193,7 +190,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Sarana & Fasilitas</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Ruang belajar, lab & perpustakaan</span>
                   </Link>
                   <Link
                     to="/organisasi" feature="organization"
@@ -201,7 +197,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Struktur Organisasi</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Bagan manajemen & komite</span>
                   </Link>
                 </div>
               )}
@@ -240,7 +235,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Kurikulum Terpadu</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Informasi pembelajaran yang dikelola sekolah</span>
                   </Link>
                   <Link
                     to="/program" feature="programs"
@@ -248,7 +242,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Program Unggulan</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Program yang ditetapkan dan dikelola sekolah</span>
                   </Link>
                   <Link
                     to="/ekstrakurikuler" feature="programs"
@@ -256,7 +249,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Ekstrakurikuler</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Kegiatan pengembangan minat dan bakat siswa</span>
                   </Link>
                 </div>
               )}
@@ -295,7 +287,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Berita & Artikel</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Kabar kegiatan civitas akademika</span>
                   </Link>
                   <Link
                     to="/agenda" feature="agenda"
@@ -303,7 +294,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Agenda Kegiatan</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Jadwal acara & kalender akademik</span>
                   </Link>
                   <Link
                     to="/pengumuman" feature="news"
@@ -311,7 +301,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Pengumuman Resmi</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Surat edaran & jadwal ujian</span>
                   </Link>
                 </div>
               )}
@@ -350,7 +339,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Prestasi Santri</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Capaian yang telah diverifikasi dan dipublikasikan</span>
                   </Link>
                   <Link
                     to="/kegiatan" feature="agenda"
@@ -358,7 +346,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Kegiatan Sekolah</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Catatan kegiatan yang telah berlangsung</span>
                   </Link>
                   <Link
                     to="/galeri" feature="gallery"
@@ -366,7 +353,6 @@ export const Navbar: React.FC = () => {
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
                     <span className="text-xs font-bold">Dokumentasi & Galeri</span>
-                    <span className="text-[11px] text-[#7A827B] font-normal">Foto & video aktivitas santri</span>
                   </Link>
                 </div>
               )}
@@ -384,9 +370,9 @@ export const Navbar: React.FC = () => {
             {/* Tombol PPDB Online Highlight */}
             <Link
               to="/ppdb" feature="ppdb"
-              className="ml-2 px-5 py-2.5 rounded-xl bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-xs uppercase tracking-wider shadow-sm transition-all hover:-translate-y-0.5"
+              className="ml-2 px-5 py-2.5 rounded-xl bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-xs uppercase tracking-wider shadow-sm transition-all hover:-translate-y-0.5 whitespace-nowrap"
             >
-              PPDB 2026/2027
+              {ADMISSION_LABEL}
             </Link>
           </nav>
 
@@ -524,7 +510,7 @@ export const Navbar: React.FC = () => {
               to="/ppdb" feature="ppdb"
               className="block w-full text-center py-3 bg-[#E8CF94] font-bold text-xs uppercase tracking-wider text-[#1B3B2B] rounded-xl shadow-sm"
             >
-              Daftar Santri Baru (PPDB Online)
+              Pendaftaran {ADMISSION_LABEL}
             </Link>
           </div>
         </div>
