@@ -64,7 +64,7 @@ export const AgendaList: React.FC = () => {
             <Search className="w-5 h-5 text-[#2A5C40] ml-2" />
             <input
               type="text"
-              placeholder="Cari agenda atau pengumuman..."
+              placeholder="Cari agenda kegiatan..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full text-sm bg-transparent focus:outline-none text-[#1F2621]"
