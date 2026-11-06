@@ -13,7 +13,7 @@ export const ManageWelcome: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   useEffect(() => { schoolApi.getProfile().then(setProfile).catch(() => toast.error('Gagal memuat data kepala sekolah.')); }, []);
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (file: File, _target?: 'headmaster' | 'history') => {
     setUploading(true);
     try {
       const res = await schoolApi.uploadFile(file);
