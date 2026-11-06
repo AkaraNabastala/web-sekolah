@@ -1786,6 +1786,13 @@ apiRouter.post('/admissions/applications', publicContactRateLimiter, async (req:
   }
   const applicationCode = `SPMB-${new Date().getFullYear()}-${randomBytes(3).toString('hex').toUpperCase()}`;
   try {
+    const [periodRows]: any = await getPool().query(
+      'SELECT is_open, (start_date IS NULL OR start_date <= CURDATE()) AS period_started, (end_date IS NULL OR end_date >= CURDATE()) AS period_active FROM ppdb_information ORDER BY id ASC LIMIT 1'
+    );
+    const period = periodRows[0];
+    if (!period || !Number(period.is_open) || !Number(period.period_started) || !Number(period.period_active)) {
+      return res.status(403).json({ success: false, message: 'Pendaftaran sedang ditutup atau belum memasuki periode pendaftaran.' });
+    }
     const [result]: any = await getPool().query(
       'INSERT INTO admission_applications (application_code, candidate_name, national_id, birth_place, birth_date, gender, origin_school, parent_name, parent_phone, address, program, notes, documents, academic_year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [applicationCode, body.candidate_name.trim(), body.national_id || null, body.birth_place || null, body.birth_date || null, ['L','P'].includes(body.gender) ? body.gender : null, body.origin_school.trim(), body.parent_name.trim(), body.parent_phone.trim(), body.address || null, body.program || 'Reguler', body.notes || '', JSON.stringify(documents), body.academic_year || null]
