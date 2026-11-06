@@ -1934,6 +1934,34 @@ apiRouter.post('/admin/content-categories', requireContentAdmin, async (req: Req
   }
 });
 
+
+apiRouter.put('/admin/content-categories/:scope/:id', requireContentAdmin, async (req: Request, res: Response) => {
+  const scope = String(req.params.scope || '');
+  const id = Number(req.params.id);
+  const name = String(req.body.name || '').trim();
+  if (!['news', 'program', 'facility'].includes(scope) || !Number.isInteger(id) || id < 1 || !name || name.length > 100) {
+    return res.status(400).json({ success: false, message: 'Jenis, nomor, dan nama kategori wajib valid.' });
+  }
+  try {
+    const [rows]: any = scope === 'news'
+      ? await getPool().query('SELECT name FROM news_categories WHERE id = ? LIMIT 1', [id])
+      : await getPool().query('SELECT name FROM content_categories WHERE id = ? AND scope = ? LIMIT 1', [id, scope]);
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Kategori tidak ditemukan.' });
+    const oldName = rows[0].name;
+    if (scope === 'news') {
+      await getPool().query('UPDATE news_categories SET name = ?, slug = ?, description = ? WHERE id = ?', [name, makeSlug(name), req.body.description || '', id]);
+    } else {
+      await getPool().query('UPDATE content_categories SET name = ?, slug = ?, description = ? WHERE id = ? AND scope = ?', [name, makeSlug(name), req.body.description || '', id, scope]);
+      if (scope === 'program') await getPool().query('UPDATE programs SET category = ? WHERE category = ?', [name, oldName]);
+      if (scope === 'facility') await getPool().query('UPDATE facilities SET category = ? WHERE category = ?', [name, oldName]);
+    }
+    return res.json({ success: true, message: 'Kategori berhasil diperbarui.' });
+  } catch (err: any) {
+    if (err?.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'Nama atau slug kategori sudah digunakan.' });
+    return routeWriteError(res, 'ContentCategoriesUpdate', err);
+  }
+});
+
 apiRouter.delete('/admin/content-categories/:scope/:id', requireContentAdmin, async (req: Request, res: Response) => {
   const scope=String(req.params.scope||'');
   const id=Number(req.params.id);
