@@ -41,50 +41,101 @@ section {
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
-/* Public website theme overrides: the palette is configured per school in admin settings. */
+/* Shared school palette: all Tailwind emerald/amber utility shades follow Website Settings. */
 .public-shell .bg-emerald-950,
 .public-shell .bg-emerald-900,
-.public-shell .bg-emerald-800 { background-color: var(--school-primary) !important; }
+.public-shell .bg-emerald-800,
+.public-shell .bg-emerald-700,
+.public-shell .bg-emerald-600 {
+  background-color: var(--school-primary) !important;
+}
+.public-shell .bg-emerald-50,
+.public-shell .bg-emerald-100 {
+  background-color: color-mix(in srgb, var(--school-primary), white 93%) !important;
+}
 .public-shell .text-emerald-950,
 .public-shell .text-emerald-900,
 .public-shell .text-emerald-800,
-.public-shell .text-emerald-700 { color: var(--school-primary) !important; }
+.public-shell .text-emerald-700,
+.public-shell .text-emerald-600 {
+  color: var(--school-primary) !important;
+}
+.public-shell .border-emerald-950,
+.public-shell .border-emerald-900,
+.public-shell .border-emerald-800,
+.public-shell .border-emerald-700,
+.public-shell .border-emerald-600 {
+  border-color: var(--school-primary) !important;
+}
+.public-shell .border-emerald-50,
+.public-shell .border-emerald-100,
+.public-shell .border-emerald-200 {
+  border-color: color-mix(in srgb, var(--school-primary), white 78%) !important;
+}
 .public-shell .bg-amber-400,
-.public-shell .bg-amber-500 { background-color: var(--school-secondary) !important; }
+.public-shell .bg-amber-500 {
+  background-color: var(--school-secondary) !important;
+}
+.public-shell .bg-amber-50,
+.public-shell .bg-amber-100 {
+  background-color: color-mix(in srgb, var(--school-secondary), white 84%) !important;
+}
 .public-shell .text-amber-400,
 .public-shell .text-amber-300,
-.public-shell .text-amber-200 { color: var(--school-secondary) !important; }
+.public-shell .text-amber-200,
+.public-shell .text-amber-500,
+.public-shell .text-amber-600 {
+  color: var(--school-secondary) !important;
+}
 .public-shell .border-amber-400,
-.public-shell .border-amber-300 { border-color: var(--school-secondary) !important; }
+.public-shell .border-amber-300,
+.public-shell .border-amber-200 {
+  border-color: var(--school-secondary) !important;
+}
 
-
-/* Admin dashboard follows the same school palette as the public website. */
+/* Admin dashboard uses the same configurable tokens as public pages. */
 .admin-shell .bg-emerald-950,
 .admin-shell .bg-emerald-900,
 .admin-shell .bg-emerald-800,
 .admin-shell .bg-emerald-700,
-.admin-shell .hover\\:bg-emerald-900:hover,
-.admin-shell .hover\\:bg-emerald-800:hover {
+.admin-shell .bg-emerald-600 {
   background-color: var(--school-primary) !important;
 }
+.admin-shell .bg-emerald-50,
+.admin-shell .bg-emerald-100 {
+  background-color: color-mix(in srgb, var(--school-primary), white 93%) !important;
+}
+.admin-shell .text-emerald-950,
+.admin-shell .text-emerald-900,
 .admin-shell .text-emerald-800,
 .admin-shell .text-emerald-700,
 .admin-shell .text-emerald-600 {
   color: var(--school-primary) !important;
 }
+.admin-shell .border-emerald-950,
 .admin-shell .border-emerald-900,
 .admin-shell .border-emerald-800,
-.admin-shell .border-emerald-700 {
+.admin-shell .border-emerald-700,
+.admin-shell .border-emerald-600 {
   border-color: color-mix(in srgb, var(--school-primary), white 18%) !important;
 }
 .admin-shell .bg-amber-400,
 .admin-shell .bg-amber-500 {
   background-color: var(--school-secondary) !important;
 }
+.admin-shell .bg-amber-50,
+.admin-shell .bg-amber-100 {
+  background-color: color-mix(in srgb, var(--school-secondary), white 84%) !important;
+}
 .admin-shell .text-amber-400,
 .admin-shell .text-amber-500,
 .admin-shell .text-amber-600 {
   color: var(--school-secondary) !important;
+}
+.admin-shell .border-amber-400,
+.admin-shell .border-amber-300,
+.admin-shell .border-amber-200 {
+  border-color: var(--school-secondary) !important;
 }
 
 /* Map warna literal dari komponen lama ke token tema sekolah. */
