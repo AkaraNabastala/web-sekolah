@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAdmin } from '../middleware/auth.js';
+import { requireContentAdmin } from '../middleware/auth.js';
 import {
   getDashboardActivities,
   getDashboardStatistics
@@ -7,5 +7,5 @@ import {
 
 export const dashboardRouter = Router();
 
-dashboardRouter.get('/statistics', requireAdmin, getDashboardStatistics);
-dashboardRouter.get('/activities', requireAdmin, getDashboardActivities);
+dashboardRouter.get('/statistics', requireContentAdmin, getDashboardStatistics);
+dashboardRouter.get('/activities', requireContentAdmin, getDashboardActivities);
