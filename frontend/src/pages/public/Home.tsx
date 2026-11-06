@@ -52,6 +52,11 @@ interface HeroSlide {
 
 export const Home: React.FC = () => {
   const { profile, settings } = useSchool();
+  let featureFlags: any = settings?.feature_flags;
+  if (typeof featureFlags === 'string') {
+    try { featureFlags = JSON.parse(featureFlags); } catch { featureFlags = null; }
+  }
+  const isFeatureEnabled = (feature: string) => featureFlags?.[feature] !== false;
   const [latestNews, setLatestNews] = useState<NewsArticle[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -479,7 +484,8 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. PROGRAM PENDIDIKAN UNGGULAN */}
+      {isFeatureEnabled('programs') && (
+          {/* 6. PROGRAM PENDIDIKAN UNGGULAN */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -545,8 +551,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 7. FASILITAS SEKOLAH (GRID GALERI EDITORIAL) */}
+      {isFeatureEnabled('facilities') && (
+          {/* 7. FASILITAS SEKOLAH (GRID GALERI EDITORIAL) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -600,8 +608,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 8. GURU DAN TENAGA KEPENDIDIKAN */}
+      {isFeatureEnabled('teachers') && (
+          {/* 8. GURU DAN TENAGA KEPENDIDIKAN */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -649,8 +659,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 9. KEGIATAN & AKTIVITAS SEKOLAH (DOKUMENTASI ALBUM) */}
+      {isFeatureEnabled('gallery') && (
+          {/* 9. KEGIATAN & AKTIVITAS SEKOLAH (DOKUMENTASI ALBUM) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -710,8 +722,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 10. PRESTASI & PENCAPAIAN (HANYA SUMBER RESMI TERVERIFIKASI) */}
+      {isFeatureEnabled('achievements') && (
+          {/* 10. PRESTASI & PENCAPAIAN (HANYA SUMBER RESMI TERVERIFIKASI) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -764,8 +778,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 11. BERITA & ARTIKEL TERBARU */}
+      {isFeatureEnabled('news') && (
+          {/* 11. BERITA & ARTIKEL TERBARU */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -825,8 +841,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 11B. AGENDA & KEGIATAN MENDATANG */}
+      {isFeatureEnabled('agenda') && (
+          {/* 11B. AGENDA & KEGIATAN MENDATANG */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -896,8 +914,10 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 12. PENERIMAAN PESERTA DIDIK BARU (PPDB) */}
+      {isFeatureEnabled('ppdb') && (
+          {/* 12. PENERIMAAN PESERTA DIDIK BARU (PPDB) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-6xl mx-auto bg-white rounded-3xl p-8 sm:p-12 border border-[#ECE7DD] shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -952,6 +972,7 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
       {/* 13. CALL TO ACTION / HUBUNGI SEKOLAH (RESMI & HANGAT) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#132A1E] text-white">
