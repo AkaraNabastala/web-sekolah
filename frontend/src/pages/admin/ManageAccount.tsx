@@ -83,8 +83,8 @@ export const ManageAccount: React.FC = () => {
       toast.error('Konfirmasi password baru tidak cocok.');
       return;
     }
-    if (newPassword.length < 6) {
-      toast.error('Password baru minimal 6 karakter.');
+    if (newPassword.length < 8) {
+      toast.error('Password baru minimal 8 karakter.');
       return;
     }
 
@@ -106,8 +106,8 @@ export const ManageAccount: React.FC = () => {
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newUser.password.length < 6) {
-      toast.error('Password minimal 6 karakter.');
+    if (newUser.password.length < 8) {
+      toast.error('Password minimal 8 karakter.');
       return;
     }
     setAddingUser(true);
