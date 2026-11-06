@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `gallery_media` (
   CONSTRAINT `fk_gallery_album` FOREIGN KEY (`album_id`) REFERENCES `gallery_albums`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 12. Prestasi Sekolah & Santri
+-- 12. Prestasi Sekolah
 CREATE TABLE IF NOT EXISTS `achievements` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `title` VARCHAR(200) NOT NULL,
