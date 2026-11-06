@@ -541,29 +541,285 @@ apiRouter.get('/settings', async (_req: Request, res: Response) => {
   return res.status(404).json({ success: false, message: 'Pengaturan website belum dikonfigurasi.' });
 });
 
-apiRouter.post('/contact', async (req: Request, res: Response) => {
-  const { name, email, phone, subject, message } = req.body;
-  if (!name || !email || !subject || !message) {
-    return res.status(400).json({ success: false, message: 'Nama, email, subjek, dan pesan wajib diisi.' });
-  }
 
+// ==========================================
+// 4. KONTEN PUBLIK (READ-ONLY)
+// MySQL adalah satu-satunya sumber data.
+// Hasil kosong bukan alasan untuk menggunakan JSON fallback.
+// ==========================================
+
+apiRouter.get('/school-profile', async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
-    const [resInsert]: any = await pool.query(
-      `INSERT INTO contact_messages (name, email, phone, subject, message, is_read, reply_status, created_at)
-       VALUES (?, ?, ?, ?, ?, 0, 'unread', NOW())`,
-      [name, email, phone || null, subject, message]
-    );
-    return res.json({
-      success: true,
-      message: 'Pesan berhasil terkirim ke pihak SMP Islam Caruy.',
-      data: { id: resInsert.insertId, name, email, subject }
+    const [rows]: any = await pool.query('SELECT * FROM school_profile LIMIT 1');
+    return res.json({ success: true, data: rows[0] ?? null });
+  } catch (err: any) {
+    logger.error('SchoolProfileRoute', 'Gagal membaca profil sekolah dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
     });
-  } catch {}
-
-  const saved = dbFallback.createContactMessage({ name, email, phone, subject, message });
-  res.json({ success: true, message: 'Pesan berhasil terkirim ke pihak SMP Islam Caruy.', data: saved });
+    return res.status(500).json({ success: false, message: 'Profil sekolah sementara tidak dapat dimuat.' });
+  }
 });
+
+apiRouter.get('/school-history', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM school_history LIMIT 1');
+    return res.json({ success: true, data: rows[0] ?? null });
+  } catch (err: any) {
+    logger.error('SchoolHistoryRoute', 'Gagal membaca sejarah sekolah dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Sejarah sekolah sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/vision-mission', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM school_vision_mission LIMIT 1');
+    return res.json({ success: true, data: rows[0] ?? null });
+  } catch (err: any) {
+    logger.error('VisionMissionRoute', 'Gagal membaca visi dan misi dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Visi dan misi sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/organization', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM school_organization ORDER BY display_order ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('OrganizationRoute', 'Gagal membaca organisasi dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Data organisasi sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/teachers', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query(
+      'SELECT * FROM teachers WHERE is_active = 1 ORDER BY display_order ASC'
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('TeachersRoute', 'Gagal membaca guru dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Data guru sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/staff', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query(
+      'SELECT * FROM staff WHERE is_active = 1 ORDER BY display_order ASC'
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('StaffRoute', 'Gagal membaca staf dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Data staf sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/news', async (req: Request, res: Response) => {
+  const category = req.query.category as string;
+  const pool = getPool();
+  try {
+    let sql = 'SELECT * FROM news WHERE status = "published" ORDER BY published_at DESC';
+    const params: any[] = [];
+
+    if (category) {
+      sql = 'SELECT n.* FROM news n JOIN news_categories c ON n.category_id = c.id WHERE n.status = "published" AND c.slug = ? ORDER BY n.published_at DESC';
+      params.push(category);
+    }
+
+    const [rows]: any = await pool.query(sql, params);
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('NewsRoute', 'Gagal membaca berita dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Berita sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM news_categories ORDER BY name ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('NewsCategoriesRoute', 'Gagal membaca kategori berita dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Kategori berita sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
+  const slug = String(req.params.slug);
+  const pool = getPool();
+
+  try {
+    const [rows]: any = await pool.query(
+      'SELECT * FROM news WHERE slug = ? LIMIT 1',
+      [slug]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ success: false, message: 'Berita tidak ditemukan.' });
+    }
+
+    await pool.query('UPDATE news SET views_count = views_count + 1 WHERE id = ?', [rows[0].id]);
+    return res.json({ success: true, data: rows[0] });
+  } catch (err: any) {
+    logger.error('NewsDetailRoute', 'Gagal membaca detail berita dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Detail berita sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/achievements', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query(
+      'SELECT * FROM achievements ORDER BY year DESC, id DESC'
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('AchievementsRoute', 'Gagal membaca prestasi dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Data prestasi sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/facilities', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query(
+      'SELECT * FROM facilities ORDER BY display_order ASC'
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('FacilitiesRoute', 'Gagal membaca fasilitas dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Data fasilitas sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/gallery', async (req: Request, res: Response) => {
+  const category = req.query.category as string;
+  const pool = getPool();
+
+  try {
+    let sql = 'SELECT * FROM gallery_media ORDER BY display_order ASC, id DESC';
+    const params: any[] = [];
+
+    if (category && category !== 'Semua') {
+      sql = 'SELECT * FROM gallery_media WHERE category = ? ORDER BY display_order ASC, id DESC';
+      params.push(category);
+    }
+
+    const [rows]: any = await pool.query(sql, params);
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('GalleryRoute', 'Gagal membaca galeri dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Galeri sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/gallery/albums', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM gallery_albums ORDER BY id DESC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('GalleryAlbumsRoute', 'Gagal membaca album galeri dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Album galeri sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/ppdb', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM ppdb_information LIMIT 1');
+    return res.json({ success: true, data: rows[0] ?? null });
+  } catch (err: any) {
+    logger.error('PPDBRoute', 'Gagal membaca informasi PPDB dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Informasi PPDB sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/agendas', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query(
+      'SELECT * FROM agendas WHERE is_published = 1 ORDER BY event_date ASC'
+    );
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('AgendasRoute', 'Gagal membaca agenda dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Agenda sementara tidak dapat dimuat.' });
+  }
+});
+
+// Programs & Extracurricular Public Route
+apiRouter.get('/programs', async (req: Request, res: Response) => {
+  const category = req.query.category as string;
+  const pool = getPool();
+
+  try {
+    let sql = 'SELECT * FROM programs WHERE is_active = 1 ORDER BY display_order ASC';
+    const params: any[] = [];
+
+    if (category) {
+      sql = 'SELECT * FROM programs WHERE is_active = 1 AND category = ? ORDER BY display_order ASC';
+      params.push(category);
+    }
+
+    const [rows]: any = await pool.query(sql, params);
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    logger.error('ProgramsRoute', 'Gagal membaca program sekolah dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Program sekolah sementara tidak dapat dimuat.' });
+  }
+});
+
+apiRouter.get('/settings', async (_req: Request, res: Response) => {
+  const pool = getPool();
+  try {
+    const [rows]: any = await pool.query('SELECT * FROM website_settings LIMIT 1');
+    return res.json({ success: true, data: rows[0] ?? null });
+  } catch (err: any) {
+    logger.error('SettingsRoute', 'Gagal membaca pengaturan website dari MySQL.', {
+      code: err.code, sqlState: err.sqlState, message: err.message
+    });
+    return res.status(500).json({ success: false, message: 'Pengaturan website sementara tidak dapat dimuat.' });
+  }
+});
+
 
 // ==========================================
 // 5. UPLOAD FILE
