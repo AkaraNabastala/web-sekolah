@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getPool } from '../config/database.js';
-import { JWT_SECRET, requireAdmin, requireSuperadmin, requireContentAdmin, requirePpdbAdmin, AuthenticatedRequest } from '../middleware/auth.js';
+import { JWT_SECRET, requireAdmin, requireSuperadmin, requireContentAdmin, requirePpdbAdmin, requireCsrf, AuthenticatedRequest } from '../middleware/auth.js';
 import { hashVisitor, parseDeviceAndBrowser } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
 import { createHash, randomUUID, randomBytes } from 'crypto';
@@ -302,7 +302,7 @@ apiRouter.post('/auth/login', requireTrustedOrigin, loginRateLimiter, async (req
   }
 });
 
-apiRouter.post('/auth/logout', (_req: Request, res: Response) => {
+apiRouter.post('/auth/logout', requireCsrf, (_req: Request, res: Response) => {
   clearAdminSession(res);
   return res.json({ success: true, message: 'Sesi administrator telah diakhiri.' });
 });
