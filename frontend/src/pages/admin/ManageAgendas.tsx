@@ -110,7 +110,7 @@ export const ManageAgendas: React.FC = () => {
     <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Agenda & Pengumuman Sekolah</h1>
+          <h1 className="text-2xl font-bold text-stone-900">Agenda & Pengumuman</h1>
         </div>
         <button
           onClick={handleOpenCreate}
@@ -216,7 +216,7 @@ export const ManageAgendas: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-stone-100 space-y-6">
             <div className="flex items-center justify-between border-b border-stone-100 pb-4">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Ubah Agenda Kegiatan' : 'Tambah Agenda Baru'}
+                {editingId ? 'Ubah Agenda' : 'Tambah Agenda'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
