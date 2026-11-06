@@ -753,14 +753,15 @@ apiRouter.get('/admin/news', requireContentAdmin, requireFeatureEnabled('news'),
 
 apiRouter.post('/admin/news', requireContentAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const pool = getPool();
-  const { title, category_id, summary, content, thumbnail, status } = req.body;
+  const { title, category_id, summary, content, thumbnail } = req.body;
+  const status = ['draft', 'published', 'archived'].includes(req.body.status) ? req.body.status : 'draft';
   const slug = title.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
 
   try {
     const [result]: any = await pool.query(
       `INSERT INTO news (category_id, title, slug, summary, content, thumbnail, status, published_at, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-      [category_id || 1, title, slug, summary, content, thumbnail || null, status || 'published']
+       VALUES (?, ?, ?, ?, ?, ?, ?, IF(? = 'published', NOW(), NULL), NOW())`,
+      [category_id || 1, title, slug, summary, content, thumbnail || null, status, status]
     );
     return res.json({ success: true, message: 'Berita berhasil disimpan.', data: { id: result.insertId, slug, title } });
   } catch (err: any) {
@@ -782,9 +783,9 @@ apiRouter.put('/admin/news/:id', requireContentAdmin, requireFeatureEnabled('new
   const pool = getPool();
   try {
     await pool.query(
-      `UPDATE news SET title = ?, category_id = ?, summary = ?, content = ?, thumbnail = ?, status = ?, updated_at = NOW()
+      `UPDATE news SET title = ?, category_id = ?, summary = ?, content = ?, thumbnail = ?, status = ?, published_at = CASE WHEN ? = 'published' THEN COALESCE(published_at, NOW()) ELSE NULL END, updated_at = NOW()
        WHERE id = ?`,
-      [req.body.title, req.body.category_id, req.body.summary, req.body.content, req.body.thumbnail, req.body.status, id]
+      [req.body.title, req.body.category_id, req.body.summary, req.body.content, req.body.thumbnail, ['draft', 'published', 'archived'].includes(req.body.status) ? req.body.status : 'draft', ['draft', 'published', 'archived'].includes(req.body.status) ? req.body.status : 'draft', id]
     );
     return res.json({ success: true, message: 'Berita berhasil diperbarui.' });
   } catch (err: any) {
