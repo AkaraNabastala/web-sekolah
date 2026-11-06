@@ -180,3 +180,34 @@ section {
 .public-shell [class*="bg-[#E5C178]"] {
   background-color: var(--school-secondary) !important;
 }
+
+/* Additional legacy palette values used by older public pages. */
+.public-shell [class*="bg-[#E8EFEA]"],
+.public-shell [class*="bg-[#D5E0D7]"],
+.public-shell [class*="bg-[#D1E0D5]"],
+.public-shell [class*="bg-[#E2EBE4]"],
+.public-shell [class*="bg-[#F3F7F4]"] {
+  background-color: color-mix(in srgb, var(--school-primary), white 92%) !important;
+}
+.public-shell [class*="text-[#1F2621]"],
+.public-shell [class*="text-[#2C332D]"] {
+  color: color-mix(in srgb, var(--school-primary), black 12%) !important;
+}
+.public-shell [class*="text-[#3D473F]"] {
+  color: color-mix(in srgb, var(--school-primary), white 12%) !important;
+}
+.public-shell [class*="border-[#D5E0D7]"],
+.public-shell [class*="border-[#D1E0D5]"],
+.public-shell [class*="border-[#E2EBE4]"] {
+  border-color: color-mix(in srgb, var(--school-primary), white 78%) !important;
+}
+.public-shell [class*="text-[#785E2F]"] {
+  color: color-mix(in srgb, var(--school-secondary), black 38%) !important;
+}
+.public-shell [class*="text-[#E8CF94]"] {
+  color: var(--school-secondary) !important;
+}
+.public-shell [class*="border-[#E8CF94]"],
+.public-shell [class*="border-[#DEBD7A]"] {
+  border-color: var(--school-secondary) !important;
+}
