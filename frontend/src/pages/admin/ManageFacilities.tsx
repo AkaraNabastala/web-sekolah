@@ -105,9 +105,6 @@ export const ManageFacilities: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Sarana & Fasilitas</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola ruang kelas, laboratorium komputer, perpustakaan, musholla, dan sarana olahraga sekolah.
-          </p>
         </div>
 
         <button
@@ -115,7 +112,7 @@ export const ManageFacilities: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Fasilitas</span>
+          <span>Fasilitas</span>
         </button>
       </div>
 
@@ -197,7 +194,6 @@ export const ManageFacilities: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Misal: Laboratorium Komputer Multimedia"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -226,7 +222,6 @@ export const ManageFacilities: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Kapasitas</label>
                   <input
                     type="text"
-                    placeholder="Misal: 36 Siswa"
                     value={form.capacity}
                     onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -271,7 +266,6 @@ export const ManageFacilities: React.FC = () => {
                   rows={3}
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Deskripsi fasilitas, peralatan pendukung..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
               </div>
