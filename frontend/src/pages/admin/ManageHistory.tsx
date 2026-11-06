@@ -13,7 +13,7 @@ export const ManageHistory: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   useEffect(() => { schoolApi.getHistory().then(setHistory).catch(() => toast.error('Gagal memuat sejarah sekolah.')); }, []);
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (file: File, _target?: 'headmaster' | 'history') => {
     setUploading(true);
     try { const res = await schoolApi.uploadFile(file); if (res.success && history) { setHistory({ ...history, featured_image: res.fileUrl }); toast.success('Foto berhasil diunggah!'); } }
     catch { toast.error('Gagal mengunggah foto.'); }
