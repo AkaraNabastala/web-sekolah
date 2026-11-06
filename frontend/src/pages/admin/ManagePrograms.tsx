@@ -225,7 +225,7 @@ export const ManagePrograms: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-stone-100 space-y-5">
             <div className="flex items-center justify-between border-b border-stone-100 pb-4">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Ubah Program / Ekstrakurikuler' : 'Tambah Program Baru'}
+                {editingId ? 'Ubah Program' : 'Tambah Program'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
