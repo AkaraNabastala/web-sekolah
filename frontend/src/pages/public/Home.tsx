@@ -17,7 +17,6 @@ import {
   ShieldCheck,
   HeartHandshake,
   Compass,
-  School,
   ArrowUpRight,
   MapPin,
   Clock,
@@ -39,6 +38,7 @@ import {
   GalleryAlbum
 } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { SchoolLogo } from '../../components/common/SchoolLogo';
 import { ScrollReveal } from '../../components/common/ScrollReveal';
 
 interface HeroSlide {
@@ -301,9 +301,7 @@ export const Home: React.FC = () => {
                 </div>
                 <div className="absolute -bottom-6 -left-6 bg-[#132A1E] text-white p-5 rounded-2xl shadow-xl border border-white/15 max-w-xs hidden sm:block">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#E8CF94] text-[#1B3B2B] flex items-center justify-center flex-shrink-0 font-bold">
-                      <School className="w-5 h-5" />
-                    </div>
+                    <SchoolLogo size="sm" showText={false} />
                     <div>
                       <p className="text-xs font-bold text-[#FAF9F5]">Pendidikan Holistik</p>
                       <p className="text-[11px] text-[#D5E0D7] leading-tight mt-0.5">Berakar pada adab & sains modern</p>
