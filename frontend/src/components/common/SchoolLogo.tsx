@@ -38,16 +38,16 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <div className={`relative ${sizeClasses[size]} shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-white/10 p-0.5 shadow-sm`}>
+      <div className={`relative ${sizeClasses[size]} shrink-0 flex items-center justify-center overflow-hidden`}>
         {!imgError ? (
           <img
             src={logoSrc}
             alt={`Logo ${schoolName}`}
             onError={() => setImgError(true)}
-            className="w-full h-full object-contain filter drop-shadow-sm"
+            className="w-full h-full object-contain"
           />
         ) : (
-          <div className="w-full h-full bg-emerald-800 rounded-lg flex items-center justify-center text-amber-400 font-bold border border-amber-300/40">
+          <div className="w-full h-full flex items-center justify-center text-current font-bold">
             <span className="text-xs">{initials}</span>
           </div>
         )}
