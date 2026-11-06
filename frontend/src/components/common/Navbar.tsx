@@ -296,7 +296,7 @@ export const Navbar: React.FC = () => {
                     <span className="text-xs font-bold">Agenda Kegiatan</span>
                   </Link>
                   <Link
-                    to="/pengumuman"
+                    to="/pengumuman" feature="announcements"
                     onClick={() => setActiveDropdown(null)}
                     className="flex flex-col px-3.5 py-2.5 rounded-xl hover:bg-[#FAF8F5] text-[#2C332D] hover:text-[#1B3B2B] transition-colors"
                   >
