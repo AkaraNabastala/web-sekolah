@@ -34,7 +34,7 @@ export const AdminLogin: React.FC = () => {
     // Periksa status inisialisasi administrator
     axios.get('/api/setup/status')
       .then(res => {
-        if (res.data && res.data.initialized === false) {
+        if (res.data?.initialized === false && res.data?.setupEnabled === true) {
           setIsSetupNeeded(true);
         }
       })
