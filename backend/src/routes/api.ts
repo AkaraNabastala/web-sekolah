@@ -7,6 +7,7 @@ import { hashVisitor, parseDeviceAndBrowser } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
 import { createHash } from 'crypto';
 import multer from 'multer';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -16,6 +17,20 @@ import { dashboardRouter } from './dashboardRoutes.js';
 import { adminActivityLogger } from '../middleware/adminActivityLogger.js';
 
 export const apiRouter = Router();
+
+// Batasi percobaan login untuk mengurangi brute force.
+// Percobaan yang berhasil tidak menghabiskan kuota; yang gagal dibatasi per alamat IP.
+const loginRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: {
+    success: false,
+    message: 'Terlalu banyak percobaan login. Silakan coba kembali setelah 15 menit.'
+  }
+});
 
 // Konfigurasi Multer
 const routeDir = path.dirname(fileURLToPath(import.meta.url));
@@ -134,7 +149,7 @@ apiRouter.post('/setup/first-admin', async (req: Request, res: Response) => {
 // ==========================================
 // 2. AUTHENTICATION (LOGIN, LOGOUT, PROFILE)
 // ==========================================
-apiRouter.post('/auth/login', async (req: Request, res: Response) => {
+apiRouter.post('/auth/login', loginRateLimiter, async (req: Request, res: Response) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ success: false, message: 'Username dan password wajib diisi.' });
