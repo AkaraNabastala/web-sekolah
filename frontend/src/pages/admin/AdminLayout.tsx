@@ -7,6 +7,7 @@ import { toast } from '../../hooks/useToast';
 import {
   LayoutDashboard,
   Building2,
+  UserRound,
   BookOpen,
   Compass,
   Newspaper,
