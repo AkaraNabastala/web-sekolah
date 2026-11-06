@@ -71,24 +71,27 @@ export const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
-  const heroSlides: HeroSlide[] = [
-    {
-      id: 1,
-      image: settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
-      tag: 'Suasana Belajar Berkarakter',
-      title: 'Pendidikan Islami yang Teduh, Mendalam & Beradab',
-      subtitle: settings?.hero_subtitle || 'Memadukan kurikulum nasional dengan pendidikan agama Islam dan pembentukan karakter.',
-      badge: `Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`
-    },
-    {
-      id: 2,
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1920&auto=format&fit=crop',
-      tag: 'Kolaborasi & Nalar Kritis',
-      title: 'Menumbuhkan Kecintaan Terhadap Ilmu & Al-Quran',
-      subtitle: 'Membina generasi pembelajar yang berwawasan luas, adaptif terhadap perkembangan teknologi, dan berpegang teguh pada nilai-nilai keislaman.',
-      badge: 'Program Unggulan Terpadu'
-    }
-  ];
+  let configuredSlides: any = settings?.hero_slides;
+  if (typeof configuredSlides === 'string') {
+    try { configuredSlides = JSON.parse(configuredSlides); } catch { configuredSlides = []; }
+  }
+  const heroSlides: HeroSlide[] = Array.isArray(configuredSlides) && configuredSlides.length > 0
+    ? configuredSlides.filter((slide: any) => slide?.image && slide?.title).map((slide: any, index: number) => ({
+        id: Number(slide.id) || index + 1,
+        image: slide.image,
+        tag: slide.tag || '',
+        title: slide.title,
+        subtitle: slide.subtitle || '',
+        badge: slide.badge || ''
+      }))
+    : [{
+        id: 1,
+        image: settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
+        tag: '',
+        title: settings?.hero_title || 'Selamat Datang di SMP Islam Caruy',
+        subtitle: settings?.hero_subtitle || '',
+        badge: ''
+      }];
 
   // Auto-slide tenang dengan interval 7 detik
   useEffect(() => {
