@@ -254,7 +254,7 @@ export const PPDB: React.FC = () => {
               Registrasi Cepat
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
-              Formulir Pra-Pendaftaran {ADMISSION_LABEL} Online
+              Formulir Pendaftaran {ADMISSION_LABEL} Online
             </h3>
             <p className="text-xs sm:text-sm text-stone-500 font-normal">
             </p>
