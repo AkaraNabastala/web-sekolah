@@ -65,6 +65,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Dashboard Utama', path: '/admin', icon: LayoutDashboard },
     { label: 'Statistik Pengunjung', path: '/admin/statistik', icon: Eye },
     { label: 'Profil Sekolah', path: '/admin/profil', icon: Building2 },
+    { label: 'Sambutan Kepala Sekolah', path: '/admin/sambutan', icon: UserRound },
     { label: 'Sejarah Sekolah', path: '/admin/sejarah', icon: BookOpen },
     { label: 'Visi & Misi', path: '/admin/visi-misi', icon: Compass },
     { label: 'Struktur Organisasi', path: '/admin/organisasi', icon: GraduationCap },
