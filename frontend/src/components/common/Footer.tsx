@@ -6,9 +6,9 @@ import {
   Phone,
   Mail,
   ChevronRight,
-  Instagram,
-  Facebook,
-  Youtube,
+  Camera,
+  Users,
+  Play,
   Music2,
   MessageCircle,
 } from 'lucide-react';
@@ -56,7 +56,7 @@ export const Footer: React.FC = () => {
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="Instagram"
               >
-                <Instagram className="w-4 h-4" />
+                <Camera className="w-4 h-4" />
               </a>}
               {settings?.facebook_url && <a
                 href={settings.facebook_url}
@@ -65,7 +65,7 @@ export const Footer: React.FC = () => {
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="Facebook"
               >
-                <Facebook className="w-4 h-4" />
+                <Users className="w-4 h-4" />
               </a>}
               {settings?.youtube_url && <a
                 href={settings.youtube_url}
@@ -74,7 +74,7 @@ export const Footer: React.FC = () => {
                 className="w-9 h-9 rounded-full bg-emerald-900/80 hover:bg-amber-400 hover:text-emerald-950 transition-all flex items-center justify-center text-emerald-200 shadow-sm"
                 aria-label="YouTube"
               >
-                <Youtube className="w-4 h-4" />
+                <Play className="w-4 h-4" />
               </a>}
               {settings?.tiktok_url && <a
                 href={settings.tiktok_url}
