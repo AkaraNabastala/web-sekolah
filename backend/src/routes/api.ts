@@ -1688,7 +1688,7 @@ apiRouter.delete('/admin/gallery/albums/:id', requireContentAdmin, requireFeatur
 
 
 // Pengumuman sekolah — terpisah dari berita dan agenda.
-apiRouter.get('/announcements', async (_req: Request, res: Response) => {
+apiRouter.get('/announcements', requireFeatureEnabled('announcements'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query(
       "SELECT id, title, slug, summary, content, category, cover_image, published_at FROM announcements WHERE status = 'published' AND (published_at IS NULL OR published_at <= NOW()) ORDER BY COALESCE(published_at, created_at) DESC"
