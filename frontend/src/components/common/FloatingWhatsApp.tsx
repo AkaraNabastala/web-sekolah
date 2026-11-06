@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUp, MessageCircle } from 'lucide-react';
 import { useSchool } from '../../context/SchoolContext';
+import { ADMISSION_LABEL } from '../../config/admissions';
 
 export const FloatingWhatsApp: React.FC = () => {
   const { profile } = useSchool();
