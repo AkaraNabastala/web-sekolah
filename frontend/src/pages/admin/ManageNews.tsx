@@ -150,7 +150,7 @@ export const ManageNews: React.FC = () => {
     <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Manajemen Berita & Artikel</h1>
+          <h1 className="text-2xl font-bold text-stone-900">Berita & Artikel</h1>
         </div>
 
         <button
@@ -258,7 +258,7 @@ export const ManageNews: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 flex flex-col">
             <div className="p-6 border-b border-stone-100 flex justify-between items-center sticky top-0 bg-white z-10">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Edit Warta Berita' : 'Tulis Berita Baru'}
+                {editingId ? 'Ubah Berita' : 'Tambah Berita'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
