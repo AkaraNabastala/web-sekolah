@@ -247,6 +247,7 @@ export interface WebsiteSettings {
   secondary_color: string;
   accent_orange: string;
   accent_blue: string;
+  feature_flags: Record<string, boolean> | string | null;
   facebook_url: string;
   instagram_url: string;
   youtube_url: string;
