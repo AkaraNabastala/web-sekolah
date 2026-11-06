@@ -139,6 +139,11 @@ export const schoolApi = {
   updateProgram: (id: number, data: any) => api.put<{ success: boolean; message: string; data: any }>(`/admin/programs/${id}`, data).then(r => r.data),
   deleteProgram: (id: number) => api.delete<{ success: boolean; message: string }>(`/admin/programs/${id}`).then(r => r.data),
 
+  // Central content categories
+  getContentCategories: (scope: 'news' | 'program' | 'facility') => api.get<{ success:boolean; data:any[] }>('/admin/content-categories',{params:{scope}}).then(r=>r.data.data),
+  createContentCategory: (data:{scope:string;name:string;description?:string}) => api.post('/admin/content-categories',data).then(r=>r.data),
+  deleteContentCategory: (id:number,scope:string) => api.delete(`/admin/content-categories/${scope}/${id}`).then(r=>r.data),
+
   // Announcements
   getAnnouncements: () => api.get<{ success: boolean; data: any[] }>('/announcements').then(r => r.data.data),
   getAdminAnnouncements: () => api.get<{ success: boolean; data: any[] }>('/admin/announcements').then(r => r.data.data),
