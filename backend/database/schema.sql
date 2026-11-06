@@ -261,6 +261,7 @@ CREATE TABLE IF NOT EXISTS `website_settings` (
   `secondary_color` VARCHAR(20) DEFAULT '#EAB308',
   `accent_orange` VARCHAR(20) DEFAULT '#F97316',
   `accent_blue` VARCHAR(20) DEFAULT '#0284C7',
+  `feature_flags` JSON DEFAULT NULL,
   `facebook_url` VARCHAR(255) DEFAULT NULL,
   `instagram_url` VARCHAR(255) DEFAULT NULL,
   `youtube_url` VARCHAR(255) DEFAULT NULL,
