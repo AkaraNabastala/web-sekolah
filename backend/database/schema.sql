@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `admins` (
   `avatar` VARCHAR(255) DEFAULT NULL,
   `role` ENUM('superadmin', 'admin_konten', 'admin_ppdb') NOT NULL DEFAULT 'superadmin',
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `auth_version` INT NOT NULL DEFAULT 0,
   `last_login` DATETIME DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
