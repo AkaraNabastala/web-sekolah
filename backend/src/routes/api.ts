@@ -201,6 +201,57 @@ const validateUploadContent = async (req: Request, res: Response, next: (err?: a
   }
 };
 
+
+const ADMISSION_UPLOAD_DIR = process.env.ADMISSION_UPLOAD_DIR || path.join(backendRoot, 'private-admission-uploads');
+if (!fs.existsSync(ADMISSION_UPLOAD_DIR)) fs.mkdirSync(ADMISSION_UPLOAD_DIR, { recursive: true });
+const admissionStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, ADMISSION_UPLOAD_DIR),
+  filename: (_req, _file, cb) => cb(null, `${randomUUID()}.upload`)
+});
+const admissionUpload = multer({
+  storage: admissionStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Dokumen harus berupa PDF, JPG, PNG, atau WebP.'));
+  }
+});
+
+const validateAdmissionUploadContent = async (req: Request, res: Response, next: (err?: any) => void) => {
+  const file = req.file;
+  if (!file) return res.status(400).json({ success: false, message: 'Pilih dokumen terlebih dahulu.' });
+  let handle: Awaited<ReturnType<typeof fs.promises.open>> | undefined;
+  try {
+    handle = await fs.promises.open(file.path, 'r');
+    const header = Buffer.alloc(16);
+    const { bytesRead } = await handle.read(header, 0, header.length, 0);
+    await handle.close();
+    handle = undefined;
+    const bytes = header.subarray(0, bytesRead);
+    let detected: { mimetype: string; extension: string } | null = null;
+    if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) detected = { mimetype: 'image/jpeg', extension: '.jpg' };
+    else if (bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]))) detected = { mimetype: 'image/png', extension: '.png' };
+    else if (bytes.length >= 12 && bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP') detected = { mimetype: 'image/webp', extension: '.webp' };
+    else if (bytes.length >= 5 && bytes.subarray(0, 5).toString('ascii') === '%PDF-') detected = { mimetype: 'application/pdf', extension: '.pdf' };
+    if (!detected || detected.mimetype !== file.mimetype) {
+      await fs.promises.unlink(file.path).catch(() => undefined);
+      return res.status(400).json({ success: false, message: 'Isi dokumen tidak sesuai dengan tipe file yang diizinkan.' });
+    }
+    const safeFilename = `${randomUUID()}${detected.extension}`;
+    const safePath = path.join(ADMISSION_UPLOAD_DIR, safeFilename);
+    await fs.promises.rename(file.path, safePath);
+    file.filename = safeFilename;
+    file.path = safePath;
+    file.mimetype = detected.mimetype;
+    return next();
+  } catch (err) {
+    if (handle) await handle.close().catch(() => undefined);
+    await fs.promises.unlink(file.path).catch(() => undefined);
+    logger.error('AdmissionUploadValidation', 'Gagal memvalidasi dokumen pendaftaran.', { message: (err as any)?.message });
+    return res.status(500).json({ success: false, message: 'Dokumen gagal divalidasi oleh server.' });
+  }
+};
+
 // ==========================================
 // 1. SETUP FIRST ADMIN (ONE-TIME LOCKED)
 // ==========================================
@@ -1776,9 +1827,9 @@ const admissionDocumentTypeGuard = (req: Request, res: Response, next: NextFunct
   }
   return next();
 };
-apiRouter.post('/admissions/upload', requireFeatureEnabled('ppdb'), admissionUploadLimiter, ensureAdmissionPeriodOpen, upload.single('file'), admissionDocumentTypeGuard, validateUploadContent, (req: Request, res: Response) => {
+apiRouter.post('/admissions/upload', requireFeatureEnabled('ppdb'), admissionUploadLimiter, ensureAdmissionPeriodOpen, admissionUpload.single('file'), validateAdmissionUploadContent, (req: Request, res: Response) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'Unggahan tidak berhasil.' });
-  return res.status(201).json({ success: true, fileUrl: `/uploads/${req.file.filename}`, originalName: req.file.originalname });
+  return res.status(201).json({ success: true, fileKey: req.file.filename, originalName: req.file.originalname });
 });
 
 apiRouter.post('/admissions/applications', requireFeatureEnabled('ppdb'), admissionSubmitLimiter, async (req: Request, res: Response) => {
@@ -1794,7 +1845,7 @@ apiRouter.post('/admissions/applications', requireFeatureEnabled('ppdb'), admiss
     return res.status(400).json({ success: false, message: 'Format tanggal lahir tidak valid.' });
   }
   const documents = body.documents && typeof body.documents === 'object' && !Array.isArray(body.documents) ? body.documents : {};
-  if (Object.keys(documents).length > 8 || Object.values(documents).some((url: any) => typeof url !== 'string' || !url.startsWith('/uploads/'))) {
+  if (Object.keys(documents).length > 8 || Object.values(documents).some((fileKey: any) => typeof fileKey !== 'string' || !/^[a-f0-9-]{36}\.(pdf|jpg|png|webp)$/i.test(fileKey))) {
     return res.status(400).json({ success: false, message: 'Data dokumen tidak valid.' });
   }
   const applicationCode = `SPMB-${new Date().getFullYear()}-${randomBytes(3).toString('hex').toUpperCase()}`;
@@ -1813,6 +1864,27 @@ apiRouter.post('/admissions/applications', requireFeatureEnabled('ppdb'), admiss
     return res.status(201).json({ success: true, message: 'Pendaftaran berhasil dikirim.', data: { id: result.insertId, application_code: applicationCode, status: 'received' } });
   } catch (err: any) {
     return routeWriteError(res, 'AdmissionApplicationCreate', err);
+  }
+});
+
+apiRouter.get('/admin/admission-applications/:id/documents/:filename', requirePpdbAdmin, async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const filename = String(req.params.filename || '');
+  if (!Number.isInteger(id) || id < 1 || !/^[a-f0-9-]{36}\.(pdf|jpg|png|webp)$/i.test(filename)) {
+    return res.status(400).json({ success: false, message: 'Dokumen tidak valid.' });
+  }
+  try {
+    const [rows]: any = await getPool().query('SELECT documents FROM admission_applications WHERE id = ? LIMIT 1', [id]);
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Data pendaftar tidak ditemukan.' });
+    let documents = rows[0].documents;
+    if (typeof documents === 'string') { try { documents = JSON.parse(documents); } catch { documents = {}; } }
+    if (!documents || !Object.values(documents).includes(filename)) return res.status(404).json({ success: false, message: 'Dokumen tidak ditemukan.' });
+    const filePath = path.join(ADMISSION_UPLOAD_DIR, filename);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: 'Berkas dokumen tidak tersedia.' });
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    return res.download(filePath, `dokumen-pendaftar-${id}${path.extname(filename)}`);
+  } catch (err: any) {
+    return routeWriteError(res, 'AdmissionDocumentDownload', err);
   }
 });
 
