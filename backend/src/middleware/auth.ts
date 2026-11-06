@@ -35,6 +35,18 @@ function readCookie(req: Request, name: string): string | null {
   return null;
 }
 
+export function requireCsrf(req: Request, res: Response, next: NextFunction) {
+  const csrfCookie = readCookie(req, CSRF_COOKIE);
+  const csrfHeader = req.headers['x-csrf-token'];
+  if (!csrfCookie || typeof csrfHeader !== 'string' || csrfCookie !== csrfHeader) {
+    return res.status(403).json({
+      success: false,
+      message: 'Permintaan ditolak karena token keamanan CSRF tidak valid.'
+    });
+  }
+  return next();
+}
+
 export function requireAdmin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const sessionCookie = readCookie(req, SESSION_COOKIE);
   const authHeader = req.headers.authorization;
