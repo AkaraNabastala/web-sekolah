@@ -77,6 +77,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Manajemen Berita', path: '/admin/berita', icon: Newspaper },
     { label: 'Agenda Kegiatan', path: '/admin/agenda', icon: Calendar },
     { label: 'Pengumuman', path: '/admin/pengumuman', icon: Bell },
+    { label: 'Kategori Konten', path: '/admin/kategori', icon: Tags },
     { label: 'Galeri & Dokumentasi', path: '/admin/galeri', icon: Image },
     { label: 'Prestasi Sekolah', path: '/admin/prestasi', icon: Trophy },
     { label: 'Fasilitas Belajar', path: '/admin/fasilitas', icon: Landmark },
@@ -94,7 +95,7 @@ export const AdminLayout: React.FC = () => {
       return [
         '/admin', '/admin/profil', '/admin/sambutan', '/admin/sejarah', '/admin/visi-misi',
         '/admin/organisasi', '/admin/guru-staf', '/admin/program', '/admin/berita',
-        '/admin/agenda', '/admin/pengumuman', '/admin/galeri', '/admin/prestasi', '/admin/fasilitas'
+        '/admin/agenda', '/admin/pengumuman', '/admin/kategori', '/admin/galeri', '/admin/prestasi', '/admin/fasilitas'
       ].includes(item.path);
     }
     return false;
