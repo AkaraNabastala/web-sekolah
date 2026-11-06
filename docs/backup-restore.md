@@ -25,6 +25,7 @@ Periksa bahwa `DB_HOST`, `DB_USER`, dan `DB_NAME` sudah terisi. Jangan membagika
 ## 2. Membuat backup konsisten
 
 ```bash
+set -o pipefail
 mkdir -p backups
 BACKUP_FILE="backups/${DB_NAME}_$(date +%Y%m%d_%H%M%S).sql.gz"
 
