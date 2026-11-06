@@ -5,6 +5,30 @@ import { useSchool } from '../../context/SchoolContext';
 import { Save, CheckCircle, AlertCircle, Upload, Globe, Palette, Sliders } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
 
+const FEATURE_OPTIONS = [
+  { key: 'history', label: 'Sejarah Sekolah', description: 'Halaman sejarah dan perjalanan sekolah' },
+  { key: 'organization', label: 'Struktur Organisasi', description: 'Bagan organisasi sekolah' },
+  { key: 'teachers', label: 'Guru & Tenaga Kependidikan', description: 'Profil guru dan staf' },
+  { key: 'programs', label: 'Program & Ekstrakurikuler', description: 'Program unggulan, kurikulum, dan kegiatan' },
+  { key: 'news', label: 'Berita & Pengumuman', description: 'Artikel, berita, dan pengumuman' },
+  { key: 'agenda', label: 'Agenda & Kegiatan', description: 'Kalender kegiatan sekolah' },
+  { key: 'gallery', label: 'Galeri', description: 'Foto dan video dokumentasi' },
+  { key: 'achievements', label: 'Prestasi', description: 'Prestasi siswa dan sekolah' },
+  { key: 'facilities', label: 'Fasilitas', description: 'Sarana dan prasarana sekolah' },
+  { key: 'ppdb', label: 'PPDB', description: 'Informasi penerimaan peserta didik baru' },
+  { key: 'contact', label: 'Kontak', description: 'Halaman kontak dan formulir pesan' }
+] as const;
+
+const DEFAULT_FEATURE_FLAGS: Record<string, boolean> = Object.fromEntries(FEATURE_OPTIONS.map(item => [item.key, true]));
+
+function normalizeFeatureFlags(value: WebsiteSettings['feature_flags']): Record<string, boolean> {
+  let parsed: any = value;
+  if (typeof parsed === 'string') {
+    try { parsed = JSON.parse(parsed); } catch { parsed = null; }
+  }
+  return { ...DEFAULT_FEATURE_FLAGS, ...(parsed && typeof parsed === 'object' ? parsed : {}) };
+}
+
 export const ManageSettings: React.FC = () => {
   const { updateCachedSettings } = useSchool();
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
@@ -12,7 +36,7 @@ export const ManageSettings: React.FC = () => {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    schoolApi.getSettings().then(res => setSettings(res));
+    schoolApi.getSettings().then(res => setSettings({ ...res, feature_flags: normalizeFeatureFlags(res.feature_flags) }));
   }, []);
 
 
@@ -115,7 +139,59 @@ export const ManageSettings: React.FC = () => {
           </div>
         </div>
 
-        {/* SECTION 2: BERANDA & HERO */}
+        {/* SECTION 2: PALET WARNA & FITUR WEBSITE */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
+          <div className="border-b border-stone-100 pb-4">
+            <h2 className="text-base font-bold text-stone-900">Tema Warna Website</h2>
+            <p className="text-xs text-stone-500 mt-1">Pilih kombinasi warna dasar, lalu sesuaikan setiap warna bila diperlukan.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {[
+              { name: 'Hijau & Emas', primary: '#1B3B2B', secondary: '#E5C178', orange: '#C87941', blue: '#547C91' },
+              { name: 'Biru & Perak', primary: '#183B56', secondary: '#B8C7D9', orange: '#D58B52', blue: '#3977A8' },
+              { name: 'Marun & Krem', primary: '#642D3D', secondary: '#E8D6B8', orange: '#B87945', blue: '#6F8294' },
+              { name: 'Teal & Pasir', primary: '#145B5A', secondary: '#D9C6A5', orange: '#C47B4B', blue: '#477F91' }
+            ].map(preset => (
+              <button key={preset.name} type="button" onClick={() => setSettings({ ...settings, primary_color: preset.primary, secondary_color: preset.secondary, accent_orange: preset.orange, accent_blue: preset.blue })} className="border border-stone-200 hover:border-stone-400 rounded-xl px-3 py-2 text-left text-xs font-semibold text-stone-700">
+                <span className="flex gap-1.5 mb-1.5">{[preset.primary, preset.secondary, preset.orange, preset.blue].map(color => <span key={color} className="w-5 h-5 rounded-full border border-black/10" style={{ backgroundColor: color }} />)}</span>
+                {preset.name}
+              </button>
+            ))}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { key: 'primary_color', label: 'Warna Utama' },
+              { key: 'secondary_color', label: 'Warna Sekunder' },
+              { key: 'accent_orange', label: 'Warna Aksen 1' },
+              { key: 'accent_blue', label: 'Warna Aksen 2' }
+            ].map(item => (
+              <label key={item.key} className="space-y-2 block text-xs font-semibold text-stone-700">
+                {item.label}
+                <div className="flex items-center gap-2">
+                  <input type="color" value={(settings as any)[item.key] || '#1B3B2B'} onChange={e => setSettings({ ...settings, [item.key]: e.target.value })} className="w-10 h-10 border border-stone-200 rounded-lg p-1 bg-white" />
+                  <input type="text" value={(settings as any)[item.key] || ''} onChange={e => setSettings({ ...settings, [item.key]: e.target.value })} className="min-w-0 w-full px-2 py-2 rounded-lg border border-stone-200 bg-stone-50 font-mono text-[11px]" />
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-5">
+          <div className="border-b border-stone-100 pb-4">
+            <h2 className="text-base font-bold text-stone-900">Fitur Website</h2>
+            <p className="text-xs text-stone-500 mt-1">Nonaktifkan bagian yang tidak digunakan sekolah. Data fitur tetap tersimpan dan dapat diaktifkan kembali.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {FEATURE_OPTIONS.map(feature => (
+              <label key={feature.key} className="flex items-start gap-3 p-3 rounded-xl border border-stone-200 hover:border-emerald-300 cursor-pointer">
+                <input type="checkbox" checked={normalizeFeatureFlags(settings.feature_flags)[feature.key] !== false} onChange={e => setSettings({ ...settings, feature_flags: { ...normalizeFeatureFlags(settings.feature_flags), [feature.key]: e.target.checked } })} className="mt-0.5 accent-emerald-700" />
+                <span><span className="block text-xs font-bold text-stone-800">{feature.label}</span><span className="block text-[11px] text-stone-500 mt-0.5">{feature.description}</span></span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* SECTION 3: BERANDA & HERO */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
             <h2 className="text-base font-bold text-stone-900">Konten Hero Beranda</h2>
