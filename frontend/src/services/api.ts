@@ -142,6 +142,7 @@ export const schoolApi = {
   // Central content categories
   getContentCategories: (scope: 'news' | 'program' | 'facility') => api.get<{ success:boolean; data:any[] }>('/admin/content-categories',{params:{scope}}).then(r=>r.data.data),
   createContentCategory: (data:{scope:string;name:string;description?:string}) => api.post('/admin/content-categories',data).then(r=>r.data),
+  updateContentCategory: (id:number,scope:string,data:{name:string;description?:string}) => api.put(`/admin/content-categories/${scope}/${id}`,data).then(r=>r.data),
   deleteContentCategory: (id:number,scope:string) => api.delete(`/admin/content-categories/${scope}/${id}`).then(r=>r.data),
 
   // Announcements
