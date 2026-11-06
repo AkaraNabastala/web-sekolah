@@ -374,73 +374,36 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. VISI DAN MISI (LAYOUT EDITORIAL ELEGAN) */}
-      <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <ScrollReveal animation="fade-up" className="max-w-3xl">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#2A5C40]">
-              Arah dan Cita-Cita
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#1F2621] tracking-tight mt-1">
-              Visi & Misi Pendidikan Sekolah
-            </h2>
-            <div className="w-16 h-1 bg-[#DEBD7A] rounded-full mt-3"></div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Box Visi Utama */}
-            <ScrollReveal animation="fade-up" className="lg:col-span-5 bg-[#132A1E] text-white p-8 sm:p-10 rounded-3xl flex flex-col justify-between shadow-md">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#E5C178] text-xs font-semibold">
-                  <Target className="w-3.5 h-3.5" />
-                  <span>Visi Utama Sekolah</span>
-                </div>
-                <blockquote className="text-lg sm:text-xl font-medium leading-snug text-[#FAF9F5] italic pt-2">
-                  "{visionMission?.vision || 'Terwujudnya Generasi Muslim yang Berakhlakul Karimah, Unggul dalam Prestasi Akademik dan Non-Akademik, Menguasai IPTEK, serta Berwawasan Lingkungan Hidup.'}"
-                </blockquote>
-              </div>
-              <div className="pt-6 border-t border-white/10 mt-6 flex items-center justify-between">
-                <span className="text-xs text-[#D5E0D7] font-normal">Motto: {visionMission?.vision_motto || 'Mencetak Generasi Cerdas Berkarakter Islami'}</span>
-                <Link to="/visi-misi" className="text-xs text-[#E8CF94] hover:underline font-bold inline-flex items-center gap-1">
-                  Selengkapnya <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </ScrollReveal>
-
-            {/* List Misi */}
-            <ScrollReveal animation="fade-up" delay={200} className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-[#ECE7DD] flex flex-col justify-between shadow-sm">
-              <div className="space-y-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#2A5C40] block">
-                  Misi Penyelenggaraan Pendidikan
-                </span>
-                <ul className="space-y-3.5">
-                  {(visionMission?.missions && visionMission.missions.length > 0 ? visionMission.missions : [
-                    'Menanamkan aqidah Islamiyyah yang shahihah dan membiasakan pengamalan ibadah yaumiyyah serta akhlakul karimah.',
-                    'Menyelenggarakan pembelajaran berkualitas sesuai kurikulum nasional dengan penguatan pendidikan agama dan karakter.',
-                    'Mengembangkan potensi, minat, dan bakat peserta didik secara optimal melalui kegiatan akademik, ekstrakurikuler, dan keolahragaan.',
-                    'Memanfaatkan teknologi informasi dan komunikasi secara bijak dan produktif dalam kegiatan pembelajaran.'
-                  ]).slice(0, 4).map((mission, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-[#E8EFEA] text-[#1D4A32] flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold">
-                        {idx + 1}
-                      </div>
-                      <p className="text-xs sm:text-sm text-[#4E564F] leading-relaxed">
-                        {mission}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="pt-4 mt-6 border-t border-[#F2EFE9]">
-                <Link to="/visi-misi" className="text-xs font-bold text-[#1D4A32] hover:text-[#2A5C40] uppercase tracking-wider inline-flex items-center gap-1.5">
-                  <span>Lihat Seluruh Rincian Misi & Tujuan</span>
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </ScrollReveal>
+      {(isFeatureEnabled('vision') && Boolean(visionMission?.vision)) || (isFeatureEnabled('mission') && Boolean(visionMission?.missions?.length)) ? (
+        <section className="bg-stone-50 px-6 py-16 sm:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl space-y-8">
+            <div className="max-w-2xl space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--school-primary)]">Profil Sekolah</p>
+              <h2 className="text-2xl font-semibold text-stone-900 sm:text-3xl">Visi dan Misi</h2>
+            </div>
+            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+              {isFeatureEnabled('vision') && visionMission?.vision && (
+                <article className="rounded-3xl bg-[var(--school-primary)] p-7 text-white sm:p-9">
+                  <h3 className="mb-4 text-sm font-semibold text-[var(--school-secondary)]">Visi</h3>
+                  <p className="text-lg font-medium leading-relaxed sm:text-xl">{visionMission.vision}</p>
+                  {visionMission.vision_motto && <p className="mt-5 border-t border-white/15 pt-4 text-sm text-white/75">{visionMission.vision_motto}</p>}
+                </article>
+              )}
+              {isFeatureEnabled('mission') && (visionMission?.missions?.length ?? 0) > 0 && (
+                <article className="rounded-3xl border border-stone-200 bg-white p-7 sm:p-9">
+                  <h3 className="mb-4 text-sm font-semibold text-stone-900">Misi</h3>
+                  <ol className="list-decimal space-y-3 pl-5 marker:font-semibold marker:text-[var(--school-primary)]">
+                    {visionMission?.missions.map((mission, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-600">{mission}</li>)}
+                  </ol>
+                </article>
+              )}
+            </div>
+            <Link to="/visi-misi" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--school-primary)] hover:underline">
+              Lihat visi dan misi <ChevronRight className="h-4 w-4" />
+            </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {isFeatureEnabled('coreValues') && (visionMission?.core_values?.length ?? 0) > 0 && (
         <section className="border-b border-stone-200 bg-white px-6 py-16 sm:px-10 lg:px-16">
