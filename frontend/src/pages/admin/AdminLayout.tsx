@@ -81,6 +81,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Prestasi Sekolah', path: '/admin/prestasi', icon: Trophy },
     { label: 'Fasilitas Belajar', path: '/admin/fasilitas', icon: Landmark },
     { label: `Pengaturan ${ADMISSION_LABEL}`, path: '/admin/ppdb', icon: FileText },
+    { label: 'Data Pendaftar', path: '/admin/penerimaan', icon: UserCheck },
     { label: 'Pesan Masuk', path: '/admin/pesan', icon: Mail, badge: unreadCount },
     { label: 'Pengaturan Website', path: '/admin/pengaturan', icon: Settings },
     { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }
@@ -88,7 +89,7 @@ export const AdminLayout: React.FC = () => {
 
   const visibleMenuItems = menuItems.filter(item => {
     if (admin?.role === 'superadmin') return true;
-    if (admin?.role === 'admin_ppdb') return ['/admin', '/admin/ppdb'].includes(item.path);
+    if (admin?.role === 'admin_ppdb') return ['/admin', '/admin/ppdb', '/admin/penerimaan'].includes(item.path);
     if (admin?.role === 'admin_konten') {
       return [
         '/admin', '/admin/profil', '/admin/sambutan', '/admin/sejarah', '/admin/visi-misi',
