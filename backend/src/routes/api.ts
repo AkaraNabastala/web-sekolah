@@ -1758,6 +1758,14 @@ apiRouter.delete('/admin/announcements/:id', requireContentAdmin, async (req: Re
 
 // Pendaftaran peserta didik: berkas diunggah terpisah, lalu data pendaftar disimpan.
 const admissionUploadLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, standardHeaders: true, legacyHeaders: false });
+const ensureAdmissionPeriodOpen = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const [rows]: any = await getPool().query('SELECT is_open, (start_date IS NULL OR start_date <= CURDATE()) AS period_started, (end_date IS NULL OR end_date >= CURDATE()) AS period_active FROM ppdb_information ORDER BY id ASC LIMIT 1');
+    const period = rows[0];
+    if (!period || !Number(period.is_open) || !Number(period.period_started) || !Number(period.period_active)) return res.status(403).json({ success:false, message:'Pendaftaran sedang ditutup atau belum memasuki periode pendaftaran.' });
+    return next();
+  } catch (err:any) { return routeWriteError(res, 'AdmissionPeriodCheck', err); }
+};
 const admissionDocumentTypeGuard = (req: Request, res: Response, next: NextFunction) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'Pilih dokumen terlebih dahulu.' });
   if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(req.file.mimetype)) {
@@ -1766,12 +1774,12 @@ const admissionDocumentTypeGuard = (req: Request, res: Response, next: NextFunct
   }
   return next();
 };
-apiRouter.post('/admissions/upload', admissionUploadLimiter, upload.single('file'), admissionDocumentTypeGuard, validateUploadContent, (req: Request, res: Response) => {
+apiRouter.post('/admissions/upload', requireFeatureEnabled('ppdb'), admissionUploadLimiter, ensureAdmissionPeriodOpen, upload.single('file'), admissionDocumentTypeGuard, validateUploadContent, (req: Request, res: Response) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'Unggahan tidak berhasil.' });
   return res.status(201).json({ success: true, fileUrl: `/uploads/${req.file.filename}`, originalName: req.file.originalname });
 });
 
-apiRouter.post('/admissions/applications', publicContactRateLimiter, async (req: Request, res: Response) => {
+apiRouter.post('/admissions/applications', requireFeatureEnabled('ppdb'), publicContactRateLimiter, async (req: Request, res: Response) => {
   const body = req.body || {};
   const required = ['candidate_name', 'origin_school', 'parent_name', 'parent_phone'];
   if (required.some(key => typeof body[key] !== 'string' || !body[key].trim())) {
