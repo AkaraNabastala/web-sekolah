@@ -4,19 +4,20 @@ import { WebsiteSettings } from '../../types';
 import { useSchool } from '../../context/SchoolContext';
 import { Save, CheckCircle, AlertCircle, Upload, Globe, Palette, Sliders } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
+import { ADMISSION_LABEL } from '../../config/admissions';
 
 const FEATURE_OPTIONS = [
-  { key: 'history', label: 'Sejarah Sekolah', description: 'Halaman sejarah dan perjalanan sekolah' },
-  { key: 'organization', label: 'Struktur Organisasi', description: 'Bagan organisasi sekolah' },
-  { key: 'teachers', label: 'Guru & Tenaga Kependidikan', description: 'Profil guru dan staf' },
-  { key: 'programs', label: 'Program & Ekstrakurikuler', description: 'Program unggulan, kurikulum, dan kegiatan' },
-  { key: 'news', label: 'Berita & Pengumuman', description: 'Artikel, berita, dan pengumuman' },
-  { key: 'agenda', label: 'Agenda & Kegiatan', description: 'Kalender kegiatan sekolah' },
-  { key: 'gallery', label: 'Galeri', description: 'Foto dan video dokumentasi' },
-  { key: 'achievements', label: 'Prestasi', description: 'Prestasi siswa dan sekolah' },
-  { key: 'facilities', label: 'Fasilitas', description: 'Sarana dan prasarana sekolah' },
-  { key: 'ppdb', label: 'PPDB', description: 'Informasi penerimaan peserta didik baru' },
-  { key: 'contact', label: 'Kontak', description: 'Halaman kontak dan formulir pesan' }
+  { key: 'history', label: 'Sejarah Sekolah' },
+  { key: 'organization', label: 'Struktur Organisasi' },
+  { key: 'teachers', label: 'Guru & Tenaga Kependidikan' },
+  { key: 'programs', label: 'Program & Ekstrakurikuler' },
+  { key: 'news', label: 'Berita & Pengumuman' },
+  { key: 'agenda', label: 'Agenda & Kegiatan' },
+  { key: 'gallery', label: 'Galeri' },
+  { key: 'achievements', label: 'Prestasi' },
+  { key: 'facilities', label: 'Fasilitas' },
+  { key: 'ppdb', label: ADMISSION_LABEL },
+  { key: 'contact', label: 'Kontak' }
 ] as const;
 
 const DEFAULT_FEATURE_FLAGS: Record<string, boolean> = Object.fromEntries(FEATURE_OPTIONS.map(item => [item.key, true]));
@@ -83,9 +84,6 @@ export const ManageSettings: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Pengaturan Website & Branding</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Konfigurasi nama sekolah, logo resmi, warna identitas, teks hero beranda, media sosial, dan SEO.
-          </p>
         </div>
       </div>
 
@@ -143,7 +141,6 @@ export const ManageSettings: React.FC = () => {
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
             <h2 className="text-base font-bold text-stone-900">Tema Warna Website</h2>
-            <p className="text-xs text-stone-500 mt-1">Pilih kombinasi warna dasar, lalu sesuaikan setiap warna bila diperlukan.</p>
           </div>
           <div className="flex flex-wrap gap-3">
             {[
@@ -179,7 +176,6 @@ export const ManageSettings: React.FC = () => {
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-5">
           <div className="border-b border-stone-100 pb-4">
             <h2 className="text-base font-bold text-stone-900">Fitur Website</h2>
-            <p className="text-xs text-stone-500 mt-1">Nonaktifkan bagian yang tidak digunakan sekolah. Data fitur tetap tersimpan dan dapat diaktifkan kembali.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {FEATURE_OPTIONS.map(feature => (
