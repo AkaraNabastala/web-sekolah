@@ -57,9 +57,6 @@ export const ManageMessages: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Kotak Masuk Pesan Pengunjung</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Daftar pertanyaan, pesan, dan permohonan informasi yang dikirimkan masyarakat melalui formulir kontak.
-          </p>
         </div>
       </div>
 
