@@ -30,7 +30,6 @@ export const RichTextEditor: React.FC<EditorProps> = ({ value, onChange, rows = 
       {actions.map(action => <button key={action.label} type="button" onClick={() => insert(action.before, action.after)} className="rounded-md border border-stone-200 bg-white px-2.5 py-1.5 text-xs font-medium text-stone-700 hover:bg-emerald-50 hover:text-emerald-800">{action.label}</button>)}
     </div>
     <textarea ref={ref} rows={rows} value={value} onChange={event => onChange(event.target.value)} placeholder={placeholder} className="w-full resize-y border-0 px-3.5 py-3 text-sm leading-6 outline-none focus:ring-0"/>
-    <div className="border-t border-stone-100 px-3 py-2 text-[11px] text-stone-400">Gunakan toolbar untuk format tebal, miring, judul, daftar, dan tautan.</div>
   </div>;
 };
 
