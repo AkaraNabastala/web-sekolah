@@ -56,3 +56,33 @@ section {
 .public-shell .text-amber-200 { color: var(--school-secondary) !important; }
 .public-shell .border-amber-400,
 .public-shell .border-amber-300 { border-color: var(--school-secondary) !important; }
+
+
+/* Admin dashboard follows the same school palette as the public website. */
+.admin-shell .bg-emerald-950,
+.admin-shell .bg-emerald-900,
+.admin-shell .bg-emerald-800,
+.admin-shell .bg-emerald-700,
+.admin-shell .hover\\:bg-emerald-900:hover,
+.admin-shell .hover\\:bg-emerald-800:hover {
+  background-color: var(--school-primary) !important;
+}
+.admin-shell .text-emerald-800,
+.admin-shell .text-emerald-700,
+.admin-shell .text-emerald-600 {
+  color: var(--school-primary) !important;
+}
+.admin-shell .border-emerald-900,
+.admin-shell .border-emerald-800,
+.admin-shell .border-emerald-700 {
+  border-color: color-mix(in srgb, var(--school-primary), white 18%) !important;
+}
+.admin-shell .bg-amber-400,
+.admin-shell .bg-amber-500 {
+  background-color: var(--school-secondary) !important;
+}
+.admin-shell .text-amber-400,
+.admin-shell .text-amber-500,
+.admin-shell .text-amber-600 {
+  color: var(--school-secondary) !important;
+}
