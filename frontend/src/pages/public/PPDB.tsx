@@ -32,6 +32,11 @@ export const PPDB: React.FC = () => {
     originSchool: '', parentName: '', phone: '', address: '',
     program: 'Reguler', notes: ''
   });
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const admissionOpen = Boolean(ppdb?.is_open) &&
+    (!ppdb?.start_date || String(ppdb.start_date).slice(0,10) <= today) &&
+    (!ppdb?.end_date || String(ppdb.end_date).slice(0,10) >= today);
 
   useEffect(() => {
     schoolApi.getPPDB()
@@ -42,7 +47,7 @@ export const PPDB: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!ppdb?.is_open) return;
+    if (!admissionOpen) return;
     setSubmitting(true);
     try {
       const documents: Record<string, string> = {};
@@ -84,7 +89,7 @@ export const PPDB: React.FC = () => {
           <div className="max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-3">
               <span className="bg-amber-400 text-emerald-950 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-sm">
-                Status: {ppdb?.is_open ? 'PENDAFTARAN DIBUKA' : 'PENDAFTARAN DITUTUP'}
+                Status: {admissionOpen ? 'PENDAFTARAN DIBUKA' : 'PENDAFTARAN DITUTUP'}
               </span>
               <span className="text-emerald-200 text-xs">
                 Tahun Ajaran {ppdb?.academic_year || '2026/2027'}
@@ -106,15 +111,17 @@ export const PPDB: React.FC = () => {
               >
                 Isi Formulir Pendaftaran
               </a>
-              <a
-                href={`https://wa.me/${ppdb?.contact_whatsapp || '6282132972773'}`}
-                target="_blank"
-                rel="noreferrer"
-                className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all flex items-center gap-2"
-              >
-                <PhoneCall className="w-4 h-4 text-amber-300" />
-                <span>Konsultasi Panitia</span>
-              </a>
+              {ppdb?.contact_whatsapp && (
+                <a
+                  href={`https://wa.me/${ppdb.contact_whatsapp}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all flex items-center gap-2"
+                >
+                  <PhoneCall className="w-4 h-4 text-amber-300" />
+                  <span>Konsultasi Panitia</span>
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -341,11 +348,11 @@ export const PPDB: React.FC = () => {
 
             <button
               type="submit"
-              disabled={submitting || !ppdb?.is_open}
+              disabled={submitting || !admissionOpen}
               className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider py-4 rounded-xl shadow-lg shadow-emerald-700/20 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
-              <span>{submitting ? 'Mengirim Pendaftaran…' : ppdb?.is_open ? 'Kirim Formulir Pendaftaran' : 'Pendaftaran Ditutup'}</span>
+              <span>{submitting ? 'Mengirim Pendaftaran…' : admissionOpen ? 'Kirim Formulir Pendaftaran' : 'Pendaftaran Ditutup'}</span>
             </button>
           </form>
         </div>
