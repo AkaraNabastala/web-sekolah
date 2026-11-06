@@ -475,9 +475,7 @@ export const Home: React.FC = () => {
                     {idx === 0 ? <BookOpen className="w-6 h-6" /> : idx === 1 ? <GraduationCap className="w-6 h-6" /> : <Users className="w-6 h-6" />}
                   </div>
                   <h3 className="font-bold text-lg text-[#1F2621]">{prog.name}</h3>
-                  <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed font-normal">
-                    <RichTextContent value={prog.description} className="text-sm"/>
-                  </p>
+                  <RichTextContent value={prog.description} className="text-xs sm:text-sm text-[#5C645D] leading-relaxed font-normal"/>
                 </div>
                 {prog.schedule_info && (
                   <div className="pt-3 border-t border-[#F2EFE9] text-xs text-[#2A5C40] flex items-center gap-1.5 font-medium">
@@ -533,9 +531,7 @@ export const Home: React.FC = () => {
                     <h3 className="font-bold text-sm text-[#1F2621] group-hover:text-[#1D4A32] transition-colors">
                       {fac.name}
                     </h3>
-                    <p className="text-xs text-[#5C645D] leading-relaxed line-clamp-2 mt-1 font-normal">
-                      <RichTextContent value={fac.description} className="text-sm"/>
-                    </p>
+                    <RichTextContent value={fac.description} className="mt-1 text-xs text-[#5C645D] leading-relaxed line-clamp-2 font-normal"/>
                   </div>
                   <span className="text-[11px] font-semibold text-[#2A5C40] uppercase tracking-wider pt-2 block border-t border-[#F0EBE1]">
                     {fac.condition_status || 'Kondisi Baik'}
