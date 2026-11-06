@@ -342,6 +342,10 @@ export const PPDB: React.FC = () => {
               />
             </div>
 
+            <label className="flex items-start gap-2 rounded-xl border border-stone-200 bg-stone-50 p-3 text-xs leading-5 text-stone-600">
+              <input type="checkbox" required className="mt-0.5 accent-emerald-700"/>
+              <span>Saya menyatakan data yang dikirim benar dan menyetujui penggunaan data serta dokumen untuk keperluan proses pendaftaran dan verifikasi oleh pihak sekolah.</span>
+            </label>
             <button
               type="submit"
               disabled={submitting || !admissionOpen}
