@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   MapPin,
   Phone,
@@ -10,6 +10,18 @@ import {
 } from 'lucide-react';
 import { SchoolLogo } from './SchoolLogo';
 import { useSchool } from '../../context/SchoolContext';
+
+type FeatureAwareLinkProps = React.ComponentProps<typeof RouterLink> & { feature?: string };
+
+const Link: React.FC<FeatureAwareLinkProps> = ({ feature, ...props }) => {
+  const { settings } = useSchool();
+  let flags: any = settings?.feature_flags;
+  if (typeof flags === 'string') {
+    try { flags = JSON.parse(flags); } catch { flags = null; }
+  }
+  if (feature && flags?.[feature] === false) return null;
+  return <RouterLink {...props} />;
+};
 
 export const Footer: React.FC = () => {
   const { profile, settings } = useSchool();
@@ -101,7 +113,7 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/sejarah" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/sejarah" feature="history" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Sejarah Perjalanan</span>
                 </Link>
@@ -113,19 +125,19 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/organisasi" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/organisasi" feature="organization" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Struktur Organisasi</span>
                 </Link>
               </li>
               <li>
-                <Link to="/guru-staf" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/guru-staf" feature="teachers" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Guru & Tenaga Kependidikan</span>
                 </Link>
               </li>
               <li>
-                <Link to="/berita" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/berita" feature="news" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Berita, Agenda & Pengumuman</span>
                 </Link>
@@ -141,31 +153,31 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-xs text-emerald-200/80">
               <li>
-                <Link to="/ppdb" className="hover:text-amber-300 transition-colors flex items-center gap-1.5 font-semibold text-amber-300">
+                <Link to="/ppdb" feature="ppdb" className="hover:text-amber-300 transition-colors flex items-center gap-1.5 font-semibold text-amber-300">
                   <ChevronRight className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Informasi PPDB 2026/2027</span>
+                  <span>Informasi PPDB</span>
                 </Link>
               </li>
               <li>
-                <Link to="/prestasi" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/prestasi" feature="achievements" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Galeri Prestasi Siswa</span>
                 </Link>
               </li>
               <li>
-                <Link to="/fasilitas" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/fasilitas" feature="facilities" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Sarana & Fasilitas</span>
                 </Link>
               </li>
               <li>
-                <Link to="/galeri" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/galeri" feature="gallery" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Dokumentasi Foto & Video</span>
                 </Link>
               </li>
               <li>
-                <Link to="/kontak" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <Link to="/kontak" feature="contact" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Kirim Pesan / Kontak</span>
                 </Link>
@@ -212,11 +224,11 @@ export const Footer: React.FC = () => {
         {/* Bottom Copyright & Admin Link */}
         <div className="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-emerald-300/80">
           <p>
-            {settings?.footer_text || '© 2026 SMP Islam Caruy. Seluruh hak cipta dilindungi undang-undang.'}
+            {settings?.footer_text || `© ${new Date().getFullYear()} ${settings?.school_name || profile?.name || 'Sekolah'}. Hak cipta dilindungi.`}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link to="/kontak" className="hover:text-white transition-colors">Kontak Sekolah</Link>
+            <Link to="/kontak" feature="contact" className="hover:text-white transition-colors">Kontak Sekolah</Link>
             <span className="text-white/30">•</span>
             <span className="text-white/70">Website sekolah dikembangkan oleh <span className="font-semibold" style={{ color: 'var(--school-secondary)' }}>Nabastala</span></span>
           </div>
