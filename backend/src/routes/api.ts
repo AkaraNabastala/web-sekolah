@@ -34,7 +34,20 @@ const effectiveAuthOrigins = trustedAuthOrigins.length > 0
 const requireTrustedOrigin = (req: Request, res: Response, next: NextFunction) => {
   const origin = req.headers.origin;
   const fetchSite = req.headers['sec-fetch-site'];
-  if ((origin && !effectiveAuthOrigins.includes(origin)) || fetchSite === 'cross-site') {
+
+  // Izinkan same-origin untuk deployment yang menyajikan frontend dan API
+  // dari host/port yang sama (misalnya http://localhost:3000).
+  // Untuk frontend terpisah, origin tetap harus tercantum di CORS_ORIGINS.
+  let isSameHostOrigin = false;
+  if (origin) {
+    try {
+      isSameHostOrigin = new URL(origin).host.toLowerCase() === String(req.get('host') || '').toLowerCase();
+    } catch {
+      isSameHostOrigin = false;
+    }
+  }
+
+  if ((origin && !effectiveAuthOrigins.includes(origin) && !isSameHostOrigin) || fetchSite === 'cross-site') {
     return res.status(403).json({ success: false, message: 'Origin permintaan tidak diizinkan.' });
   }
   return next();
