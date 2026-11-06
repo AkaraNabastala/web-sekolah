@@ -355,8 +355,11 @@ apiRouter.get('/school-profile', async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await pool.query('SELECT * FROM school_profile LIMIT 1');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getSchoolProfile() });
+  } catch (err: any) {
+    logger.error('SchoolProfileRoute', 'Gagal membaca profil sekolah dari MySQL.', { code: err.code, sqlState: err.sqlState, message: err.message });
+    return res.status(500).json({ success: false, message: 'Profil sekolah sementara tidak dapat dimuat.' });
+  }
+  return res.status(404).json({ success: false, message: 'Profil sekolah belum dikonfigurasi.' });
 });
 
 apiRouter.get('/school-history', async (_req: Request, res: Response) => {
@@ -519,10 +522,11 @@ apiRouter.get('/programs', async (req: Request, res: Response) => {
     }
     const [rows]: any = await pool.query(sql, params);
     if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  let progs = dbFallback.getPrograms().filter((p: any) => p.is_active !== 0);
-  if (category) progs = progs.filter((p: any) => p.category === category);
-  res.json({ success: true, data: progs });
+  } catch (err: any) {
+    logger.error('ProgramsRoute', 'Gagal membaca program sekolah dari MySQL.', { code: err.code, sqlState: err.sqlState, message: err.message });
+    return res.status(500).json({ success: false, message: 'Program sekolah sementara tidak dapat dimuat.' });
+  }
+  return res.json({ success: true, data: [] });
 });
 
 apiRouter.get('/settings', async (_req: Request, res: Response) => {
@@ -530,8 +534,11 @@ apiRouter.get('/settings', async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await pool.query('SELECT * FROM website_settings LIMIT 1');
     if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getSettings() });
+  } catch (err: any) {
+    logger.error('SettingsRoute', 'Gagal membaca pengaturan website dari MySQL.', { code: err.code, sqlState: err.sqlState, message: err.message });
+    return res.status(500).json({ success: false, message: 'Pengaturan website sementara tidak dapat dimuat.' });
+  }
+  return res.status(404).json({ success: false, message: 'Pengaturan website belum dikonfigurasi.' });
 });
 
 apiRouter.post('/contact', async (req: Request, res: Response) => {
@@ -993,10 +1000,25 @@ apiRouter.put('/admin/settings', requireAdmin, async (req: Request, res: Respons
   const pool = getPool();
   try {
     await pool.query(
-      `UPDATE website_settings SET school_name = ?, tagline = ?, hero_title = ?, hero_subtitle = ?, facebook_url = ?, instagram_url = ?, youtube_url = ?, footer_text = ?, updated_at = NOW() WHERE id = 1`,
-      [req.body.school_name, req.body.tagline || '', req.body.hero_title || '', req.body.hero_subtitle || '', req.body.facebook_url || '', req.body.instagram_url || '', req.body.youtube_url || '', req.body.footer_text || '']
+      `UPDATE website_settings SET
+         school_name = ?, tagline = ?, hero_title = ?, hero_subtitle = ?,
+         primary_color = ?, secondary_color = ?, accent_orange = ?, accent_blue = ?,
+         feature_flags = ?, facebook_url = ?, instagram_url = ?, youtube_url = ?, tiktok_url = ?,
+         seo_title = ?, seo_description = ?, footer_text = ?, updated_at = NOW()
+       WHERE id = 1`,
+      [
+        req.body.school_name, req.body.tagline || '', req.body.hero_title || '', req.body.hero_subtitle || '',
+        req.body.primary_color || '#1B3B2B', req.body.secondary_color || '#E5C178',
+        req.body.accent_orange || '#F97316', req.body.accent_blue || '#0284C7',
+        JSON.stringify(req.body.feature_flags || {}), req.body.facebook_url || '',
+        req.body.instagram_url || '', req.body.youtube_url || '', req.body.tiktok_url || '',
+        req.body.seo_title || '', req.body.seo_description || '', req.body.footer_text || ''
+      ]
     );
-  } catch {}
-  const upd = dbFallback.updateSettings(req.body);
-  res.json({ success: true, message: 'Pengaturan website berhasil disimpan.', data: upd });
+  } catch (err: any) {
+    logger.error('SettingsRoute', 'Gagal menyimpan pengaturan website ke MySQL.', { code: err.code, sqlState: err.sqlState, message: err.message });
+    return res.status(500).json({ success: false, message: 'Pengaturan website gagal disimpan. Periksa log backend.' });
+  }
+  const [rows]: any = await pool.query('SELECT * FROM website_settings LIMIT 1');
+  return res.json({ success: true, message: 'Pengaturan website berhasil disimpan.', data: rows[0] });
 });
