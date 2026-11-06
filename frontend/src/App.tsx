@@ -42,6 +42,7 @@ import { ManageVisionMission } from './pages/admin/ManageVisionMission';
 import { ManageNews } from './pages/admin/ManageNews';
 import { ManageAgendas } from './pages/admin/ManageAgendas';
 import { ManageAnnouncements } from './pages/admin/ManageAnnouncements';
+import { ManageCategories } from './pages/admin/ManageCategories';
 import { ManagePrograms } from './pages/admin/ManagePrograms';
 import { ManageTeachers } from './pages/admin/ManageTeachers';
 import { ManageOrganization } from './pages/admin/ManageOrganization';
@@ -152,6 +153,7 @@ export const App: React.FC = () => {
               <Route path="berita" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageNews /></RoleRoute>} />
               <Route path="agenda" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageAgendas /></RoleRoute>} />
               <Route path="pengumuman" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageAnnouncements /></RoleRoute>} />
+              <Route path="kategori" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageCategories /></RoleRoute>} />
               <Route path="program" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManagePrograms /></RoleRoute>} />
               <Route path="guru-staf" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageTeachers /></RoleRoute>} />
               <Route path="organisasi" element={<RoleRoute roles={CONTENT_ADMIN_ROLES}><ManageOrganization /></RoleRoute>} />
