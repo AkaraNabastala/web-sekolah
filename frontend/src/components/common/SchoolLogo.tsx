@@ -20,7 +20,7 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
   const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah';
   const tagline = settings?.tagline || 'Website Resmi Sekolah';
   const logoSrc = settings?.logo_url && !settings.logo_url.includes('/src/assets/logo.png') ? settings.logo_url : defaultLogo;
-  const initials = schoolName.split(/\\s+/).filter(Boolean).slice(0, 3).map(word => word[0]).join('').toUpperCase();
+  const initials = schoolName.split(/\s+/).filter(Boolean).slice(0, 3).map(word => word[0]).join('').toUpperCase();
 
   const sizeClasses = {
     sm: 'w-8 h-8',
