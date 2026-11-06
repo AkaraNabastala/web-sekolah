@@ -26,6 +26,16 @@ const FEATURE_OPTIONS = [
 
 const DEFAULT_FEATURE_FLAGS: Record<string, boolean> = Object.fromEntries(FEATURE_OPTIONS.map(item => [item.key, true]));
 
+type HeroSlideSetting = { id: number; image: string; tag?: string; title: string; subtitle?: string; badge?: string };
+
+function normalizeHeroSlides(value: WebsiteSettings['hero_slides']): HeroSlideSetting[] {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try { const parsed = JSON.parse(value); return Array.isArray(parsed) ? parsed : []; } catch { return []; }
+  }
+  return [];
+}
+
 function normalizeFeatureFlags(value: WebsiteSettings['feature_flags']): Record<string, boolean> {
   let parsed: any = value;
   if (typeof parsed === 'string') {
@@ -39,9 +49,10 @@ export const ManageSettings: React.FC = () => {
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [heroUploading, setHeroUploading] = useState<number | null>(null);
 
   useEffect(() => {
-    schoolApi.getSettings().then(res => setSettings({ ...res, feature_flags: normalizeFeatureFlags(res.feature_flags) }));
+    schoolApi.getSettings().then(res => setSettings({ ...res, feature_flags: normalizeFeatureFlags(res.feature_flags), hero_slides: normalizeHeroSlides(res.hero_slides) }));
   }, []);
 
 
@@ -60,6 +71,32 @@ export const ManageSettings: React.FC = () => {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleHeroSlideUpload = async (index: number, file?: File) => {
+    if (!file) return;
+    setHeroUploading(index);
+    try {
+      const result = await schoolApi.uploadFile(file);
+      if (result.success) {
+        setSettings(current => current ? {
+          ...current,
+          hero_slides: normalizeHeroSlides(current.hero_slides).map((slide, slideIndex) => slideIndex === index ? { ...slide, image: result.fileUrl } : slide)
+        } : null);
+        toast.success('Gambar slide berhasil diunggah.');
+      }
+    } catch {
+      toast.error('Gagal mengunggah gambar slide.');
+    } finally {
+      setHeroUploading(null);
+    }
+  };
+
+  const addHeroSlide = () => {
+    setSettings(current => current ? {
+      ...current,
+      hero_slides: [...normalizeHeroSlides(current.hero_slides), { id: Date.now(), image: '', tag: '', title: '', subtitle: '', badge: '' }]
+    } : null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -217,14 +254,34 @@ export const ManageSettings: React.FC = () => {
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-stone-700">URL Gambar Hero Utama</label>
-            <input
-              type="text"
-              value={settings.hero_image}
-              onChange={(e) => setSettings({ ...settings, hero_image: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-            />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-sm font-semibold text-stone-800">Slide Hero</h3>
+              <button type="button" onClick={addHeroSlide} className="rounded-lg border border-stone-200 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50">Tambah slide</button>
+            </div>
+            {normalizeHeroSlides(settings.hero_slides).map((slide, index) => (
+              <div key={slide.id} className="grid grid-cols-1 gap-3 rounded-xl border border-stone-200 p-4 sm:grid-cols-2">
+                <div className="space-y-2 sm:col-span-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-stone-700">Slide {index + 1}</span>
+                    <button type="button" onClick={() => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).filter((_, i) => i !== index) })} className="text-xs font-semibold text-red-600">Hapus</button>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {slide.image && <img src={slide.image} alt={slide.title || 'Pratinjau slide'} className="h-20 w-32 rounded-lg object-cover" />}
+                    <label className="cursor-pointer rounded-lg border border-stone-200 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50">
+                      {heroUploading === index ? 'Mengunggah...' : 'Unggah gambar'}
+                      <input type="file" accept="image/*" className="hidden" onChange={event => handleHeroSlideUpload(index, event.target.files?.[0])} />
+                    </label>
+                    <input type="text" value={slide.image} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, image: event.target.value } : item) })} placeholder="URL gambar (opsional)" className="min-w-0 flex-1 rounded-lg border border-stone-200 px-3 py-2 text-xs" />
+                  </div>
+                </div>
+                <input type="text" value={slide.tag || ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, tag: event.target.value } : item) })} placeholder="Label kecil" className="rounded-lg border border-stone-200 px-3 py-2 text-xs" />
+                <input type="text" value={slide.badge || ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, badge: event.target.value } : item) })} placeholder="Badge (opsional)" className="rounded-lg border border-stone-200 px-3 py-2 text-xs" />
+                <input type="text" value={slide.title} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, title: event.target.value } : item) })} placeholder="Judul slide" className="rounded-lg border border-stone-200 px-3 py-2 text-xs sm:col-span-2" />
+                <textarea rows={2} value={slide.subtitle || ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, subtitle: event.target.value } : item) })} placeholder="Deskripsi slide" className="rounded-lg border border-stone-200 px-3 py-2 text-xs sm:col-span-2" />
+              </div>
+            ))}
+            {normalizeHeroSlides(settings.hero_slides).length === 0 && <p className="text-xs text-stone-500">Belum ada slide khusus. Gambar hero lama tetap digunakan sebagai cadangan.</p>}
           </div>
         </div>
 
