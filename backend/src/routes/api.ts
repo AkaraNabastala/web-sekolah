@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getPool } from '../config/database.js';
-import { JWT_SECRET, requireAdmin, requireSuperadmin, AuthenticatedRequest } from '../middleware/auth.js';
+import { JWT_SECRET, requireAdmin, requireSuperadmin, requireContentAdmin, requirePpdbAdmin, AuthenticatedRequest } from '../middleware/auth.js';
 import { hashVisitor, parseDeviceAndBrowser } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
 import { createHash, randomUUID, randomBytes } from 'crypto';
@@ -401,7 +401,7 @@ apiRouter.post('/visitor/log', async (req: Request, res: Response) => {
 
 apiRouter.use('/admin/dashboard', dashboardRouter);
 
-apiRouter.get('/admin/statistics/summary', requireAdmin, async (_req: Request, res: Response) => {
+apiRouter.get('/admin/statistics/summary', requireSuperadmin, async (_req: Request, res: Response) => {
   try {
     const summary = await StatisticsService.getSummaryMetrics();
     res.json({ success: true, data: summary });
@@ -410,7 +410,7 @@ apiRouter.get('/admin/statistics/summary', requireAdmin, async (_req: Request, r
   }
 });
 
-apiRouter.get('/admin/statistics/analytics', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.get('/admin/statistics/analytics', requireSuperadmin, async (req: Request, res: Response) => {
   const days = parseInt(req.query.days as string, 10) || 30;
   try {
     const analytics = await StatisticsService.getDetailedAnalytics(days);
@@ -420,7 +420,7 @@ apiRouter.get('/admin/statistics/analytics', requireAdmin, async (req: Request, 
   }
 });
 
-apiRouter.get('/admin/statistics/export/xlsx', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.get('/admin/statistics/export/xlsx', requireSuperadmin, async (req: Request, res: Response) => {
   const days = parseInt(req.query.days as string, 10) || 30;
   try {
     const buffer = await StatisticsService.generateExcelReport(days);
@@ -432,7 +432,7 @@ apiRouter.get('/admin/statistics/export/xlsx', requireAdmin, async (req: Request
   }
 });
 
-apiRouter.get('/admin/statistics/export/csv', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.get('/admin/statistics/export/csv', requireSuperadmin, async (req: Request, res: Response) => {
   const days = parseInt(req.query.days as string, 10) || 30;
   try {
     const csv = await StatisticsService.generateCsvReport(days);
@@ -679,7 +679,7 @@ apiRouter.use('/admin', adminActivityLogger);
 // 6. ADMIN CRUD OPERATIONS (DASHBOARD)
 // ==========================================
 // News CRUD
-apiRouter.get('/admin/news', requireAdmin, requireFeatureEnabled('news'), async (_req: Request, res: Response) => {
+apiRouter.get('/admin/news', requireContentAdmin, requireFeatureEnabled('news'), async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT n.*, c.name AS category_name, c.slug AS category_slug FROM news n LEFT JOIN news_categories c ON n.category_id = c.id ORDER BY n.id DESC');
@@ -697,7 +697,7 @@ apiRouter.get('/admin/news', requireAdmin, requireFeatureEnabled('news'), async 
   }
 });
 
-apiRouter.post('/admin/news', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/news', requireContentAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const pool = getPool();
   const { title, category_id, summary, content, thumbnail, status } = req.body;
   const slug = title.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
@@ -723,7 +723,7 @@ apiRouter.post('/admin/news', requireAdmin, requireFeatureEnabled('news'), async
 
 });
 
-apiRouter.put('/admin/news/:id', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/news/:id', requireContentAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -747,7 +747,7 @@ apiRouter.put('/admin/news/:id', requireAdmin, requireFeatureEnabled('news'), as
 
 });
 
-apiRouter.delete('/admin/news/:id', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/news/:id', requireContentAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -768,7 +768,7 @@ apiRouter.delete('/admin/news/:id', requireAdmin, requireFeatureEnabled('news'),
 });
 
 // Profil Sekolah
-apiRouter.put('/admin/school-profile', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/school-profile', requireContentAdmin, async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     await pool.query(
@@ -798,7 +798,7 @@ apiRouter.put('/admin/school-profile', requireAdmin, async (req: Request, res: R
 });
 
 // Pesan Masuk
-apiRouter.get('/admin/messages', requireAdmin, async (_req: Request, res: Response) => {
+apiRouter.get('/admin/messages', requireSuperadmin, async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT * FROM contact_messages ORDER BY id DESC');
@@ -816,7 +816,7 @@ apiRouter.get('/admin/messages', requireAdmin, async (_req: Request, res: Respon
   }
 });
 
-apiRouter.put('/admin/messages/:id/read', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/messages/:id/read', requireSuperadmin, async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const { is_read } = req.body;
   const pool = getPool();
@@ -836,7 +836,7 @@ apiRouter.put('/admin/messages/:id/read', requireAdmin, async (req: Request, res
   return res.json({ success: true, message: 'Status pesan diperbarui.' });
 });
 
-apiRouter.delete('/admin/messages/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/messages/:id', requireSuperadmin, async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -856,7 +856,7 @@ apiRouter.delete('/admin/messages/:id', requireAdmin, async (req: Request, res: 
 });
 
 // Teachers & Staff CRUD
-apiRouter.post('/admin/teachers', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/teachers', requireContentAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -878,7 +878,7 @@ apiRouter.post('/admin/teachers', requireAdmin, requireFeatureEnabled('teachers'
   }
 });
 
-apiRouter.put('/admin/teachers/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/teachers/:id', requireContentAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -900,7 +900,7 @@ apiRouter.put('/admin/teachers/:id', requireAdmin, requireFeatureEnabled('teache
   }
 });
 
-apiRouter.delete('/admin/teachers/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/teachers/:id', requireContentAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -990,7 +990,7 @@ apiRouter.delete('/admin/users/:id', requireSuperadmin, async (req: Request, res
 });
 
 // Facilities CRUD
-apiRouter.post('/admin/facilities', requireAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/facilities', requireContentAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -1012,7 +1012,7 @@ apiRouter.post('/admin/facilities', requireAdmin, requireFeatureEnabled('facilit
   }
 });
 
-apiRouter.put('/admin/facilities/:id', requireAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/facilities/:id', requireContentAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1034,7 +1034,7 @@ apiRouter.put('/admin/facilities/:id', requireAdmin, requireFeatureEnabled('faci
   }
 });
 
-apiRouter.delete('/admin/facilities/:id', requireAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/facilities/:id', requireContentAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1054,7 +1054,7 @@ apiRouter.delete('/admin/facilities/:id', requireAdmin, requireFeatureEnabled('f
 });
 
 // Achievements CRUD
-apiRouter.post('/admin/achievements', requireAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/achievements', requireContentAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -1076,7 +1076,7 @@ apiRouter.post('/admin/achievements', requireAdmin, requireFeatureEnabled('achie
   }
 });
 
-apiRouter.put('/admin/achievements/:id', requireAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/achievements/:id', requireContentAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1098,7 +1098,7 @@ apiRouter.put('/admin/achievements/:id', requireAdmin, requireFeatureEnabled('ac
   }
 });
 
-apiRouter.delete('/admin/achievements/:id', requireAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/achievements/:id', requireContentAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1118,7 +1118,7 @@ apiRouter.delete('/admin/achievements/:id', requireAdmin, requireFeatureEnabled(
 });
 
 // Gallery Media & Albums CRUD
-apiRouter.post('/admin/gallery', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/gallery', requireContentAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -1140,7 +1140,7 @@ apiRouter.post('/admin/gallery', requireAdmin, requireFeatureEnabled('gallery'),
   }
 });
 
-apiRouter.delete('/admin/gallery/:id', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/gallery/:id', requireContentAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1160,7 +1160,7 @@ apiRouter.delete('/admin/gallery/:id', requireAdmin, requireFeatureEnabled('gall
 });
 
 // Agendas CRUD
-apiRouter.get('/admin/agendas', requireAdmin, requireFeatureEnabled('agenda'), async (_req: Request, res: Response) => {
+apiRouter.get('/admin/agendas', requireContentAdmin, requireFeatureEnabled('agenda'), async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT * FROM agendas ORDER BY event_date DESC');
@@ -1178,7 +1178,7 @@ apiRouter.get('/admin/agendas', requireAdmin, requireFeatureEnabled('agenda'), a
   }
 });
 
-apiRouter.post('/admin/agendas', requireAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/agendas', requireContentAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
   const pool = getPool();
   const slug = (req.body.title || `agenda-${Date.now()}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
   try {
@@ -1201,7 +1201,7 @@ apiRouter.post('/admin/agendas', requireAdmin, requireFeatureEnabled('agenda'), 
   }
 });
 
-apiRouter.put('/admin/agendas/:id', requireAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/agendas/:id', requireContentAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1223,7 +1223,7 @@ apiRouter.put('/admin/agendas/:id', requireAdmin, requireFeatureEnabled('agenda'
   }
 });
 
-apiRouter.delete('/admin/agendas/:id', requireAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/agendas/:id', requireContentAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1243,7 +1243,7 @@ apiRouter.delete('/admin/agendas/:id', requireAdmin, requireFeatureEnabled('agen
 });
 
 // Programs CRUD
-apiRouter.get('/admin/programs', requireAdmin, requireFeatureEnabled('programs'), async (_req: Request, res: Response) => {
+apiRouter.get('/admin/programs', requireContentAdmin, requireFeatureEnabled('programs'), async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT * FROM programs ORDER BY display_order ASC');
@@ -1261,7 +1261,7 @@ apiRouter.get('/admin/programs', requireAdmin, requireFeatureEnabled('programs')
   }
 });
 
-apiRouter.post('/admin/programs', requireAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/programs', requireContentAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
   const pool = getPool();
   const slug = (req.body.name || `program-${Date.now()}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
   try {
@@ -1284,7 +1284,7 @@ apiRouter.post('/admin/programs', requireAdmin, requireFeatureEnabled('programs'
   }
 });
 
-apiRouter.put('/admin/programs/:id', requireAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/programs/:id', requireContentAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1306,7 +1306,7 @@ apiRouter.put('/admin/programs/:id', requireAdmin, requireFeatureEnabled('progra
   }
 });
 
-apiRouter.delete('/admin/programs/:id', requireAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/programs/:id', requireContentAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1326,7 +1326,7 @@ apiRouter.delete('/admin/programs/:id', requireAdmin, requireFeatureEnabled('pro
 });
 
 // Settings & PPDB
-apiRouter.put('/admin/ppdb', requireAdmin, requireFeatureEnabled('ppdb'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/ppdb', requirePpdbAdmin, requireFeatureEnabled('ppdb'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     await pool.query(
@@ -1355,7 +1355,7 @@ apiRouter.put('/admin/ppdb', requireAdmin, requireFeatureEnabled('ppdb'), async 
   return res.json({ success: true, message: 'Informasi PPDB berhasil diperbarui.', data: rows[0] ?? null });
 });
 
-apiRouter.put('/admin/settings', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/settings', requireSuperadmin, async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     await pool.query(
@@ -1451,7 +1451,7 @@ apiRouter.put('/auth/profile', requireAdmin, async (req: AuthenticatedRequest, r
 });
 
 // School history and vision-mission
-apiRouter.put('/admin/school-history', requireAdmin, requireFeatureEnabled('history'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/school-history', requireContentAdmin, requireFeatureEnabled('history'), async (req: Request, res: Response) => {
   try {
     const pool = getPool();
     const [existing]: any = await pool.query('SELECT id FROM school_history ORDER BY id ASC LIMIT 1');
@@ -1473,7 +1473,7 @@ apiRouter.put('/admin/school-history', requireAdmin, requireFeatureEnabled('hist
   }
 });
 
-apiRouter.put('/admin/vision-mission', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/vision-mission', requireContentAdmin, async (req: Request, res: Response) => {
   try {
     const pool = getPool();
     const [existing]: any = await pool.query('SELECT id FROM school_vision_mission ORDER BY id ASC LIMIT 1');
@@ -1501,7 +1501,7 @@ apiRouter.put('/admin/vision-mission', requireAdmin, async (req: Request, res: R
 });
 
 // Organization CRUD
-apiRouter.post('/admin/organization', requireAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/organization', requireContentAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query(
       'INSERT INTO school_organization (position, name, nip, photo, level, parent_id, display_order, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -1513,7 +1513,7 @@ apiRouter.post('/admin/organization', requireAdmin, requireFeatureEnabled('organ
   }
 });
 
-apiRouter.put('/admin/organization/:id', requireAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/organization/:id', requireContentAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   try {
     const [result]: any = await getPool().query(
@@ -1527,7 +1527,7 @@ apiRouter.put('/admin/organization/:id', requireAdmin, requireFeatureEnabled('or
   }
 });
 
-apiRouter.delete('/admin/organization/:id', requireAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/organization/:id', requireContentAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query('DELETE FROM school_organization WHERE id = ?', [Number(req.params.id)]);
     if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data organisasi tidak ditemukan.' });
@@ -1538,7 +1538,7 @@ apiRouter.delete('/admin/organization/:id', requireAdmin, requireFeatureEnabled(
 });
 
 // Staff CRUD
-apiRouter.post('/admin/staff', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/staff', requireContentAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query(
       'INSERT INTO staff (name, photo, position, department, last_education, short_bio, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)',
@@ -1550,7 +1550,7 @@ apiRouter.post('/admin/staff', requireAdmin, requireFeatureEnabled('teachers'), 
   }
 });
 
-apiRouter.put('/admin/staff/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
+apiRouter.put('/admin/staff/:id', requireContentAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query(
       'UPDATE staff SET name = ?, photo = ?, position = ?, department = ?, last_education = ?, short_bio = ?, display_order = ? WHERE id = ?',
@@ -1563,7 +1563,7 @@ apiRouter.put('/admin/staff/:id', requireAdmin, requireFeatureEnabled('teachers'
   }
 });
 
-apiRouter.delete('/admin/staff/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/staff/:id', requireContentAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query('DELETE FROM staff WHERE id = ?', [Number(req.params.id)]);
     if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data staf tidak ditemukan.' });
@@ -1574,7 +1574,7 @@ apiRouter.delete('/admin/staff/:id', requireAdmin, requireFeatureEnabled('teache
 });
 
 // News category and gallery album creation/deletion used by the API service.
-apiRouter.post('/admin/news/categories', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/news/categories', requireContentAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const name = String(req.body.name || '').trim();
   if (!name) return res.status(400).json({ success: false, message: 'Nama kategori wajib diisi.' });
   const slug = makeSlug(req.body.slug || name);
@@ -1590,7 +1590,7 @@ apiRouter.post('/admin/news/categories', requireAdmin, requireFeatureEnabled('ne
   }
 });
 
-apiRouter.post('/admin/gallery/albums', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
+apiRouter.post('/admin/gallery/albums', requireContentAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   const name = String(req.body.name || '').trim();
   if (!name) return res.status(400).json({ success: false, message: 'Nama album wajib diisi.' });
   const slug = makeSlug(req.body.slug || name);
@@ -1606,7 +1606,7 @@ apiRouter.post('/admin/gallery/albums', requireAdmin, requireFeatureEnabled('gal
   }
 });
 
-apiRouter.delete('/admin/gallery/albums/:id', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
+apiRouter.delete('/admin/gallery/albums/:id', requireContentAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query('DELETE FROM gallery_albums WHERE id = ?', [Number(req.params.id)]);
     if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Album galeri tidak ditemukan.' });
