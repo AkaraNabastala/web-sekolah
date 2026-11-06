@@ -75,7 +75,7 @@ export const Home: React.FC = () => {
   if (typeof configuredSlides === 'string') {
     try { configuredSlides = JSON.parse(configuredSlides); } catch { configuredSlides = []; }
   }
-  const heroSlides: HeroSlide[] = Array.isArray(configuredSlides) && configuredSlides.length > 0
+  const configuredHeroSlides: HeroSlide[] = Array.isArray(configuredSlides)
     ? configuredSlides.filter((slide: any) => slide?.image && slide?.title).map((slide: any, index: number) => ({
         id: Number(slide.id) || index + 1,
         image: slide.image,
@@ -84,14 +84,15 @@ export const Home: React.FC = () => {
         subtitle: slide.subtitle || '',
         badge: slide.badge || ''
       }))
-    : [{
-        id: 1,
-        image: settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
-        tag: '',
-        title: settings?.hero_title || 'Selamat Datang di SMP Islam Caruy',
-        subtitle: settings?.hero_subtitle || '',
-        badge: ''
-      }];
+    : [];
+  const heroSlides: HeroSlide[] = configuredHeroSlides.length > 0 ? configuredHeroSlides : [{
+    id: 1,
+    image: settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
+    tag: '',
+    title: settings?.hero_title || 'Selamat Datang di SMP Islam Caruy',
+    subtitle: settings?.hero_subtitle || '',
+    badge: ''
+  }];
 
   // Auto-slide tenang dengan interval 7 detik
   useEffect(() => {
