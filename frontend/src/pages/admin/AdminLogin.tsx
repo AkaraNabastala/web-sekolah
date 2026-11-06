@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Lock, User, AlertCircle, ShieldCheck, ArrowRight, School } from 'lucide-react';
+import { Lock, User, AlertCircle, ShieldCheck, ArrowRight } from 'lucide-react';
 import axios from 'axios';
+import { SchoolLogo } from '../../components/common/SchoolLogo';
+import { SEO } from '../../components/common/SEO';
 
 export const AdminLogin: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -102,15 +104,15 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <>
+      <SEO title="SMP Islam Caruy" />
+      <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 z-0 opacity-10 bg-[radial-gradient(#15803d_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="flex justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-lg shadow-emerald-700/30">
-            <School className="w-9 h-9" />
-          </div>
+          <SchoolLogo size="xl" showText={false} />
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
           SMP ISLAM CARUY
@@ -270,7 +272,8 @@ export const AdminLogin: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
