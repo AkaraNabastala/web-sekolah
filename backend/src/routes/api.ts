@@ -218,9 +218,10 @@ apiRouter.get('/setup/status', async (_req: Request, res: Response) => {
     res.json({
       success: true,
       initialized: hasAdmin,
+      setupEnabled: (process.env.ADMIN_SETUP_TOKEN || '').length >= 32,
       message: hasAdmin
         ? 'Sistem administrator sudah terinisialisasi. Setup awal terkunci.'
-        : 'Sistem belum memiliki administrator. Silakan lakukan setup admin pertama.'
+        : 'Sistem belum memiliki administrator. Setup web memerlukan token rahasia dari operator server.'
     });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
