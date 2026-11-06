@@ -11,7 +11,6 @@ import {
   User,
   ArrowLeft,
   Share2,
-  Check,
   ChevronRight,
   BookOpen
 } from 'lucide-react';
@@ -21,6 +20,7 @@ export const NewsDetail: React.FC = () => {
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [related, setRelated] = useState<NewsArticle[]>([]);
   const [copied, setCopied] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,16 +40,32 @@ export const NewsDetail: React.FC = () => {
     }
   }, [slug]);
 
-  const copyUrl = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+  const copyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setShareOpen(false);
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      window.prompt('Salin tautan berita ini:', window.location.href);
+    }
   };
 
-  const shareToWA = () => {
-    const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent(`Baca berita SMP Islam Caruy: ${article?.title || ''}`);
-    window.open(`https://api.whatsapp.com/send?text=${text}%20${url}`, '_blank');
+  const shareUrl = encodeURIComponent(window.location.href);
+  const shareTitle = encodeURIComponent(article?.title || 'Berita sekolah');
+  const shareLinks = [
+    { label: 'WhatsApp', href: `https://wa.me/?text=${shareTitle}%20${shareUrl}` },
+    { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}` },
+    { label: 'X', href: `https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}` },
+    { label: 'Telegram', href: `https://t.me/share/url?url=${shareUrl}&text=${shareTitle}` },
+    { label: 'Email', href: `mailto:?subject=${shareTitle}&body=${shareUrl}` }
+  ];
+
+  const shareNative = async () => {
+    if (navigator.share) {
+      try { await navigator.share({ title: article?.title || 'Berita sekolah', url: window.location.href }); }
+      catch { /* User closed the native share sheet. */ }
+    } else setShareOpen(value => !value);
   };
 
   if (loading) {
@@ -118,24 +134,15 @@ export const NewsDetail: React.FC = () => {
                 </span>
               </div>
 
-              {/* Share buttons */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={shareToWA}
-                  className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
-                  title="Bagikan ke WhatsApp"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>WhatsApp</span>
+              {/* Share menu */}
+              <div className="relative">
+                <button type="button" onClick={shareNative} aria-expanded={shareOpen} className="bg-stone-100 text-stone-700 hover:bg-stone-200 px-3 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-2 transition-colors">
+                  <Share2 className="w-4 h-4" /><span>Bagikan</span>
                 </button>
-                <button
-                  onClick={copyUrl}
-                  className="bg-stone-100 text-stone-700 hover:bg-stone-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
-                  title="Salin Tautan"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
-                  <span>{copied ? 'Tersalin' : 'Salin Link'}</span>
-                </button>
+                {shareOpen && <div className="absolute right-0 top-full mt-2 z-30 w-48 rounded-xl border border-stone-200 bg-white p-2 shadow-xl">
+                  {shareLinks.map(item => <a key={item.label} href={item.href} target="_blank" rel="noreferrer" onClick={() => setShareOpen(false)} className="block rounded-lg px-3 py-2 text-xs text-stone-700 hover:bg-stone-50">{item.label}</a>)}
+                  <button type="button" onClick={copyUrl} className="w-full text-left rounded-lg px-3 py-2 text-xs text-stone-700 hover:bg-stone-50">{copied ? 'Tautan tersalin' : 'Salin tautan'}</button>
+                </div>}
               </div>
             </div>
 
