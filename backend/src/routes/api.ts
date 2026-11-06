@@ -1564,6 +1564,10 @@ apiRouter.put('/admin/vision-mission', requireContentAdmin, async (req: Request,
 
 // Organization CRUD
 apiRouter.post('/admin/organization', requireContentAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
+  const parentId = req.body.parent_id ? Number(req.body.parent_id) : null;
+  if (parentId !== null && (!Number.isInteger(parentId) || parentId < 1 || !(await validateOrganizationParent(null, parentId)))) {
+    return res.status(400).json({ success: false, message: 'Atasan organisasi tidak valid.' });
+  }
   try {
     const [result]: any = await getPool().query(
       'INSERT INTO school_organization (position, name, nip, photo, level, parent_id, display_order, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -1577,6 +1581,10 @@ apiRouter.post('/admin/organization', requireContentAdmin, requireFeatureEnabled
 
 apiRouter.put('/admin/organization/:id', requireContentAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
   const id = Number(req.params.id);
+  const parentId = req.body.parent_id ? Number(req.body.parent_id) : null;
+  if (!Number.isInteger(id) || id < 1 || (parentId !== null && (!Number.isInteger(parentId) || parentId < 1 || !(await validateOrganizationParent(id, parentId))))) {
+    return res.status(400).json({ success: false, message: 'Hubungan atasan organisasi tidak valid atau membentuk siklus.' });
+  }
   try {
     const [result]: any = await getPool().query(
       'UPDATE school_organization SET position = ?, name = ?, nip = ?, photo = ?, level = ?, parent_id = ?, display_order = ?, description = ? WHERE id = ?',
@@ -1856,3 +1864,18 @@ apiRouter.delete('/admin/content-categories/:scope/:id', requireContentAdmin, as
     return routeWriteError(res,'ContentCategoriesDelete',err);
   }
 });
+
+
+// Memastikan hubungan induk organisasi valid dan tidak membentuk siklus.
+const validateOrganizationParent = async (currentId: number | null, parentId: number): Promise<boolean> => {
+  let cursor: number | null = parentId;
+  const visited = new Set<number>();
+  while (cursor !== null) {
+    if (cursor === currentId || visited.has(cursor)) return false;
+    visited.add(cursor);
+    const [rows]: any = await getPool().query('SELECT parent_id FROM school_organization WHERE id = ? LIMIT 1', [cursor]);
+    if (!rows.length) return false;
+    cursor = rows[0].parent_id === null ? null : Number(rows[0].parent_id);
+  }
+  return true;
+};
