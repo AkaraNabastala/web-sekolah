@@ -16,7 +16,8 @@ const frontendApi=read('frontend/src/services/api.ts')||'', app=read('frontend/s
 const rate=/rateLimit|rate-limit|express-rate-limit/.test(api+server);
 const loginRateProtected=/apiRouter\.post\(['"]\/auth\/login['"],\s*requireTrustedOrigin,\s*loginRateLimiter/.test(api);
 add('Keamanan','Rate limit login',loginRateProtected?'TERINDIKASI':rate?'PERLU_VERIFIKASI':'PERLU_PERBAIKAN',loginRateProtected?'Route login memakai limiter dan pemeriksaan Origin; tetap uji pembatasan percobaan secara langsung.':rate?'Indikasi rate limit ditemukan; verifikasi route login benar-benar dilindungi.':'Belum ditemukan penerapan rate limit di api.ts/server.ts.','high');
-const corsOpen=/origin\s*:\s*true/.test(server);
+const productionBuildSource=read('scripts/buildProduction.ts')||'';
+const corsOpen=/origin\s*:\s*true/.test(server)||/app\.use\(cors\(\)\)/.test(productionBuildSource);
 add('Keamanan','CORS',corsOpen?'PERLU_PERBAIKAN':'PERLU_VERIFIKASI',corsOpen?'origin:true terlalu luas; batasi ke domain resmi.':'Periksa allowlist origin produksi.','high');
 const uploadSignatureValidation=/MAGIC_BYTES_VALIDATION/.test(api)&&/randomUUID/.test(api)&&/fileSize:\s*10\s*\*\s*1024\s*\*\s*1024/.test(api);
 add('Keamanan','Validasi isi upload',uploadSignatureValidation?'TERINDIKASI':'PERLU_PERBAIKAN',uploadSignatureValidation?'Pemeriksaan signature file, nama acak, dan batas 10 MB ditemukan; tetap uji file valid dan file palsu secara langsung.':'Belum ditemukan pemeriksaan signature file, nama acak, dan batas ukuran yang memadai.','high');
