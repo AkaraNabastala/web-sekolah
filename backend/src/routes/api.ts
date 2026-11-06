@@ -5,7 +5,7 @@ import { getPool } from '../config/database.js';
 import { JWT_SECRET, requireAdmin, requireSuperadmin, AuthenticatedRequest } from '../middleware/auth.js';
 import { hashVisitor, parseDeviceAndBrowser } from '../utils/privacy.js';
 import { StatisticsService } from '../services/StatisticsService.js';
-import { createHash, randomUUID } from 'crypto';
+import { createHash, randomUUID, randomBytes } from 'crypto';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
@@ -15,11 +15,39 @@ import { logger } from '../utils/logger.js';
 
 import { dashboardRouter } from './dashboardRoutes.js';
 import { adminActivityLogger } from '../middleware/adminActivityLogger.js';
+import { requireFeatureEnabled } from '../middleware/featureFlags.js';
 
 export const apiRouter = Router();
 
 // Batasi percobaan login untuk mengurangi brute force.
 // Percobaan yang berhasil tidak menghabiskan kuota; yang gagal dibatasi per alamat IP.
+const SESSION_COOKIE = 'caruy_admin_session';
+const CSRF_COOKIE = 'caruy_csrf';
+const SESSION_MAX_AGE = 8 * 60 * 60 * 1000;
+const cookieBase = {
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: SESSION_MAX_AGE
+};
+
+const setAdminSession = (res: Response, admin: { id: number; username: string; role: string; auth_version?: number }) => {
+  const token = jwt.sign(
+    { id: admin.id, username: admin.username, role: admin.role, auth_version: Number(admin.auth_version || 0) },
+    JWT_SECRET,
+    { expiresIn: '8h', algorithm: 'HS256', issuer: 'smp-islam-caruy', audience: 'admin-panel' }
+  );
+  const csrfToken = randomBytes(32).toString('hex');
+  res.cookie(SESSION_COOKIE, token, { ...cookieBase, httpOnly: true });
+  res.cookie(CSRF_COOKIE, csrfToken, { ...cookieBase, httpOnly: false });
+};
+
+const clearAdminSession = (res: Response) => {
+  const options = { secure: process.env.NODE_ENV === 'production', sameSite: 'lax' as const, path: '/' };
+  res.clearCookie(SESSION_COOKIE, { ...options, httpOnly: true });
+  res.clearCookie(CSRF_COOKIE, { ...options, httpOnly: false });
+};
+
 const loginRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -243,22 +271,21 @@ apiRouter.post('/auth/login', loginRateLimiter, async (req: Request, res: Respon
       logger.warn('AuthRoute', 'Gagal memperbarui waktu login terakhir.', { code: err?.code, sqlState: err?.sqlState });
     }
 
-    const token = jwt.sign(
-      { id: adminUser.id, username: adminUser.username, role: adminUser.role },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
+    setAdminSession(res, adminUser);
     const { password: _, ...safeUser } = adminUser;
     res.json({
       success: true,
       message: 'Login berhasil.',
-      token,
       user: safeUser
     });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }
+});
+
+apiRouter.post('/auth/logout', (_req: Request, res: Response) => {
+  clearAdminSession(res);
+  return res.json({ success: true, message: 'Sesi administrator telah diakhiri.' });
 });
 
 apiRouter.get('/auth/me', requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
@@ -309,13 +336,18 @@ apiRouter.put('/auth/password', requireAdmin, async (req: AuthenticatedRequest, 
 
     const hashed = await bcrypt.hash(newPassword, 10);
     try {
-      await pool.query('UPDATE admins SET password = ? WHERE id = ?', [hashed, req.user?.id]);
+      await pool.query('UPDATE admins SET password = ?, auth_version = auth_version + 1 WHERE id = ?', [hashed, req.user?.id]);
     } catch (err: any) {
       logger.error('AuthRoute', 'Gagal menyimpan password ke MySQL.', { code: err?.code, sqlState: err?.sqlState, message: err?.message });
       return res.status(500).json({ success: false, message: 'Password gagal disimpan.' });
     }
 
-    res.json({ success: true, message: 'Password berhasil diperbarui.' });
+    const [sessionRows]: any = await pool.query(
+      'SELECT id, username, role, auth_version FROM admins WHERE id = ? LIMIT 1',
+      [req.user?.id]
+    );
+    if (sessionRows?.[0]) setAdminSession(res, sessionRows[0]);
+    res.json({ success: true, message: 'Password berhasil diperbarui. Sesi lain telah dicabut.' });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -628,7 +660,7 @@ apiRouter.use('/admin', adminActivityLogger);
 // 6. ADMIN CRUD OPERATIONS (DASHBOARD)
 // ==========================================
 // News CRUD
-apiRouter.get('/admin/news', requireAdmin, async (_req: Request, res: Response) => {
+apiRouter.get('/admin/news', requireAdmin, requireFeatureEnabled('news'), async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT n.*, c.name AS category_name, c.slug AS category_slug FROM news n LEFT JOIN news_categories c ON n.category_id = c.id ORDER BY n.id DESC');
@@ -646,7 +678,7 @@ apiRouter.get('/admin/news', requireAdmin, async (_req: Request, res: Response) 
   }
 });
 
-apiRouter.post('/admin/news', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/news', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const pool = getPool();
   const { title, category_id, summary, content, thumbnail, status } = req.body;
   const slug = title.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
@@ -672,7 +704,7 @@ apiRouter.post('/admin/news', requireAdmin, async (req: Request, res: Response) 
 
 });
 
-apiRouter.put('/admin/news/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/news/:id', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -696,7 +728,7 @@ apiRouter.put('/admin/news/:id', requireAdmin, async (req: Request, res: Respons
 
 });
 
-apiRouter.delete('/admin/news/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/news/:id', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -805,7 +837,7 @@ apiRouter.delete('/admin/messages/:id', requireAdmin, async (req: Request, res: 
 });
 
 // Teachers & Staff CRUD
-apiRouter.post('/admin/teachers', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/teachers', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -827,7 +859,7 @@ apiRouter.post('/admin/teachers', requireAdmin, async (req: Request, res: Respon
   }
 });
 
-apiRouter.put('/admin/teachers/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/teachers/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -849,7 +881,7 @@ apiRouter.put('/admin/teachers/:id', requireAdmin, async (req: Request, res: Res
   }
 });
 
-apiRouter.delete('/admin/teachers/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/teachers/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -939,7 +971,7 @@ apiRouter.delete('/admin/users/:id', requireSuperadmin, async (req: Request, res
 });
 
 // Facilities CRUD
-apiRouter.post('/admin/facilities', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/facilities', requireAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -961,7 +993,7 @@ apiRouter.post('/admin/facilities', requireAdmin, async (req: Request, res: Resp
   }
 });
 
-apiRouter.put('/admin/facilities/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/facilities/:id', requireAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -983,7 +1015,7 @@ apiRouter.put('/admin/facilities/:id', requireAdmin, async (req: Request, res: R
   }
 });
 
-apiRouter.delete('/admin/facilities/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/facilities/:id', requireAdmin, requireFeatureEnabled('facilities'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1003,7 +1035,7 @@ apiRouter.delete('/admin/facilities/:id', requireAdmin, async (req: Request, res
 });
 
 // Achievements CRUD
-apiRouter.post('/admin/achievements', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/achievements', requireAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -1025,7 +1057,7 @@ apiRouter.post('/admin/achievements', requireAdmin, async (req: Request, res: Re
   }
 });
 
-apiRouter.put('/admin/achievements/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/achievements/:id', requireAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1047,7 +1079,7 @@ apiRouter.put('/admin/achievements/:id', requireAdmin, async (req: Request, res:
   }
 });
 
-apiRouter.delete('/admin/achievements/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/achievements/:id', requireAdmin, requireFeatureEnabled('achievements'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1067,7 +1099,7 @@ apiRouter.delete('/admin/achievements/:id', requireAdmin, async (req: Request, r
 });
 
 // Gallery Media & Albums CRUD
-apiRouter.post('/admin/gallery', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/gallery', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [ins]: any = await pool.query(
@@ -1089,7 +1121,7 @@ apiRouter.post('/admin/gallery', requireAdmin, async (req: Request, res: Respons
   }
 });
 
-apiRouter.delete('/admin/gallery/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/gallery/:id', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1109,7 +1141,7 @@ apiRouter.delete('/admin/gallery/:id', requireAdmin, async (req: Request, res: R
 });
 
 // Agendas CRUD
-apiRouter.get('/admin/agendas', requireAdmin, async (_req: Request, res: Response) => {
+apiRouter.get('/admin/agendas', requireAdmin, requireFeatureEnabled('agenda'), async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT * FROM agendas ORDER BY event_date DESC');
@@ -1127,7 +1159,7 @@ apiRouter.get('/admin/agendas', requireAdmin, async (_req: Request, res: Respons
   }
 });
 
-apiRouter.post('/admin/agendas', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/agendas', requireAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
   const pool = getPool();
   const slug = (req.body.title || `agenda-${Date.now()}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
   try {
@@ -1150,7 +1182,7 @@ apiRouter.post('/admin/agendas', requireAdmin, async (req: Request, res: Respons
   }
 });
 
-apiRouter.put('/admin/agendas/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/agendas/:id', requireAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1172,7 +1204,7 @@ apiRouter.put('/admin/agendas/:id', requireAdmin, async (req: Request, res: Resp
   }
 });
 
-apiRouter.delete('/admin/agendas/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/agendas/:id', requireAdmin, requireFeatureEnabled('agenda'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1192,7 +1224,7 @@ apiRouter.delete('/admin/agendas/:id', requireAdmin, async (req: Request, res: R
 });
 
 // Programs CRUD
-apiRouter.get('/admin/programs', requireAdmin, async (_req: Request, res: Response) => {
+apiRouter.get('/admin/programs', requireAdmin, requireFeatureEnabled('programs'), async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT * FROM programs ORDER BY display_order ASC');
@@ -1210,7 +1242,7 @@ apiRouter.get('/admin/programs', requireAdmin, async (_req: Request, res: Respon
   }
 });
 
-apiRouter.post('/admin/programs', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/programs', requireAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
   const pool = getPool();
   const slug = (req.body.name || `program-${Date.now()}`).toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
   try {
@@ -1233,7 +1265,7 @@ apiRouter.post('/admin/programs', requireAdmin, async (req: Request, res: Respon
   }
 });
 
-apiRouter.put('/admin/programs/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/programs/:id', requireAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1255,7 +1287,7 @@ apiRouter.put('/admin/programs/:id', requireAdmin, async (req: Request, res: Res
   }
 });
 
-apiRouter.delete('/admin/programs/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/programs/:id', requireAdmin, requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id), 10);
   const pool = getPool();
   try {
@@ -1275,7 +1307,7 @@ apiRouter.delete('/admin/programs/:id', requireAdmin, async (req: Request, res: 
 });
 
 // Settings & PPDB
-apiRouter.put('/admin/ppdb', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/ppdb', requireAdmin, requireFeatureEnabled('ppdb'), async (req: Request, res: Response) => {
   const pool = getPool();
   try {
     await pool.query(
@@ -1400,7 +1432,7 @@ apiRouter.put('/auth/profile', requireAdmin, async (req: AuthenticatedRequest, r
 });
 
 // School history and vision-mission
-apiRouter.put('/admin/school-history', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/school-history', requireAdmin, requireFeatureEnabled('history'), async (req: Request, res: Response) => {
   try {
     const pool = getPool();
     const [existing]: any = await pool.query('SELECT id FROM school_history ORDER BY id ASC LIMIT 1');
@@ -1450,7 +1482,7 @@ apiRouter.put('/admin/vision-mission', requireAdmin, async (req: Request, res: R
 });
 
 // Organization CRUD
-apiRouter.post('/admin/organization', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/organization', requireAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query(
       'INSERT INTO school_organization (position, name, nip, photo, level, parent_id, display_order, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -1462,7 +1494,7 @@ apiRouter.post('/admin/organization', requireAdmin, async (req: Request, res: Re
   }
 });
 
-apiRouter.put('/admin/organization/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/organization/:id', requireAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   try {
     const [result]: any = await getPool().query(
@@ -1476,7 +1508,7 @@ apiRouter.put('/admin/organization/:id', requireAdmin, async (req: Request, res:
   }
 });
 
-apiRouter.delete('/admin/organization/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/organization/:id', requireAdmin, requireFeatureEnabled('organization'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query('DELETE FROM school_organization WHERE id = ?', [Number(req.params.id)]);
     if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data organisasi tidak ditemukan.' });
@@ -1487,7 +1519,7 @@ apiRouter.delete('/admin/organization/:id', requireAdmin, async (req: Request, r
 });
 
 // Staff CRUD
-apiRouter.post('/admin/staff', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/staff', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query(
       'INSERT INTO staff (name, photo, position, department, last_education, short_bio, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)',
@@ -1499,7 +1531,7 @@ apiRouter.post('/admin/staff', requireAdmin, async (req: Request, res: Response)
   }
 });
 
-apiRouter.put('/admin/staff/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.put('/admin/staff/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query(
       'UPDATE staff SET name = ?, photo = ?, position = ?, department = ?, last_education = ?, short_bio = ?, display_order = ? WHERE id = ?',
@@ -1512,7 +1544,7 @@ apiRouter.put('/admin/staff/:id', requireAdmin, async (req: Request, res: Respon
   }
 });
 
-apiRouter.delete('/admin/staff/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/staff/:id', requireAdmin, requireFeatureEnabled('teachers'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query('DELETE FROM staff WHERE id = ?', [Number(req.params.id)]);
     if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data staf tidak ditemukan.' });
@@ -1523,7 +1555,7 @@ apiRouter.delete('/admin/staff/:id', requireAdmin, async (req: Request, res: Res
 });
 
 // News category and gallery album creation/deletion used by the API service.
-apiRouter.post('/admin/news/categories', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/news/categories', requireAdmin, requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const name = String(req.body.name || '').trim();
   if (!name) return res.status(400).json({ success: false, message: 'Nama kategori wajib diisi.' });
   const slug = makeSlug(req.body.slug || name);
@@ -1539,7 +1571,7 @@ apiRouter.post('/admin/news/categories', requireAdmin, async (req: Request, res:
   }
 });
 
-apiRouter.post('/admin/gallery/albums', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.post('/admin/gallery/albums', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   const name = String(req.body.name || '').trim();
   if (!name) return res.status(400).json({ success: false, message: 'Nama album wajib diisi.' });
   const slug = makeSlug(req.body.slug || name);
@@ -1555,7 +1587,7 @@ apiRouter.post('/admin/gallery/albums', requireAdmin, async (req: Request, res: 
   }
 });
 
-apiRouter.delete('/admin/gallery/albums/:id', requireAdmin, async (req: Request, res: Response) => {
+apiRouter.delete('/admin/gallery/albums/:id', requireAdmin, requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   try {
     const [result]: any = await getPool().query('DELETE FROM gallery_albums WHERE id = ?', [Number(req.params.id)]);
     if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Album galeri tidak ditemukan.' });
