@@ -60,7 +60,7 @@ const ScrollToTop: React.FC = () => {
 // Public Website Layout Shell
 const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="public-shell min-h-screen flex flex-col bg-white">
       <Navbar />
       <main className="flex-1">
         <ErrorBoundary>
