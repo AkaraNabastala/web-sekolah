@@ -24,6 +24,8 @@ jobs:
         run: npm ci
       - name: Install backend dependencies
         run: npm ci --prefix backend
+      - name: Audit backend dependencies
+        run: npm audit --prefix backend --audit-level=moderate
       - name: Install frontend dependencies
         run: npm ci --prefix frontend
       - name: Check audit script syntax
