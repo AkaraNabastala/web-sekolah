@@ -58,6 +58,17 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
       executedCount++;
     }
 
+    // 1b. Upgrade kolom konfigurasi website secara aman untuk instalasi yang sudah berjalan.
+    const [featureFlagColumns]: any = await pool.query(
+      `SELECT COUNT(*) AS total FROM information_schema.columns
+       WHERE table_schema = ? AND table_name = 'website_settings' AND column_name = 'feature_flags'`,
+      [dbInfo.database]
+    );
+    if (Number(featureFlagColumns[0]?.total || 0) === 0) {
+      await pool.query('ALTER TABLE website_settings ADD COLUMN feature_flags JSON DEFAULT NULL');
+      logger.info('MigrationService', 'Kolom website_settings.feature_flags berhasil ditambahkan.');
+    }
+
     // 2. Buat tabel riwayat migrasi setelah seluruh statement schema berhasil.
     await pool.query(`
       CREATE TABLE IF NOT EXISTS migration_history (
