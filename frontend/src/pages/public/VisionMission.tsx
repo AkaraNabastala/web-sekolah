@@ -3,6 +3,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { schoolApi } from '../../services/api';
 import { SchoolVisionMission } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 import { useSchool } from '../../context/SchoolContext';
 import { Compass, Target, HeartHandshake, Smile, GraduationCap, ShieldCheck } from 'lucide-react';
 
@@ -44,7 +45,7 @@ export const VisionMission: React.FC = () => {
             <Compass className="absolute -right-8 -top-8 h-56 w-56 text-white/5" />
             <div className="relative max-w-4xl space-y-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-[var(--school-secondary)]">Visi Sekolah</p>
-              <h2 className="text-2xl font-semibold leading-relaxed sm:text-4xl">{data.vision}</h2>
+              <RichTextContent value={data.vision} className="text-2xl font-semibold leading-relaxed sm:text-4xl"/>
               {data.vision_motto && <p className="text-sm text-white/75">{data.vision_motto}</p>}
             </div>
           </section>
@@ -59,7 +60,7 @@ export const VisionMission: React.FC = () => {
                   <h3 className="text-xl font-semibold text-stone-900">Misi</h3>
                 </div>
                 <ol className="list-decimal space-y-4 pl-5 marker:font-semibold marker:text-[var(--school-primary)]">
-                  {data?.missions.map((mission, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-700">{mission}</li>)}
+                  {data?.missions.map((mission, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-700"><RichTextContent value={mission}/></li>)}
                 </ol>
               </section>
             )}
@@ -71,7 +72,7 @@ export const VisionMission: React.FC = () => {
                   <h3 className="text-xl font-semibold text-stone-900">Tujuan Sekolah</h3>
                 </div>
                 <ol className="list-decimal space-y-4 pl-5 marker:font-semibold marker:text-[var(--school-primary)]">
-                  {data?.goals?.map((goal, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-700">{goal}</li>)}
+                  {data?.goals?.map((goal, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-700"><RichTextContent value={goal}/></li>)}
                 </ol>
               </section>
             )}
