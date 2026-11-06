@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useSchool } from '../../context/SchoolContext';
+import { SchoolLogo } from './SchoolLogo';
 
 import {
   Menu,
@@ -9,7 +10,6 @@ import {
   MapPin,
   Phone,
   Mail,
-  School,
   Clock,
   Sparkles,
   BookOpen,
@@ -113,18 +113,8 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20" ref={dropdownRef}>
           {/* Logo & Identitas */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-xl text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform" style={{ backgroundColor: "var(--school-primary)" }}>
-              <School className="w-6 h-6" style={{ color: "var(--school-secondary)" }} />
-            </div>
-            <div>
-              <span className="text-base sm:text-lg font-black tracking-tight text-[#1F2621] block leading-tight">
-                {settings?.school_name || profile?.name || 'Nama Sekolah'}
-              </span>
-              <span className="text-[11px] font-semibold text-[#2A5C40] tracking-wide block uppercase">
-                {settings?.tagline || profile?.district || profile?.regency || 'Website Resmi Sekolah'}
-              </span>
-            </div>
+          <Link to="/" className="group transition-transform hover:scale-[1.02]">
+            <SchoolLogo size="md" />
           </Link>
 
           {/* Desktop Navigation */}
