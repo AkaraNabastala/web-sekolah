@@ -83,6 +83,19 @@ export const AdminLayout: React.FC = () => {
     { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }
   ];
 
+  const visibleMenuItems = menuItems.filter(item => {
+    if (admin?.role === 'superadmin') return true;
+    if (admin?.role === 'admin_ppdb') return ['/admin', '/admin/ppdb'].includes(item.path);
+    if (admin?.role === 'admin_konten') {
+      return [
+        '/admin', '/admin/profil', '/admin/sambutan', '/admin/sejarah', '/admin/visi-misi',
+        '/admin/organisasi', '/admin/guru-staf', '/admin/program', '/admin/berita',
+        '/admin/agenda', '/admin/galeri', '/admin/prestasi', '/admin/fasilitas'
+      ].includes(item.path);
+    }
+    return false;
+  });
+
   // Semua modul tetap tersedia di dashboard admin, termasuk modul yang disembunyikan dari publik.
 
   const handleLogout = () => {
@@ -120,7 +133,7 @@ export const AdminLayout: React.FC = () => {
             Menu Manajemen
           </p>
 
-          {menuItems.map((item) => {
+          {visibleMenuItems.map((item) => {
             const Icon = item.icon;
             const active = location.pathname === item.path;
 
