@@ -1,4 +1,5 @@
 import React from 'react';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import { Link } from 'react-router-dom';
 import { Home, ArrowLeft, Phone, Search, BookOpen } from 'lucide-react';
 import { SEO } from '../../components/common/SEO';
@@ -53,7 +54,7 @@ export const NotFound: React.FC = () => {
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-500 text-emerald-950 font-bold text-xs sm:text-sm shadow-sm transition-all hover:scale-105"
           >
             <BookOpen className="w-4 h-4" />
-            <span>Info PPDB 2026/2027</span>
+            <span>Info {ADMISSION_LABEL}</span>
           </Link>
 
           <Link
