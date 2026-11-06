@@ -10,7 +10,8 @@ type Announcement = {
   published_at?: string;
 };
 
-type AnnouncementForm = { title: string; slug: string; summary: string; content: string; category: string; cover_image: string; status: 'draft' | 'published' | 'archived' };\nconst emptyForm: AnnouncementForm = { title: '', slug: '', summary: '', content: '', category: 'Umum', cover_image: '', status: 'draft' };
+type AnnouncementForm = { title: string; slug: string; summary: string; content: string; category: string; cover_image: string; status: 'draft' | 'published' | 'archived' };
+const emptyForm: AnnouncementForm = { title: '', slug: '', summary: '', content: '', category: 'Umum', cover_image: '', status: 'draft' };
 
 export const ManageAnnouncements: React.FC = () => {
   const [items, setItems] = useState<Announcement[]>([]);
