@@ -109,7 +109,7 @@ export const AdminLayout: React.FC = () => {
   return (
     <>
       <SEO title="SMP Islam Caruy" />
-      <div className="min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
+      <div className="admin-shell min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
       {/* Global Toaster — mounted once at layout level */}
       <Toaster />
       {/* SIDEBAR FOR DESKTOP */}
