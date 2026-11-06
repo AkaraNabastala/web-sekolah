@@ -8,6 +8,10 @@ import { ADMISSION_LABEL } from '../../config/admissions';
 
 const FEATURE_OPTIONS = [
   { key: 'history', label: 'Sejarah Sekolah' },
+  { key: 'vision', label: 'Visi Sekolah' },
+  { key: 'mission', label: 'Misi Sekolah' },
+  { key: 'goals', label: 'Tujuan Sekolah' },
+  { key: 'coreValues', label: 'Nilai Utama Sekolah' },
   { key: 'organization', label: 'Struktur Organisasi' },
   { key: 'teachers', label: 'Guru & Tenaga Kependidikan' },
   { key: 'programs', label: 'Program & Ekstrakurikuler' },
