@@ -21,6 +21,25 @@ export const apiRouter = Router();
 
 // Batasi percobaan login untuk mengurangi brute force.
 // Percobaan yang berhasil tidak menghabiskan kuota; yang gagal dibatasi per alamat IP.
+const trustedAuthOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
+const effectiveAuthOrigins = trustedAuthOrigins.length > 0
+  ? trustedAuthOrigins
+  : process.env.NODE_ENV === 'production'
+    ? []
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+
+const requireTrustedOrigin = (req: Request, res: Response, next: (err?: any) => void) => {
+  const origin = req.headers.origin;
+  const fetchSite = req.headers['sec-fetch-site'];
+  if ((origin && !effectiveAuthOrigins.includes(origin)) || fetchSite === 'cross-site') {
+    return res.status(403).json({ success: false, message: 'Origin permintaan tidak diizinkan.' });
+  }
+  return next();
+};
+
 const SESSION_COOKIE = 'caruy_admin_session';
 const CSRF_COOKIE = 'caruy_csrf';
 const SESSION_MAX_AGE = 8 * 60 * 60 * 1000;
@@ -170,7 +189,7 @@ apiRouter.get('/setup/status', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.post('/setup/first-admin', async (req: Request, res: Response) => {
+apiRouter.post('/setup/first-admin', requireTrustedOrigin, async (req: Request, res: Response) => {
   const { username, email, password, full_name } = req.body;
 
   if (!username || !email || !password || !full_name) {
@@ -230,7 +249,7 @@ apiRouter.post('/setup/first-admin', async (req: Request, res: Response) => {
 // ==========================================
 // 2. AUTHENTICATION (LOGIN, LOGOUT, PROFILE)
 // ==========================================
-apiRouter.post('/auth/login', loginRateLimiter, async (req: Request, res: Response) => {
+apiRouter.post('/auth/login', requireTrustedOrigin, loginRateLimiter, async (req: Request, res: Response) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ success: false, message: 'Username dan password wajib diisi.' });
