@@ -28,7 +28,8 @@ import {
   Bell,
   Eye,
   Award,
-  Calendar
+  Calendar,
+  Tags
 } from 'lucide-react';
 import { schoolApi } from '../../services/api';
 import { ADMISSION_LABEL } from '../../config/admissions';
