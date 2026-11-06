@@ -452,7 +452,7 @@ apiRouter.get('/school-profile', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/school-history', async (_req: Request, res: Response) => {
+apiRouter.get('/school-history', requireFeatureEnabled('history'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM school_history LIMIT 1');
     if (!rows.length) return res.json({ success: true, data: null });
@@ -472,7 +472,7 @@ apiRouter.get('/vision-mission', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/organization', async (_req: Request, res: Response) => {
+apiRouter.get('/organization', requireFeatureEnabled('organization'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM school_organization ORDER BY display_order ASC');
     return res.json({ success: true, data: rows });
@@ -481,7 +481,7 @@ apiRouter.get('/organization', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/teachers', async (_req: Request, res: Response) => {
+apiRouter.get('/teachers', requireFeatureEnabled('teachers'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM teachers WHERE is_active = 1 ORDER BY display_order ASC');
     return res.json({ success: true, data: rows });
@@ -490,7 +490,7 @@ apiRouter.get('/teachers', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/staff', async (_req: Request, res: Response) => {
+apiRouter.get('/staff', requireFeatureEnabled('teachers'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM staff WHERE is_active = 1 ORDER BY display_order ASC');
     return res.json({ success: true, data: rows });
@@ -499,7 +499,7 @@ apiRouter.get('/staff', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/news', async (req: Request, res: Response) => {
+apiRouter.get('/news', requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const category = req.query.category as string;
   try {
     let sql = 'SELECT n.*, c.name AS category_name, c.slug AS category_slug FROM news n LEFT JOIN news_categories c ON n.category_id = c.id WHERE n.status = "published" ORDER BY n.published_at DESC';
@@ -515,7 +515,7 @@ apiRouter.get('/news', async (req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
+apiRouter.get('/news/categories', requireFeatureEnabled('news'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM news_categories ORDER BY name ASC');
     return res.json({ success: true, data: rows });
@@ -524,7 +524,7 @@ apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
+apiRouter.get('/news/:slug', requireFeatureEnabled('news'), async (req: Request, res: Response) => {
   const slug = String(req.params.slug);
   try {
     const pool = getPool();
@@ -537,7 +537,7 @@ apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/achievements', async (_req: Request, res: Response) => {
+apiRouter.get('/achievements', requireFeatureEnabled('achievements'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM achievements ORDER BY year DESC, id DESC');
     return res.json({ success: true, data: rows });
@@ -546,7 +546,7 @@ apiRouter.get('/achievements', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/facilities', async (_req: Request, res: Response) => {
+apiRouter.get('/facilities', requireFeatureEnabled('facilities'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM facilities ORDER BY display_order ASC');
     return res.json({ success: true, data: rows });
@@ -555,7 +555,7 @@ apiRouter.get('/facilities', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/gallery', async (req: Request, res: Response) => {
+apiRouter.get('/gallery', requireFeatureEnabled('gallery'), async (req: Request, res: Response) => {
   const category = req.query.category as string;
   try {
     let sql = 'SELECT * FROM gallery_media ORDER BY display_order ASC, id DESC';
@@ -571,7 +571,7 @@ apiRouter.get('/gallery', async (req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/gallery/albums', async (_req: Request, res: Response) => {
+apiRouter.get('/gallery/albums', requireFeatureEnabled('gallery'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM gallery_albums ORDER BY id DESC');
     return res.json({ success: true, data: rows });
@@ -580,7 +580,7 @@ apiRouter.get('/gallery/albums', async (_req: Request, res: Response) => {
   }
 });
 
-apiRouter.get('/ppdb', async (_req: Request, res: Response) => {
+apiRouter.get('/ppdb', requireFeatureEnabled('ppdb'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM ppdb_information LIMIT 1');
     if (!rows.length) return res.json({ success: true, data: null });
@@ -591,7 +591,7 @@ apiRouter.get('/ppdb', async (_req: Request, res: Response) => {
 });
 
 // Agendas Public Route
-apiRouter.get('/agendas', async (_req: Request, res: Response) => {
+apiRouter.get('/agendas', requireFeatureEnabled('agenda'), async (_req: Request, res: Response) => {
   try {
     const [rows]: any = await getPool().query('SELECT * FROM agendas WHERE is_published = 1 ORDER BY event_date ASC');
     return res.json({ success: true, data: rows });
@@ -601,7 +601,7 @@ apiRouter.get('/agendas', async (_req: Request, res: Response) => {
 });
 
 // Programs & Extracurricular Public Route
-apiRouter.get('/programs', async (req: Request, res: Response) => {
+apiRouter.get('/programs', requireFeatureEnabled('programs'), async (req: Request, res: Response) => {
   const category = req.query.category as string;
   const pool = getPool();
   try {
