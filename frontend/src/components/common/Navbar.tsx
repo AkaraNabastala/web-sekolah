@@ -67,7 +67,7 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#ECE7DD] shadow-sm font-['Poppins',sans-serif]">
       {/* Top Bar Informasi Kontak & Legalitas */}
-      <div className="text-[#D5E0D7] text-xs py-2 px-4 sm:px-6 lg:px-8 border-b hidden md:block" style={{ backgroundColor: "var(--school-primary)", borderColor: "var(--school-secondary)"">
+      <div className="text-[#D5E0D7] text-xs py-2 px-4 sm:px-6 lg:px-8 border-b hidden md:block" style={{ backgroundColor: "var(--school-primary)", borderColor: "var(--school-secondary)" }}>
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
