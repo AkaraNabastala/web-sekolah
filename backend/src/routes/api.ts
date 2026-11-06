@@ -203,7 +203,7 @@ const validateUploadContent = async (req: Request, res: Response, next: (err?: a
 
 
 const ADMISSION_UPLOAD_DIR = process.env.ADMISSION_UPLOAD_DIR || path.join(backendRoot, 'private-admission-uploads');
-if (!fs.existsSync(ADMISSION_UPLOAD_DIR)) fs.mkdirSync(ADMISSION_UPLOAD_DIR, { recursive: true });
+if (!fs.existsSync(ADMISSION_UPLOAD_DIR)) fs.mkdirSync(ADMISSION_UPLOAD_DIR, { recursive: true, mode: 0o700 });
 const admissionStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, ADMISSION_UPLOAD_DIR),
   filename: (_req, _file, cb) => cb(null, `${randomUUID()}.upload`)
