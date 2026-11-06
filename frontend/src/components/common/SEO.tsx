@@ -51,6 +51,13 @@ export const SEO: React.FC<SEOProps> = ({
     setMetaTag('meta[property="og:type"]', 'content', ogType);
     if (resolvedOgImage) {
       setMetaTag('meta[property="og:image"]', 'content', resolvedOgImage);
+      let favicon = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+      if (!favicon) {
+        favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        document.head.appendChild(favicon);
+      }
+      favicon.href = resolvedOgImage;
     }
   }, [schoolName, title, description, ogType, resolvedOgImage]);
 
