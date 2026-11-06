@@ -6,6 +6,7 @@ import { RichTextEditor } from '../../components/common/RichTextEditor';
 
 export const ManagePrograms: React.FC = () => {
   const [programs, setPrograms] = useState<any[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
@@ -34,6 +35,7 @@ export const ManagePrograms: React.FC = () => {
 
   useEffect(() => {
     loadData();
+    schoolApi.getContentCategories('program').then(setCategoryOptions).catch(() => undefined);
   }, []);
 
 
@@ -256,7 +258,7 @@ export const ManagePrograms: React.FC = () => {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <datalist id="program-category-options">
-                    {Array.from(new Set(programs.map(program => program.category).filter(Boolean))).map(category => <option key={category} value={category} />)}
+                    {categoryOptions.map(category => <option key={category.id} value={category.name} />)}
                   </datalist>
                 </div>
                 <div className="space-y-1">
