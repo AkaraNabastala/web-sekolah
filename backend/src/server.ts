@@ -71,7 +71,9 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   logger.error('ApiError', 'Permintaan API gagal diproses.', {
     method: req.method,
     path: req.path,
-    code: err?.code
+    code: err?.code,
+    sqlState: err?.sqlState,
+    message: err?.message
   });
   if (res.headersSent) return next(err);
   res.status(500).json({
