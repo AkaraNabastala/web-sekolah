@@ -8,7 +8,7 @@ export interface AdminUser {
   email: string;
   full_name: string;
   avatar?: string;
-  role: 'superadmin' | 'admin' | 'editor';
+  role: 'superadmin' | 'admin_konten' | 'admin_ppdb';
   is_active: boolean | number;
   last_login?: string;
   created_at?: string;
