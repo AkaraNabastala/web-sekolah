@@ -111,7 +111,7 @@ export const ManageAgendas: React.FC = () => {
     <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Agenda & Pengumuman</h1>
+          <h1 className="text-2xl font-bold text-stone-900">Agenda Kegiatan</h1>
         </div>
         <button
           onClick={handleOpenCreate}
