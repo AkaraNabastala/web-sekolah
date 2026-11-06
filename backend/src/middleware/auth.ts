@@ -48,10 +48,10 @@ export function requireCsrf(req: Request, res: Response, next: NextFunction) {
 }
 
 export function requireAdmin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  // Sesi administrator hanya diterima melalui cookie HttpOnly yang diterbitkan server.
+  // Jangan menerima bearer token dari storage/browser karena melewati perlindungan CSRF cookie.
   const sessionCookie = readCookie(req, SESSION_COOKIE);
-  const authHeader = req.headers.authorization;
-  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
-  const token = sessionCookie || bearerToken;
+  const token = sessionCookie;
 
   if (!token) {
     return res.status(401).json({
