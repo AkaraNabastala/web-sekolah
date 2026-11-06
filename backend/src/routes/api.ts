@@ -350,66 +350,79 @@ apiRouter.get('/admin/statistics/export/csv', requireAdmin, async (req: Request,
 // ==========================================
 // 4. KONTEN PUBLIK (READ-ONLY)
 // ==========================================
+// MySQL adalah satu-satunya sumber data saat backend berjalan dengan database.
+// Hasil kosong dikembalikan sebagai []/404; kegagalan query tidak dialihkan ke JSON.
+const publicQueryError = (res: Response, route: string, err: any, message: string) => {
+  logger.error(route, message, {
+    code: err?.code,
+    sqlState: err?.sqlState,
+    message: err?.message
+  });
+  return res.status(500).json({
+    success: false,
+    message: 'Data sementara tidak dapat dimuat. Periksa log backend.'
+  });
+};
+
 apiRouter.get('/school-profile', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM school_profile LIMIT 1');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
+    const [rows]: any = await getPool().query('SELECT * FROM school_profile LIMIT 1');
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Profil sekolah belum dikonfigurasi.' });
+    return res.json({ success: true, data: rows[0] });
   } catch (err: any) {
-    logger.error('SchoolProfileRoute', 'Gagal membaca profil sekolah dari MySQL.', { code: err.code, sqlState: err.sqlState, message: err.message });
-    return res.status(500).json({ success: false, message: 'Profil sekolah sementara tidak dapat dimuat.' });
+    return publicQueryError(res, 'SchoolProfileRoute', err, 'Gagal membaca profil sekolah dari MySQL.');
   }
-  return res.status(404).json({ success: false, message: 'Profil sekolah belum dikonfigurasi.' });
 });
 
 apiRouter.get('/school-history', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM school_history LIMIT 1');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getSchoolHistory() });
+    const [rows]: any = await getPool().query('SELECT * FROM school_history LIMIT 1');
+    if (!rows.length) return res.json({ success: true, data: null });
+    return res.json({ success: true, data: rows[0] });
+  } catch (err: any) {
+    return publicQueryError(res, 'SchoolHistoryRoute', err, 'Gagal membaca sejarah sekolah dari MySQL.');
+  }
 });
 
 apiRouter.get('/vision-mission', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM school_vision_mission LIMIT 1');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getVisionMission() });
+    const [rows]: any = await getPool().query('SELECT * FROM school_vision_mission LIMIT 1');
+    if (!rows.length) return res.json({ success: true, data: null });
+    return res.json({ success: true, data: rows[0] });
+  } catch (err: any) {
+    return publicQueryError(res, 'VisionMissionRoute', err, 'Gagal membaca visi dan misi dari MySQL.');
+  }
 });
 
 apiRouter.get('/organization', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM school_organization ORDER BY display_order ASC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getOrganization() });
+    const [rows]: any = await getPool().query('SELECT * FROM school_organization ORDER BY display_order ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'OrganizationRoute', err, 'Gagal membaca struktur organisasi dari MySQL.');
+  }
 });
 
 apiRouter.get('/teachers', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM teachers WHERE is_active = 1 ORDER BY display_order ASC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getTeachers() });
+    const [rows]: any = await getPool().query('SELECT * FROM teachers WHERE is_active = 1 ORDER BY display_order ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'TeachersRoute', err, 'Gagal membaca data guru dari MySQL.');
+  }
 });
 
 apiRouter.get('/staff', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM staff WHERE is_active = 1 ORDER BY display_order ASC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getStaff() });
+    const [rows]: any = await getPool().query('SELECT * FROM staff WHERE is_active = 1 ORDER BY display_order ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'StaffRoute', err, 'Gagal membaca data staf dari MySQL.');
+  }
 });
 
 apiRouter.get('/news', async (req: Request, res: Response) => {
   const category = req.query.category as string;
-  const pool = getPool();
   try {
     let sql = 'SELECT * FROM news WHERE status = "published" ORDER BY published_at DESC';
     const params: any[] = [];
@@ -417,57 +430,55 @@ apiRouter.get('/news', async (req: Request, res: Response) => {
       sql = 'SELECT n.* FROM news n JOIN news_categories c ON n.category_id = c.id WHERE n.status = "published" AND c.slug = ? ORDER BY n.published_at DESC';
       params.push(category);
     }
-    const [rows]: any = await pool.query(sql, params);
-    if (rows) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getNews() });
+    const [rows]: any = await getPool().query(sql, params);
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'NewsRoute', err, 'Gagal membaca berita dari MySQL.');
+  }
 });
 
 apiRouter.get('/news/categories', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM news_categories ORDER BY name ASC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getNewsCategories() });
+    const [rows]: any = await getPool().query('SELECT * FROM news_categories ORDER BY name ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'NewsCategoriesRoute', err, 'Gagal membaca kategori berita dari MySQL.');
+  }
 });
 
 apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
   const slug = String(req.params.slug);
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM news WHERE slug = ? LIMIT 1', [slug]);
-    if (rows && rows.length > 0) {
-      await pool.query('UPDATE news SET views_count = views_count + 1 WHERE id = ?', [rows[0].id]);
-      return res.json({ success: true, data: rows[0] });
-    }
-  } catch {}
-  const n = dbFallback.getNewsBySlug(slug);
-  if (!n) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan.' });
-  res.json({ success: true, data: n });
+    const pool = getPool();
+    const [rows]: any = await pool.query('SELECT * FROM news WHERE slug = ? AND status = "published" LIMIT 1', [slug]);
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan.' });
+    await pool.query('UPDATE news SET views_count = views_count + 1 WHERE id = ?', [rows[0].id]);
+    return res.json({ success: true, data: rows[0] });
+  } catch (err: any) {
+    return publicQueryError(res, 'NewsDetailRoute', err, 'Gagal membaca detail berita dari MySQL.');
+  }
 });
 
 apiRouter.get('/achievements', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM achievements ORDER BY year DESC, id DESC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getAchievements() });
+    const [rows]: any = await getPool().query('SELECT * FROM achievements ORDER BY year DESC, id DESC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'AchievementsRoute', err, 'Gagal membaca prestasi dari MySQL.');
+  }
 });
 
 apiRouter.get('/facilities', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM facilities ORDER BY display_order ASC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getFacilities() });
+    const [rows]: any = await getPool().query('SELECT * FROM facilities ORDER BY display_order ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'FacilitiesRoute', err, 'Gagal membaca fasilitas dari MySQL.');
+  }
 });
 
 apiRouter.get('/gallery', async (req: Request, res: Response) => {
   const category = req.query.category as string;
-  const pool = getPool();
   try {
     let sql = 'SELECT * FROM gallery_media ORDER BY display_order ASC, id DESC';
     const params: any[] = [];
@@ -475,38 +486,40 @@ apiRouter.get('/gallery', async (req: Request, res: Response) => {
       sql = 'SELECT * FROM gallery_media WHERE category = ? ORDER BY display_order ASC, id DESC';
       params.push(category);
     }
-    const [rows]: any = await pool.query(sql, params);
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getGalleryMedia(category) });
+    const [rows]: any = await getPool().query(sql, params);
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'GalleryRoute', err, 'Gagal membaca galeri dari MySQL.');
+  }
 });
 
 apiRouter.get('/gallery/albums', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM gallery_albums ORDER BY id DESC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getGalleryAlbums() });
+    const [rows]: any = await getPool().query('SELECT * FROM gallery_albums ORDER BY id DESC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'GalleryAlbumsRoute', err, 'Gagal membaca album galeri dari MySQL.');
+  }
 });
 
 apiRouter.get('/ppdb', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM ppdb_information LIMIT 1');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows[0] });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getPPDB() });
+    const [rows]: any = await getPool().query('SELECT * FROM ppdb_information LIMIT 1');
+    if (!rows.length) return res.json({ success: true, data: null });
+    return res.json({ success: true, data: rows[0] });
+  } catch (err: any) {
+    return publicQueryError(res, 'PPDBRoute', err, 'Gagal membaca informasi PPDB dari MySQL.');
+  }
 });
 
 // Agendas Public Route
 apiRouter.get('/agendas', async (_req: Request, res: Response) => {
-  const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM agendas WHERE is_published = 1 ORDER BY event_date ASC');
-    if (rows && rows.length > 0) return res.json({ success: true, data: rows });
-  } catch {}
-  res.json({ success: true, data: dbFallback.getAgendas().filter((a: any) => a.is_published !== 0) });
+    const [rows]: any = await getPool().query('SELECT * FROM agendas WHERE is_published = 1 ORDER BY event_date ASC');
+    return res.json({ success: true, data: rows });
+  } catch (err: any) {
+    return publicQueryError(res, 'AgendasRoute', err, 'Gagal membaca agenda dari MySQL.');
+  }
 });
 
 // Programs & Extracurricular Public Route
