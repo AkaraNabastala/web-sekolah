@@ -9,6 +9,7 @@ export interface WebsiteSettings {
   hero_title: string;
   hero_subtitle: string;
   hero_image: string;
+  hero_slides?: Array<{ id: number; image: string; tag?: string; title: string; subtitle?: string; badge?: string }> | string | null;
   primary_color: string;
   secondary_color: string;
   accent_orange: string;
