@@ -41,3 +41,18 @@ section {
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
+/* Public website theme overrides: the palette is configured per school in admin settings. */
+.public-shell .bg-emerald-950,
+.public-shell .bg-emerald-900,
+.public-shell .bg-emerald-800 { background-color: var(--school-primary) !important; }
+.public-shell .text-emerald-950,
+.public-shell .text-emerald-900,
+.public-shell .text-emerald-800,
+.public-shell .text-emerald-700 { color: var(--school-primary) !important; }
+.public-shell .bg-amber-400,
+.public-shell .bg-amber-500 { background-color: var(--school-secondary) !important; }
+.public-shell .text-amber-400,
+.public-shell .text-amber-300,
+.public-shell .text-amber-200 { color: var(--school-secondary) !important; }
+.public-shell .border-amber-400,
+.public-shell .border-amber-300 { border-color: var(--school-secondary) !important; }
