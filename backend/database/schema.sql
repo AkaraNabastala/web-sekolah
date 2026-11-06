@@ -258,6 +258,7 @@ CREATE TABLE IF NOT EXISTS `website_settings` (
   `hero_title` VARCHAR(255) DEFAULT 'Selamat Datang di SMP Islam Caruy',
   `hero_subtitle` TEXT DEFAULT NULL,
   `hero_image` VARCHAR(255) DEFAULT NULL,
+  `hero_slides` JSON DEFAULT NULL,
   `primary_color` VARCHAR(20) DEFAULT '#15803D',
   `secondary_color` VARCHAR(20) DEFAULT '#EAB308',
   `accent_orange` VARCHAR(20) DEFAULT '#F97316',
