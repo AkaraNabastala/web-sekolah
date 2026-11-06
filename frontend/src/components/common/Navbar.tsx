@@ -2,17 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useSchool } from '../../context/SchoolContext';
 
-type FeatureAwareLinkProps = React.ComponentProps<typeof RouterLink> & { feature?: string };
-
-const Link: React.FC<FeatureAwareLinkProps> = ({ feature, ...props }) => {
-  const { settings } = useSchool();
-  let flags: any = settings?.feature_flags;
-  if (typeof flags === 'string') {
-    try { flags = JSON.parse(flags); } catch { flags = null; }
-  }
-  if (feature && flags?.[feature] === false) return null;
-  return <RouterLink {...props} />;
-};
 import {
   Menu,
   X,
@@ -31,6 +20,18 @@ import {
   Image,
   FileText
 } from 'lucide-react';
+
+type FeatureAwareLinkProps = React.ComponentProps<typeof RouterLink> & { feature?: string };
+
+const Link: React.FC<FeatureAwareLinkProps> = ({ feature, ...props }) => {
+  const { settings } = useSchool();
+  let flags: any = settings?.feature_flags;
+  if (typeof flags === 'string') {
+    try { flags = JSON.parse(flags); } catch { flags = null; }
+  }
+  if (feature && flags?.[feature] === false) return null;
+  return <RouterLink {...props} />;
+};
 
 export const Navbar: React.FC = () => {
   const { profile, settings } = useSchool();
@@ -84,7 +85,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-[#E5C178]" />
-              {profile?.address || 'Desa Caruy, Kec. Cipari, Cilacap'}
+              {profile?.address || 'Alamat sekolah belum diatur'}
             </span>
             {profile?.phone && (
               <span className="flex items-center gap-1.5">
@@ -100,7 +101,7 @@ export const Navbar: React.FC = () => {
             )}
           </div>
           <div className="flex items-center gap-4 text-[#D5E0D7]">
-            <span>NPSN: {profile?.npsn || '20301988'}</span>
+            <span>NPSN: {profile?.npsn || 'Belum diatur'}</span>
             <span className="text-[#E5C178] font-semibold">
               {profile?.accreditation ? `Akreditasi ${profile.accreditation}` : 'Status: Swasta'}
             </span>
