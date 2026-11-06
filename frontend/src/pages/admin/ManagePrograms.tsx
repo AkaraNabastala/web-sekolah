@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
-import { Plus, Edit, Trash2, Award, CheckCircle, AlertCircle, X, Search, Sparkles } from 'lucide-react';
+import { Plus, Edit, Trash2, Award, CheckCircle, AlertCircle, X, Search, Sparkles, Clock } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
 import { RichTextEditor } from '../../components/common/RichTextEditor';
 
@@ -185,7 +185,7 @@ export const ManagePrograms: React.FC = () => {
                   </p>
                   {item.schedule_info && (
                     <p className="text-[11px] text-emerald-700 font-medium pt-1">
-                      🗓️ {item.schedule_info}
+                      <Clock className="mr-1 inline h-3.5 w-3.5" />{item.schedule_info}
                     </p>
                   )}
                   {item.instructor && (
