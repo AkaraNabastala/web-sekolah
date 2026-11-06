@@ -211,3 +211,60 @@ section {
 .public-shell [class*="border-[#DEBD7A]"] {
   border-color: var(--school-secondary) !important;
 }
+
+/* Include Tailwind opacity variants and interactive states used in legacy components. */
+.public-shell [class*="bg-emerald-950"],
+.public-shell [class*="bg-emerald-900"],
+.public-shell [class*="bg-emerald-800"],
+.public-shell [class*="bg-emerald-700"],
+.public-shell [class*="bg-emerald-600"] {
+  background-color: var(--school-primary) !important;
+}
+.public-shell [class*="bg-emerald-50"],
+.public-shell [class*="bg-emerald-100"] {
+  background-color: color-mix(in srgb, var(--school-primary), white 93%) !important;
+}
+.public-shell [class*="text-emerald-200"] {
+  color: color-mix(in srgb, var(--school-primary), white 76%) !important;
+}
+.public-shell [class*="text-emerald-300"] {
+  color: color-mix(in srgb, var(--school-primary), white 64%) !important;
+}
+.public-shell [class*="text-emerald-400"] {
+  color: color-mix(in srgb, var(--school-primary), white 48%) !important;
+}
+.public-shell [class*="hover:bg-emerald-"]:hover {
+  background-color: var(--school-primary) !important;
+}
+.public-shell [class*="hover:text-emerald-"]:hover {
+  color: var(--school-primary) !important;
+}
+.public-shell [class*="hover:bg-amber-"]:hover {
+  background-color: var(--school-secondary) !important;
+}
+.public-shell [class*="hover:text-amber-"]:hover {
+  color: var(--school-secondary) !important;
+}
+.admin-shell [class*="bg-emerald-950"],
+.admin-shell [class*="bg-emerald-900"],
+.admin-shell [class*="bg-emerald-800"],
+.admin-shell [class*="bg-emerald-700"],
+.admin-shell [class*="bg-emerald-600"] {
+  background-color: var(--school-primary) !important;
+}
+.admin-shell [class*="bg-emerald-50"],
+.admin-shell [class*="bg-emerald-100"] {
+  background-color: color-mix(in srgb, var(--school-primary), white 93%) !important;
+}
+.admin-shell [class*="hover:bg-emerald-"]:hover {
+  background-color: var(--school-primary) !important;
+}
+.admin-shell [class*="hover:text-emerald-"]:hover {
+  color: var(--school-primary) !important;
+}
+.admin-shell [class*="hover:bg-amber-"]:hover {
+  background-color: var(--school-secondary) !important;
+}
+.admin-shell [class*="hover:text-amber-"]:hover {
+  color: var(--school-secondary) !important;
+}
