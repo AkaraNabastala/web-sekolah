@@ -18,6 +18,7 @@ export const AdminLogin: React.FC = () => {
   const [setupEmail, setSetupEmail] = useState('');
   const [setupUsername, setSetupUsername] = useState('');
   const [setupPassword, setSetupPassword] = useState('');
+  const [setupToken, setSetupToken] = useState('');
   const [setupMessage, setSetupMessage] = useState<string | null>(null);
 
   const { login, isAuthenticated } = useAuth();
@@ -74,8 +75,8 @@ export const AdminLogin: React.FC = () => {
       return;
     }
 
-    if (setupPassword.length < 8) {
-      setError('Kata sandi harus minimal 8 karakter.');
+    if (setupPassword.length < 12) {
+      setError('Kata sandi harus minimal 12 karakter.');
       return;
     }
 
@@ -86,10 +87,12 @@ export const AdminLogin: React.FC = () => {
         email: setupEmail,
         username: setupUsername,
         password: setupPassword
-      });
+      }, { headers: { 'X-Admin-Setup-Token': setupToken } });
 
       if (res.data.success) {
         setSetupMessage('Administrator utama berhasil dibuat! Silakan masuk dengan akun yang baru Anda daftarkan.');
+        setSetupToken('');
+        setSetupPassword('');
         setIsSetupNeeded(false);
         setUsername(setupUsername);
         setPassword('');
@@ -182,7 +185,22 @@ export const AdminLogin: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi (Min. 8 Karakter)</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Token Setup Administrator</label>
+                <input
+                  type="password"
+                  required
+                  minLength={32}
+                  value={setupToken}
+                  onChange={(e) => setSetupToken(e.target.value)}
+                  placeholder="Masukkan token dari konfigurasi server"
+                  autoComplete="off"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-sm"
+                />
+                <p className="mt-1 text-[11px] text-slate-500">Token harus sama dengan ADMIN_SETUP_TOKEN yang disimpan operator di environment server.</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi (Min. 12 Karakter)</label>
                 <input
                   type="password"
                   required
