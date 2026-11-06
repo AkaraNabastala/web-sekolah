@@ -45,7 +45,7 @@ export const Teachers: React.FC = () => {
       />
       <PageHeader
         title="Guru & Tenaga Kependidikan"
-        subtitle="Profil dewan pendidik dan staf tata usaha yang berdedikasi membina generasi santri."
+        subtitle="Profil guru dan tenaga kependidikan SMP Islam Caruy."
         badge="Civitas Akademika"
         breadcrumbs={[{ label: 'Guru & Staf' }]}
       />
