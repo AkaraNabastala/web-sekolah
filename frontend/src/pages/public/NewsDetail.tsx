@@ -136,10 +136,11 @@ export const NewsDetail: React.FC = () => {
 
               {/* Share menu */}
               <div className="relative">
-                <button type="button" onClick={shareNative} aria-expanded={shareOpen} className="bg-stone-100 text-stone-700 hover:bg-stone-200 px-3 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-2 transition-colors">
+                <button type="button" onClick={() => setShareOpen(value => !value)} aria-expanded={shareOpen} className="bg-stone-100 text-stone-700 hover:bg-stone-200 px-3 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-2 transition-colors">
                   <Share2 className="w-4 h-4" /><span>Bagikan</span>
                 </button>
                 {shareOpen && <div className="absolute right-0 top-full mt-2 z-30 w-48 rounded-xl border border-stone-200 bg-white p-2 shadow-xl">
+                  <button type="button" onClick={shareNative} className="block w-full rounded-lg px-3 py-2 text-left text-xs text-stone-700 hover:bg-stone-50">Bagikan melalui perangkat</button>
                   {shareLinks.map(item => <a key={item.label} href={item.href} target="_blank" rel="noreferrer" onClick={() => setShareOpen(false)} className="block rounded-lg px-3 py-2 text-xs text-stone-700 hover:bg-stone-50">{item.label}</a>)}
                   <button type="button" onClick={copyUrl} className="w-full text-left rounded-lg px-3 py-2 text-xs text-stone-700 hover:bg-stone-50">{copied ? 'Tautan tersalin' : 'Salin tautan'}</button>
                 </div>}
