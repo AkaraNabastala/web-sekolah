@@ -17,7 +17,10 @@ import {
   HelpCircle
 } from 'lucide-react';
 
-const applyAdmissionLabel = (value?: string | null) => value ? value.replace(/\\bPPDB\\b/gi, ADMISSION_LABEL) : '';\n\nexport const PPDB: React.FC = () => {
+const applyAdmissionLabel = (value?: string | null) =>
+  value ? value.replace(/\bPPDB\b/gi, ADMISSION_LABEL) : '';
+
+export const PPDB: React.FC = () => {
   const [ppdb, setPpdb] = useState<PPDBInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
