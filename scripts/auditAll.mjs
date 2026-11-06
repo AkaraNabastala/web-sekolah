@@ -42,7 +42,7 @@ add('Arsitektur','Pemisahan domain models',splitModels?'TERINDIKASI':'PERLU_PERB
 const adminRouteLines=api.split('\n').filter(line=>/apiRouter\.(get|post|put|patch|delete)\(\s*['"]\/admin\//.test(line));
 const unguardedAdminRoutes=adminRouteLines.filter(line=>!/require(Admin|Superadmin|ContentAdmin|PpdbAdmin)/.test(line));
 const dashboardRoutes=read('backend/src/routes/dashboardRoutes.ts')||'';
-const dashboardGuarded=/dashboardRouter\.(get|post|put|patch|delete)\(/.test(dashboardRoutes)&&/requireAdmin/.test(dashboardRoutes);
+const dashboardGuarded=/dashboardRouter\.(get|post|put|patch|delete)\(/.test(dashboardRoutes)&&/require(ContentAdmin|Admin)/.test(dashboardRoutes);
 add('Keamanan','Proteksi route admin',unguardedAdminRoutes.length===0&&dashboardGuarded?'TERINDIKASI':'PERLU_PERBAIKAN',unguardedAdminRoutes.length===0?'Semua route admin langsung dan router dashboard memiliki middleware autentikasi/otorisasi.':'Route tanpa guard: '+unguardedAdminRoutes.length,'high');
 const routes=[...api.matchAll(/apiRouter\.(get|post|put|patch|delete)\(\s*['"]([^'"]+)/g)];
 add('Fungsi','Inventaris route API','TERINDIKASI','Ditemukan '+routes.length+' deklarasi route langsung di api.ts; router terpisah perlu ikut diaudit.');
