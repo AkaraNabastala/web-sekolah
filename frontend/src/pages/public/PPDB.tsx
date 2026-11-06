@@ -69,7 +69,7 @@ export const PPDB: React.FC = () => {
       <PageHeader
         title={`${ADMISSION_LABEL} Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`}
         subtitle="Penerimaan Peserta Didik Baru SMP Islam Caruy. Mari bergabung membina generasi berkarakter Qurani."
-        badge="Penerimaan Santri Baru"
+        badge="Penerimaan Peserta Didik Baru"
         breadcrumbs={[{ label: ADMISSION_LABEL }]}
       />
 
@@ -309,7 +309,7 @@ export const PPDB: React.FC = () => {
                 className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               >
                 <option value="Reguler">Kelas Reguler Terpadu</option>
-                <option value="Tahfidz Unggulan">Kelas Unggulan Tahfidz Al-Quran</option>
+                
                 <option value="Sains & Robotika">Kelas Peminatan Sains & Teknologi</option>
               </select>
             </div>
