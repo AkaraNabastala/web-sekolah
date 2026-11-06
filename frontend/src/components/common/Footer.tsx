@@ -142,7 +142,19 @@ export const Footer: React.FC = () => {
               <li>
                 <Link to="/berita" feature="news" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
                   <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Berita, Agenda & Pengumuman</span>
+                  <span>Berita Sekolah</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/agenda" feature="agenda" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                  <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Agenda Kegiatan</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/pengumuman" feature="announcements" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                  <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Pengumuman</span>
                 </Link>
               </li>
             </ul>
@@ -196,10 +208,10 @@ export const Footer: React.FC = () => {
             </h4>
 
             <div className="space-y-2.5 text-xs text-emerald-200/80">
-              <div className="flex items-start gap-2.5">
+              {profile?.address && <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                {profile?.address && <span>{profile.address}</span>}
-              </div>
+                <span>{profile.address}</span>
+              </div>}
               {profile?.phone && <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-amber-400 shrink-0" />
                 <a href={`tel:${profile.phone}`} className="hover:text-white">{profile.phone}</a>
