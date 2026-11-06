@@ -43,7 +43,7 @@ export const NewsList: React.FC = () => {
       />
       <PageHeader
         title="Berita, Artikel & Pengumuman"
-        subtitle="Seputar informasi terkini, agenda kegiatan, prestasi santri, dan pengumuman resmi SMP Islam Caruy."
+        subtitle="Informasi terbaru, kegiatan, prestasi siswa, dan pengumuman SMP Islam Caruy."
         badge="Warta Sekolah"
         breadcrumbs={[{ label: 'Berita & Artikel' }]}
       />
