@@ -1263,3 +1263,233 @@ apiRouter.put('/admin/settings', requireAdmin, async (req: Request, res: Respons
   const [rows]: any = await pool.query('SELECT * FROM website_settings LIMIT 1');
   return res.json({ success: true, message: 'Pengaturan website berhasil disimpan.', data: rows[0] });
 });
+
+
+// ==========================================
+// 7. ROUTE YANG DIGUNAKAN FORMULIR FRONTEND
+// ==========================================
+const routeWriteError = (res: Response, route: string, err: any) => {
+  logger.error(route, 'Operasi MySQL gagal.', {
+    code: err?.code, sqlState: err?.sqlState, message: err?.message
+  });
+  return res.status(500).json({ success: false, message: 'Operasi gagal diproses. Periksa log backend.' });
+};
+
+const makeSlug = (value: string) => String(value || '')
+  .toLowerCase()
+  .normalize('NFKD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9\s-]/g, '')
+  .trim()
+  .replace(/[\s-]+/g, '-');
+
+// Contact form
+apiRouter.post('/contact', async (req: Request, res: Response) => {
+  const { name, email, phone, subject, message } = req.body || {};
+  if (!name || !email || !subject || !message) {
+    return res.status(400).json({ success: false, message: 'Nama, email, subjek, dan pesan wajib diisi.' });
+  }
+  try {
+    const [result]: any = await getPool().query(
+      'INSERT INTO contact_messages (name, email, phone, subject, message) VALUES (?, ?, ?, ?, ?)',
+      [String(name).trim(), String(email).trim(), phone || null, String(subject).trim(), String(message).trim()]
+    );
+    return res.status(201).json({
+      success: true,
+      message: 'Pesan berhasil dikirim.',
+      data: { id: result.insertId, name, email, phone: phone || null, subject, message, is_read: 0 }
+    });
+  } catch (err: any) {
+    return routeWriteError(res, 'ContactRoute', err);
+  }
+});
+
+// Update the currently authenticated administrator's own profile.
+apiRouter.put('/auth/profile', requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+  const { username, email, full_name, avatar } = req.body || {};
+  if (!username || !email || !full_name) {
+    return res.status(400).json({ success: false, message: 'Username, email, dan nama lengkap wajib diisi.' });
+  }
+  try {
+    const pool = getPool();
+    const [result]: any = await pool.query(
+      'UPDATE admins SET username = ?, email = ?, full_name = ?, avatar = ? WHERE id = ?',
+      [String(username).trim().toLowerCase(), String(email).trim().toLowerCase(), String(full_name).trim(), avatar || null, req.user?.id]
+    );
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Akun administrator tidak ditemukan.' });
+    const [rows]: any = await pool.query(
+      'SELECT id, username, email, full_name, avatar, role, is_active, last_login, created_at FROM admins WHERE id = ?',
+      [req.user?.id]
+    );
+    return res.json({ success: true, message: 'Profil administrator berhasil diperbarui.', user: rows[0] });
+  } catch (err: any) {
+    if (err?.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'Username atau email sudah digunakan.' });
+    return routeWriteError(res, 'AuthProfileRoute', err);
+  }
+});
+
+// School history and vision-mission
+apiRouter.put('/admin/school-history', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const pool = getPool();
+    const [existing]: any = await pool.query('SELECT id FROM school_history ORDER BY id ASC LIMIT 1');
+    if (existing.length) {
+      await pool.query(
+        'UPDATE school_history SET title = ?, content = ?, featured_image = ?, milestones = ?, updated_at = NOW() WHERE id = ?',
+        [req.body.title || 'Sejarah Sekolah', req.body.content || '', req.body.featured_image || null, JSON.stringify(req.body.milestones || []), existing[0].id]
+      );
+    } else {
+      await pool.query(
+        'INSERT INTO school_history (title, content, featured_image, milestones) VALUES (?, ?, ?, ?)',
+        [req.body.title || 'Sejarah Sekolah', req.body.content || '', req.body.featured_image || null, JSON.stringify(req.body.milestones || [])]
+      );
+    }
+    const [rows]: any = await pool.query('SELECT * FROM school_history ORDER BY id ASC LIMIT 1');
+    return res.json({ success: true, message: 'Sejarah sekolah berhasil disimpan.', data: rows[0] });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminSchoolHistoryRoute', err);
+  }
+});
+
+apiRouter.put('/admin/vision-mission', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const pool = getPool();
+    const [existing]: any = await pool.query('SELECT id FROM school_vision_mission ORDER BY id ASC LIMIT 1');
+    const values = [
+      req.body.vision || '', req.body.vision_motto || '',
+      JSON.stringify(req.body.missions || []), JSON.stringify(req.body.goals || []),
+      JSON.stringify(req.body.core_values || [])
+    ];
+    if (existing.length) {
+      await pool.query(
+        'UPDATE school_vision_mission SET vision = ?, vision_motto = ?, missions = ?, goals = ?, core_values = ?, updated_at = NOW() WHERE id = ?',
+        [...values, existing[0].id]
+      );
+    } else {
+      await pool.query(
+        'INSERT INTO school_vision_mission (vision, vision_motto, missions, goals, core_values) VALUES (?, ?, ?, ?, ?)',
+        values
+      );
+    }
+    const [rows]: any = await pool.query('SELECT * FROM school_vision_mission ORDER BY id ASC LIMIT 1');
+    return res.json({ success: true, message: 'Visi dan misi berhasil disimpan.', data: rows[0] });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminVisionMissionRoute', err);
+  }
+});
+
+// Organization CRUD
+apiRouter.post('/admin/organization', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await getPool().query(
+      'INSERT INTO school_organization (position, name, nip, photo, level, parent_id, display_order, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [req.body.position, req.body.name, req.body.nip || '-', req.body.photo || null, Number(req.body.level) || 1, req.body.parent_id || null, Number(req.body.display_order) || 0, req.body.description || '']
+    );
+    return res.status(201).json({ success: true, message: 'Anggota organisasi berhasil ditambahkan.', data: { id: result.insertId, ...req.body } });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminOrganizationRoute', err);
+  }
+});
+
+apiRouter.put('/admin/organization/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  try {
+    const [result]: any = await getPool().query(
+      'UPDATE school_organization SET position = ?, name = ?, nip = ?, photo = ?, level = ?, parent_id = ?, display_order = ?, description = ? WHERE id = ?',
+      [req.body.position, req.body.name, req.body.nip || '-', req.body.photo || null, Number(req.body.level) || 1, req.body.parent_id || null, Number(req.body.display_order) || 0, req.body.description || '', id]
+    );
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data organisasi tidak ditemukan.' });
+    return res.json({ success: true, message: 'Data organisasi berhasil diperbarui.' });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminOrganizationRoute', err);
+  }
+});
+
+apiRouter.delete('/admin/organization/:id', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await getPool().query('DELETE FROM school_organization WHERE id = ?', [Number(req.params.id)]);
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data organisasi tidak ditemukan.' });
+    return res.json({ success: true, message: 'Data organisasi berhasil dihapus.' });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminOrganizationRoute', err);
+  }
+});
+
+// Staff CRUD
+apiRouter.post('/admin/staff', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await getPool().query(
+      'INSERT INTO staff (name, photo, position, department, last_education, short_bio, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)',
+      [req.body.name, req.body.photo || null, req.body.position, req.body.department || 'Tata Usaha', req.body.last_education || '', req.body.short_bio || '', Number(req.body.display_order) || 0]
+    );
+    return res.status(201).json({ success: true, message: 'Data staf berhasil ditambahkan.', data: { id: result.insertId, ...req.body, is_active: 1 } });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminStaffRoute', err);
+  }
+});
+
+apiRouter.put('/admin/staff/:id', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await getPool().query(
+      'UPDATE staff SET name = ?, photo = ?, position = ?, department = ?, last_education = ?, short_bio = ?, display_order = ? WHERE id = ?',
+      [req.body.name, req.body.photo || null, req.body.position, req.body.department || 'Tata Usaha', req.body.last_education || '', req.body.short_bio || '', Number(req.body.display_order) || 0, Number(req.params.id)]
+    );
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data staf tidak ditemukan.' });
+    return res.json({ success: true, message: 'Data staf berhasil diperbarui.' });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminStaffRoute', err);
+  }
+});
+
+apiRouter.delete('/admin/staff/:id', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await getPool().query('DELETE FROM staff WHERE id = ?', [Number(req.params.id)]);
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Data staf tidak ditemukan.' });
+    return res.json({ success: true, message: 'Data staf berhasil dihapus.' });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminStaffRoute', err);
+  }
+});
+
+// News category and gallery album creation/deletion used by the API service.
+apiRouter.post('/admin/news/categories', requireAdmin, async (req: Request, res: Response) => {
+  const name = String(req.body.name || '').trim();
+  if (!name) return res.status(400).json({ success: false, message: 'Nama kategori wajib diisi.' });
+  const slug = makeSlug(req.body.slug || name);
+  try {
+    const [result]: any = await getPool().query(
+      'INSERT INTO news_categories (name, slug, description) VALUES (?, ?, ?)',
+      [name, slug, req.body.description || '']
+    );
+    return res.status(201).json({ success: true, message: 'Kategori berita berhasil dibuat.', data: { id: result.insertId, name, slug } });
+  } catch (err: any) {
+    if (err?.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'Nama atau slug kategori sudah digunakan.' });
+    return routeWriteError(res, 'AdminNewsCategoryRoute', err);
+  }
+});
+
+apiRouter.post('/admin/gallery/albums', requireAdmin, async (req: Request, res: Response) => {
+  const name = String(req.body.name || '').trim();
+  if (!name) return res.status(400).json({ success: false, message: 'Nama album wajib diisi.' });
+  const slug = makeSlug(req.body.slug || name);
+  try {
+    const [result]: any = await getPool().query(
+      'INSERT INTO gallery_albums (name, slug, description, cover_image, category) VALUES (?, ?, ?, ?, ?)',
+      [name, slug, req.body.description || '', req.body.cover_image || null, req.body.category || 'Umum']
+    );
+    return res.status(201).json({ success: true, message: 'Album galeri berhasil dibuat.', data: { id: result.insertId, name, slug } });
+  } catch (err: any) {
+    if (err?.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'Nama atau slug album sudah digunakan.' });
+    return routeWriteError(res, 'AdminGalleryAlbumRoute', err);
+  }
+});
+
+apiRouter.delete('/admin/gallery/albums/:id', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await getPool().query('DELETE FROM gallery_albums WHERE id = ?', [Number(req.params.id)]);
+    if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Album galeri tidak ditemukan.' });
+    return res.json({ success: true, message: 'Album galeri berhasil dihapus.' });
+  } catch (err: any) {
+    return routeWriteError(res, 'AdminGalleryAlbumRoute', err);
+  }
+});
