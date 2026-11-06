@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `programs` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(150) NOT NULL,
   `slug` VARCHAR(180) NOT NULL UNIQUE,
-  `category` ENUM('unggulan', 'ekstrakurikuler', 'keagamaan', 'akademik') NOT NULL DEFAULT 'unggulan',
+  `category` VARCHAR(100) NOT NULL DEFAULT 'unggulan',
   `description` TEXT,
   `photo` VARCHAR(255) DEFAULT NULL,
   `schedule_info` VARCHAR(150) DEFAULT NULL,
