@@ -428,7 +428,7 @@ apiRouter.put('/auth/password', requireAdmin, async (req: AuthenticatedRequest, 
 // ==========================================
 // 3. STATISTIK PENGUNJUNG (TRACK & ANALYTICS)
 // ==========================================
-apiRouter.post('/visitor/log', async (req: Request, res: Response) => {
+apiRouter.post('/visitor/log', visitorLogRateLimiter, async (req: Request, res: Response) => {
   const { path: visitPath, pageTitle, sessionId } = req.body;
   const userAgent = req.headers['user-agent'] || 'Unknown';
   const referrer = (req.body.referrer || req.headers['referer'] || null) as string | null;
@@ -1468,7 +1468,7 @@ apiRouter.post('/contact', publicContactRateLimiter, async (req: Request, res: R
   }
   if (name.length > 100 || email.length > 100 || (phone && (typeof phone !== 'string' || phone.length > 40)) ||
       subject.length > 180 || message.length > 5000 ||
-      !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email.trim())) {
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return res.status(400).json({ success: false, message: 'Data pesan tidak valid atau melebihi batas panjang yang diizinkan.' });
   }
   try {
