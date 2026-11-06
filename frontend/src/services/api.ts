@@ -139,6 +139,17 @@ export const schoolApi = {
   updateProgram: (id: number, data: any) => api.put<{ success: boolean; message: string; data: any }>(`/admin/programs/${id}`, data).then(r => r.data),
   deleteProgram: (id: number) => api.delete<{ success: boolean; message: string }>(`/admin/programs/${id}`).then(r => r.data),
 
+  // SPMB / PPDB application workflow
+  submitAdmissionApplication: (data: any) => api.post('/admissions/applications', data).then(r => r.data),
+  uploadAdmissionDocument: async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post('/admissions/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return response.data;
+  },
+  getAdmissionApplications: () => api.get<{ success: boolean; data: any[] }>('/admin/admission-applications').then(r => r.data.data),
+  updateAdmissionApplication: (id: number, data: any) => api.put(`/admin/admission-applications/${id}`, data).then(r => r.data),
+
   // Admin PPDB
   updatePPDB: (data: Partial<PPDBInfo>) => api.put<{ success: boolean; message: string; data: PPDBInfo }>('/admin/ppdb', data).then(r => r.data),
 
