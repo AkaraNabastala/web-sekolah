@@ -115,3 +115,17 @@ section {
 .public-shell [class*="border-[#E5C178]"] {
   border-color: var(--school-secondary) !important;
 }
+
+.public-shell [class*="bg-[#0E2016]"],
+.public-shell [class*="bg-[#14231A]"],
+.public-shell [class*="bg-[#254F3A]"] {
+  background-color: var(--school-primary) !important;
+}
+.public-shell [class*="text-[#1D4A32]"],
+.public-shell [class*="text-[#2A5C40]"] {
+  color: var(--school-primary) !important;
+}
+.public-shell [class*="bg-[#E8CF94]"],
+.public-shell [class*="bg-[#E5C178]"] {
+  background-color: var(--school-secondary) !important;
+}
