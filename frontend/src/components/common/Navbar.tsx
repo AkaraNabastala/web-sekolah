@@ -103,7 +103,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-4 text-[#D5E0D7]">
             <span>NPSN: {profile?.npsn || 'Belum diatur'}</span>
             <span className="text-[#E5C178] font-semibold">
-              {profile?.accreditation ? `Akreditasi ${profile.accreditation}` : 'Status: Swasta'}
+              {profile?.accreditation ? `Akreditasi ${profile.accreditation}` : 'Status belum diatur'}
             </span>
           </div>
         </div>
@@ -114,8 +114,8 @@ export const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-20" ref={dropdownRef}>
           {/* Logo & Identitas */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-xl bg-[#1B3B2B] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <School className="w-6 h-6 text-[#E8CF94]" />
+            <div className="w-11 h-11 rounded-xl text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform" style={{ backgroundColor: "var(--school-primary)" }}>
+              <School className="w-6 h-6" style={{ color: "var(--school-secondary)" }} />
             </div>
             <div>
               <span className="text-base sm:text-lg font-black tracking-tight text-[#1F2621] block leading-tight">
