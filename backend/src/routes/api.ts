@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getPool } from '../config/database.js';
@@ -31,7 +31,7 @@ const effectiveAuthOrigins = trustedAuthOrigins.length > 0
     ? []
     : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
-const requireTrustedOrigin = (req: Request, res: Response, next: (err?: any) => void) => {
+const requireTrustedOrigin = (req: Request, res: Response, next: NextFunction) => {
   const origin = req.headers.origin;
   const fetchSite = req.headers['sec-fetch-site'];
   if ((origin && !effectiveAuthOrigins.includes(origin)) || fetchSite === 'cross-site') {
