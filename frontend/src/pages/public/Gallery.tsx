@@ -25,11 +25,11 @@ export const Gallery: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Galeri Foto & Video"
-        description="Dokumentasi visual, foto kegiatan belajar, ekstrakurikuler santri, dan video profil SMP Islam Caruy."
+        description="Dokumentasi kegiatan belajar, ekstrakurikuler siswa, dan profil SMP Islam Caruy."
       />
       <PageHeader
         title="Galeri Foto & Video"
-        subtitle="Dokumentasi rekaman visual dinamika belajar, pembinaan keagamaan, dan keceriaan santri."
+        subtitle="Dokumentasi kegiatan belajar dan keseharian siswa."
         badge="Dokumentasi Sekolah"
         breadcrumbs={[{ label: 'Galeri' }]}
       />
