@@ -1839,8 +1839,25 @@ apiRouter.post('/admissions/applications', requireTrustedOrigin, requireFeatureE
   if (body.candidate_name.length > 150 || body.origin_school.length > 180 || body.parent_name.length > 150 || body.parent_phone.length > 40 || String(body.notes || '').length > 3000) {
     return res.status(400).json({ success: false, message: 'Sebagian data melebihi batas panjang yang diizinkan.' });
   }
-  if (body.birth_date && (typeof body.birth_date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(body.birth_date))) {
-    return res.status(400).json({ success: false, message: 'Format tanggal lahir tidak valid.' });
+  const optionalFieldLimits: Record<string, number> = {
+    national_id: 32, birth_place: 100, address: 5000, program: 120, academic_year: 30
+  };
+  for (const [field, maxLength] of Object.entries(optionalFieldLimits)) {
+    const value = body[field];
+    if (value != null && (typeof value !== 'string' || value.length > maxLength)) {
+      return res.status(400).json({ success: false, message: 'Sebagian data tambahan tidak valid atau terlalu panjang.' });
+    }
+  }
+  if (body.gender && !['L', 'P'].includes(body.gender)) {
+    return res.status(400).json({ success: false, message: 'Pilihan jenis kelamin tidak valid.' });
+  }
+  if (body.birth_date) {
+    const date = typeof body.birth_date === 'string' && /^\\d{4}-\\d{2}-\\d{2}$/.test(body.birth_date)
+      ? new Date(`${body.birth_date}T00:00:00.000Z`)
+      : null;
+    if (!date || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== body.birth_date) {
+      return res.status(400).json({ success: false, message: 'Format tanggal lahir tidak valid.' });
+    }
   }
   const documents = body.documents && typeof body.documents === 'object' && !Array.isArray(body.documents) ? body.documents : {};
   if (Object.keys(documents).length > 8 || Object.values(documents).some((fileKey: any) => typeof fileKey !== 'string' || !/^[a-f0-9-]{36}\.(pdf|jpg|png|webp)$/i.test(fileKey))) {
