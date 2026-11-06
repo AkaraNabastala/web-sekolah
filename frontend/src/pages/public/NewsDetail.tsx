@@ -4,6 +4,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { schoolApi } from '../../services/api';
 import { NewsArticle } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 import { motion } from 'framer-motion';
 import {
   Calendar,
@@ -167,9 +168,7 @@ export const NewsDetail: React.FC = () => {
 
             {/* Article Body */}
             <div className="prose prose-stone max-w-none text-stone-700 text-sm sm:text-base leading-relaxed space-y-4 font-normal">
-              {article.content.split('\n\n').map((paragraph, i) => (
-                <p key={i}>{paragraph}</p>
-              ))}
+              <RichTextContent value={article.content}/>
             </div>
 
             {/* Back Button */}
