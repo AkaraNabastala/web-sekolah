@@ -40,7 +40,7 @@ export const PPDB: React.FC = () => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const waText = encodeURIComponent(
-      `*PENDAFTARAN ONLINE PPDB SMP ISLAM CARUY*\n` +
+      `*PENDAFTARAN ONLINE ${ADMISSION_LABEL} SMP ISLAM CARUY*\n` +
       `----------------------------------------\n` +
       `Nama Calon Siswa: ${formData.candidateName}\n` +
       `Asal Sekolah (SD/MI): ${formData.originSchool}\n` +
@@ -248,7 +248,6 @@ export const PPDB: React.FC = () => {
               Formulir Pra-Pendaftaran {ADMISSION_LABEL} Online
             </h3>
             <p className="text-xs sm:text-sm text-stone-500 font-normal">
-              Isi data awal calon santri untuk langsung terhubung dengan panitia PPDB melalui WhatsApp resmi sekolah.
             </p>
           </div>
 
