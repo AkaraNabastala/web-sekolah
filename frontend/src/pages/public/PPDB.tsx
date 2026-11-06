@@ -4,6 +4,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { schoolApi } from '../../services/api';
 import { PPDBInfo } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import {
   Sparkles,
   Calendar,
@@ -59,14 +60,14 @@ export const PPDB: React.FC = () => {
   return (
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
-        title="Informasi PPDB 2026/2027"
-        description="Penerimaan Peserta Didik Baru (PPDB) SMP Islam Caruy - Syarat pendaftaran, jalur beasiswa tahfidz, jadwal gelombang, rincian biaya, dan pra-registrasi online."
+        title={`${ADMISSION_LABEL} ${ppdb?.academic_year || '2026/2027'}`}
+        description={`Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
       />
       <PageHeader
-        title={`PPDB Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`}
+        title={`${ADMISSION_LABEL} Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`}
         subtitle="Penerimaan Peserta Didik Baru SMP Islam Caruy. Mari bergabung membina generasi berkarakter Qurani."
         badge="Penerimaan Santri Baru"
-        breadcrumbs={[{ label: 'Informasi PPDB' }]}
+        breadcrumbs={[{ label: ADMISSION_LABEL }]}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 space-y-12">
@@ -87,7 +88,7 @@ export const PPDB: React.FC = () => {
             </h2>
 
             <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed font-normal">
-              {ppdb?.overview || 'Penerimaan Peserta Didik Baru (PPDB) SMP Islam Caruy telah dibuka resmi. Tersedia beasiswa prestasi dan jalur tahfidz Al-Quran.'}
+              {ppdb?.overview || `Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-4">
@@ -170,7 +171,7 @@ export const PPDB: React.FC = () => {
                 <Calendar className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-stone-900">Jadwal & Agenda PPDB</h3>
+                <h3 className="text-xl font-bold text-stone-900">Jadwal & Agenda {ADMISSION_LABEL}</h3>
                 <p className="text-xs text-stone-500 font-normal">Gelombang pendaftaran dan tahapan</p>
               </div>
             </div>
@@ -244,7 +245,7 @@ export const PPDB: React.FC = () => {
               Registrasi Cepat
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
-              Formulir Pra-Pendaftaran PPDB Online
+              Formulir Pra-Pendaftaran {ADMISSION_LABEL} Online
             </h3>
             <p className="text-xs sm:text-sm text-stone-500 font-normal">
               Isi data awal calon santri untuk langsung terhubung dengan panitia PPDB melalui WhatsApp resmi sekolah.
@@ -258,7 +259,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Nama lengkap ananda"
                   value={formData.candidateName}
                   onChange={(e) => setFormData({ ...formData, candidateName: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -270,7 +270,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Nama sekolah dasar asal"
                   value={formData.originSchool}
                   onChange={(e) => setFormData({ ...formData, originSchool: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -284,7 +283,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Nama orang tua/wali"
                   value={formData.parentName}
                   onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -296,7 +294,6 @@ export const PPDB: React.FC = () => {
                 <input
                   type="tel"
                   required
-                  placeholder="Contoh: 081234567890"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -321,7 +318,6 @@ export const PPDB: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Pertanyaan atau Catatan Khusus</label>
               <textarea
                 rows={3}
-                placeholder="Tuliskan jika ada prestasi sebelumnya atau hal yang ingin ditanyakan..."
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
