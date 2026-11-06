@@ -6,9 +6,18 @@ export function requireFeatureEnabled(feature: string) {
   return async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const [rows]: any = await getPool().query('SELECT feature_flags FROM website_settings ORDER BY id ASC LIMIT 1');
-      let flags: any = rows?.[0]?.feature_flags ?? {};
+      if (!rows?.[0]) {
+        return res.status(503).json({ success: false, code: 'FEATURE_FLAG_UNAVAILABLE', message: 'Konfigurasi modul belum tersedia.' });
+      }
+      let flags: any = rows[0].feature_flags ?? {};
       if (typeof flags === 'string') {
-        try { flags = JSON.parse(flags); } catch { flags = {}; }
+        try { flags = JSON.parse(flags); }
+        catch {
+          return res.status(503).json({ success: false, code: 'FEATURE_FLAG_UNAVAILABLE', message: 'Konfigurasi modul tidak valid.' });
+        }
+      }
+      if (!flags || typeof flags !== 'object' || Array.isArray(flags)) {
+        return res.status(503).json({ success: false, code: 'FEATURE_FLAG_UNAVAILABLE', message: 'Konfigurasi modul tidak valid.' });
       }
       if (flags && flags[feature] === false) {
         return res.status(403).json({
