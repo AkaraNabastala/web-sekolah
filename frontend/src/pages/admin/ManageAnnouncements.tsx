@@ -9,11 +9,11 @@ type Announcement = {
   published_at?: string;
 };
 
-const emptyForm = { title: '', slug: '', summary: '', content: '', category: 'Umum', cover_image: '', status: 'draft' as const };
+type AnnouncementForm = { title: string; slug: string; summary: string; content: string; category: string; cover_image: string; status: 'draft' | 'published' | 'archived' };\nconst emptyForm: AnnouncementForm = { title: '', slug: '', summary: '', content: '', category: 'Umum', cover_image: '', status: 'draft' };
 
 export const ManageAnnouncements: React.FC = () => {
   const [items, setItems] = useState<Announcement[]>([]);
-  const [form, setForm] = useState<typeof emptyForm>(emptyForm);
+  const [form, setForm] = useState<AnnouncementForm>(emptyForm);
   const [editing, setEditing] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
