@@ -866,7 +866,17 @@ apiRouter.get('/admin/news', requireAdmin, async (_req: Request, res: Response) 
   try {
     const [rows]: any = await pool.query('SELECT * FROM news ORDER BY id DESC');
     if (rows) return res.json({ success: true, data: rows });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   res.json({ success: true, data: dbFallback.getNews(true) });
 });
 
@@ -882,7 +892,17 @@ apiRouter.post('/admin/news', requireAdmin, async (req: Request, res: Response) 
       [category_id || 1, title, slug, summary, content, thumbnail || null, status || 'published']
     );
     return res.json({ success: true, message: 'Berita berhasil disimpan.', data: { id: result.insertId, slug, title } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
 
   const saved = dbFallback.createNews(req.body);
   res.json({ success: true, message: 'Berita berhasil disimpan.', data: saved });
@@ -898,7 +918,17 @@ apiRouter.put('/admin/news/:id', requireAdmin, async (req: Request, res: Respons
       [req.body.title, req.body.category_id, req.body.summary, req.body.content, req.body.thumbnail, req.body.status, id]
     );
     return res.json({ success: true, message: 'Berita berhasil diperbarui.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
 
   const updated = dbFallback.updateNews(id, req.body);
   res.json({ success: true, message: 'Berita berhasil diperbarui.', data: updated });
@@ -910,7 +940,17 @@ apiRouter.delete('/admin/news/:id', requireAdmin, async (req: Request, res: Resp
   try {
     await pool.query('DELETE FROM news WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Berita berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
 
   dbFallback.deleteNews(id);
   res.json({ success: true, message: 'Berita berhasil dihapus.' });
@@ -928,7 +968,17 @@ apiRouter.put('/admin/school-profile', requireAdmin, async (req: Request, res: R
         req.body.address, req.body.phone, req.body.whatsapp, req.body.email, req.body.maps_embed_url
       ]
     );
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const prof = dbFallback.updateSchoolProfile(req.body);
   res.json({ success: true, message: 'Profil sekolah berhasil disimpan.', data: prof });
 });
@@ -939,7 +989,17 @@ apiRouter.get('/admin/messages', requireAdmin, async (_req: Request, res: Respon
   try {
     const [rows]: any = await pool.query('SELECT * FROM contact_messages ORDER BY id DESC');
     if (rows) return res.json({ success: true, data: rows });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   res.json({ success: true, data: dbFallback.getContactMessages() });
 });
 
@@ -949,7 +1009,17 @@ apiRouter.put('/admin/messages/:id/read', requireAdmin, async (req: Request, res
   const pool = getPool();
   try {
     await pool.query('UPDATE contact_messages SET is_read = ? WHERE id = ?', [is_read ? 1 : 0, id]);
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const upd = dbFallback.markMessageRead(id, is_read);
   res.json({ success: true, message: 'Status pesan diperbarui.', data: upd });
 });
@@ -959,7 +1029,17 @@ apiRouter.delete('/admin/messages/:id', requireAdmin, async (req: Request, res: 
   const pool = getPool();
   try {
     await pool.query('DELETE FROM contact_messages WHERE id = ?', [id]);
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteMessage(id);
   res.json({ success: true, message: 'Pesan berhasil dihapus.' });
 });
@@ -974,7 +1054,17 @@ apiRouter.post('/admin/teachers', requireAdmin, async (req: Request, res: Respon
       [req.body.name, req.body.title || '', req.body.nip || '-', req.body.photo || null, req.body.position || 'Guru', req.body.subject, req.body.last_education || '', req.body.short_bio || '', req.body.display_order || 0]
     );
     return res.json({ success: true, message: 'Data guru berhasil ditambahkan.', data: { id: ins.insertId, ...req.body } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const saved = dbFallback.createTeacher(req.body);
   res.json({ success: true, message: 'Data guru berhasil ditambahkan.', data: saved });
 });
@@ -988,7 +1078,17 @@ apiRouter.put('/admin/teachers/:id', requireAdmin, async (req: Request, res: Res
       [req.body.name, req.body.title || '', req.body.nip || '-', req.body.photo || null, req.body.position || 'Guru', req.body.subject, req.body.last_education || '', req.body.short_bio || '', req.body.display_order || 0, id]
     );
     return res.json({ success: true, message: 'Data guru berhasil diperbarui.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const upd = dbFallback.updateTeacher(id, req.body);
   res.json({ success: true, message: 'Data guru berhasil diperbarui.', data: upd });
 });
@@ -999,7 +1099,17 @@ apiRouter.delete('/admin/teachers/:id', requireAdmin, async (req: Request, res: 
   try {
     await pool.query('DELETE FROM teachers WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Data guru berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteTeacher(id);
   res.json({ success: true, message: 'Data guru berhasil dihapus.' });
 });
@@ -1010,7 +1120,17 @@ apiRouter.get('/admin/users', requireSuperadmin, async (_req: Request, res: Resp
   try {
     const [rows]: any = await pool.query('SELECT id, username, email, full_name, role, is_active, last_login, created_at FROM admins');
     if (rows) return res.json({ success: true, data: rows });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   res.json({ success: true, data: dbFallback.getAdmins() });
 });
 
@@ -1028,7 +1148,17 @@ apiRouter.post('/admin/users', requireSuperadmin, async (req: Request, res: Resp
       [username.trim().toLowerCase(), email.trim().toLowerCase(), hashed, full_name.trim(), role || 'admin_konten']
     );
     return res.json({ success: true, message: 'Pengguna admin berhasil ditambahkan.', data: { id: ins.insertId, username, full_name, role } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const saved = dbFallback.createAdminUser(req.body);
   res.json({ success: true, message: 'Pengguna admin berhasil ditambahkan.', data: saved });
 });
@@ -1041,7 +1171,17 @@ apiRouter.delete('/admin/users/:id', requireSuperadmin, async (req: Request, res
   try {
     await pool.query('DELETE FROM admins WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Akun admin berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteAdminUser(id);
   res.json({ success: true, message: 'Akun admin berhasil dihapus.' });
 });
@@ -1056,7 +1196,17 @@ apiRouter.post('/admin/facilities', requireAdmin, async (req: Request, res: Resp
       [req.body.name, req.body.category || 'Ruang Belajar', req.body.description || '', req.body.photo || null, req.body.capacity || '', req.body.condition_status || 'Baik', req.body.display_order || 0]
     );
     return res.json({ success: true, message: 'Fasilitas berhasil ditambahkan.', data: { id: ins.insertId, ...req.body } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const saved = dbFallback.createFacility(req.body);
   res.json({ success: true, message: 'Fasilitas berhasil ditambahkan.', data: saved });
 });
@@ -1070,7 +1220,17 @@ apiRouter.put('/admin/facilities/:id', requireAdmin, async (req: Request, res: R
       [req.body.name, req.body.category || 'Ruang Belajar', req.body.description || '', req.body.photo || null, req.body.capacity || '', req.body.condition_status || 'Baik', req.body.display_order || 0, id]
     );
     return res.json({ success: true, message: 'Fasilitas berhasil diperbarui.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const upd = dbFallback.updateFacility(id, req.body);
   res.json({ success: true, message: 'Fasilitas berhasil diperbarui.', data: upd });
 });
@@ -1081,7 +1241,17 @@ apiRouter.delete('/admin/facilities/:id', requireAdmin, async (req: Request, res
   try {
     await pool.query('DELETE FROM facilities WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Fasilitas berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteFacility(id);
   res.json({ success: true, message: 'Fasilitas berhasil dihapus.' });
 });
@@ -1096,7 +1266,17 @@ apiRouter.post('/admin/achievements', requireAdmin, async (req: Request, res: Re
       [req.body.title, req.body.student_or_team || '', req.body.level || 'Kabupaten', req.body.category || 'Akademik', req.body.rank || req.body.rank_position || 'Juara 1', req.body.year || '2025', req.body.organizer || '', req.body.photo || null, req.body.description || '']
     );
     return res.json({ success: true, message: 'Prestasi berhasil disimpan.', data: { id: ins.insertId, ...req.body } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const saved = dbFallback.createAchievement(req.body);
   res.json({ success: true, message: 'Prestasi berhasil disimpan.', data: saved });
 });
@@ -1110,7 +1290,17 @@ apiRouter.put('/admin/achievements/:id', requireAdmin, async (req: Request, res:
       [req.body.title, req.body.student_or_team || '', req.body.level || 'Kabupaten', req.body.category || 'Akademik', req.body.rank || req.body.rank_position || 'Juara 1', req.body.year || '2025', req.body.organizer || '', req.body.photo || null, req.body.description || '', id]
     );
     return res.json({ success: true, message: 'Prestasi berhasil diperbarui.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const upd = dbFallback.updateAchievement(id, req.body);
   res.json({ success: true, message: 'Prestasi berhasil diperbarui.', data: upd });
 });
@@ -1121,7 +1311,17 @@ apiRouter.delete('/admin/achievements/:id', requireAdmin, async (req: Request, r
   try {
     await pool.query('DELETE FROM achievements WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Prestasi berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteAchievement(id);
   res.json({ success: true, message: 'Prestasi berhasil dihapus.' });
 });
@@ -1136,7 +1336,17 @@ apiRouter.post('/admin/gallery', requireAdmin, async (req: Request, res: Respons
       [req.body.album_id || null, req.body.title, req.body.media_type || 'photo', req.body.file_url, req.body.video_url || null, req.body.caption || '', req.body.category || 'Akademik', req.body.display_order || 0]
     );
     return res.json({ success: true, message: 'Foto galeri berhasil disimpan.', data: { id: ins.insertId, ...req.body } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const saved = dbFallback.createGalleryMedia(req.body);
   res.json({ success: true, message: 'Foto galeri berhasil disimpan.', data: saved });
 });
@@ -1147,7 +1357,17 @@ apiRouter.delete('/admin/gallery/:id', requireAdmin, async (req: Request, res: R
   try {
     await pool.query('DELETE FROM gallery_media WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Foto galeri berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteGalleryMedia(id);
   res.json({ success: true, message: 'Foto galeri berhasil dihapus.' });
 });
@@ -1158,7 +1378,17 @@ apiRouter.get('/admin/agendas', requireAdmin, async (_req: Request, res: Respons
   try {
     const [rows]: any = await pool.query('SELECT * FROM agendas ORDER BY event_date DESC');
     if (rows) return res.json({ success: true, data: rows });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   res.json({ success: true, data: dbFallback.getAgendas() });
 });
 
@@ -1172,7 +1402,17 @@ apiRouter.post('/admin/agendas', requireAdmin, async (req: Request, res: Respons
       [req.body.title, slug, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Kampus SMP Islam Caruy', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1]
     );
     return res.json({ success: true, message: 'Agenda berhasil ditambahkan.', data: { id: ins.insertId, ...req.body, slug } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const saved = dbFallback.createAgenda(req.body);
   res.json({ success: true, message: 'Agenda berhasil ditambahkan.', data: saved });
 });
@@ -1186,7 +1426,17 @@ apiRouter.put('/admin/agendas/:id', requireAdmin, async (req: Request, res: Resp
       [req.body.title, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Kampus SMP Islam Caruy', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1, id]
     );
     return res.json({ success: true, message: 'Agenda berhasil diperbarui.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const upd = dbFallback.updateAgenda(id, req.body);
   res.json({ success: true, message: 'Agenda berhasil diperbarui.', data: upd });
 });
@@ -1197,7 +1447,17 @@ apiRouter.delete('/admin/agendas/:id', requireAdmin, async (req: Request, res: R
   try {
     await pool.query('DELETE FROM agendas WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Agenda berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteAgenda(id);
   res.json({ success: true, message: 'Agenda berhasil dihapus.' });
 });
@@ -1208,7 +1468,17 @@ apiRouter.get('/admin/programs', requireAdmin, async (_req: Request, res: Respon
   try {
     const [rows]: any = await pool.query('SELECT * FROM programs ORDER BY display_order ASC');
     if (rows) return res.json({ success: true, data: rows });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   res.json({ success: true, data: dbFallback.getPrograms() });
 });
 
@@ -1222,7 +1492,17 @@ apiRouter.post('/admin/programs', requireAdmin, async (req: Request, res: Respon
       [req.body.name, slug, req.body.category || 'unggulan', req.body.description || '', req.body.photo || null, req.body.schedule_info || '', req.body.instructor || '', req.body.display_order || 0, req.body.is_active ?? 1]
     );
     return res.json({ success: true, message: 'Program berhasil disimpan.', data: { id: ins.insertId, ...req.body, slug } });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const saved = dbFallback.createProgram(req.body);
   res.json({ success: true, message: 'Program berhasil disimpan.', data: saved });
 });
@@ -1236,7 +1516,17 @@ apiRouter.put('/admin/programs/:id', requireAdmin, async (req: Request, res: Res
       [req.body.name, req.body.category || 'unggulan', req.body.description || '', req.body.photo || null, req.body.schedule_info || '', req.body.instructor || '', req.body.display_order || 0, req.body.is_active ?? 1, id]
     );
     return res.json({ success: true, message: 'Program berhasil diperbarui.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const upd = dbFallback.updateProgram(id, req.body);
   res.json({ success: true, message: 'Program berhasil diperbarui.', data: upd });
 });
@@ -1247,7 +1537,17 @@ apiRouter.delete('/admin/programs/:id', requireAdmin, async (req: Request, res: 
   try {
     await pool.query('DELETE FROM programs WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Program berhasil dihapus.' });
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   dbFallback.deleteProgram(id);
   res.json({ success: true, message: 'Program berhasil dihapus.' });
 });
@@ -1260,7 +1560,17 @@ apiRouter.put('/admin/ppdb', requireAdmin, async (req: Request, res: Response) =
       `UPDATE ppdb_information SET academic_year = ?, is_open = ?, start_date = ?, end_date = ?, overview = ?, contact_person = ?, contact_phone = ?, contact_whatsapp = ?, updated_at = NOW() WHERE id = 1`,
       [req.body.academic_year, req.body.is_open ? 1 : 0, req.body.start_date || null, req.body.end_date || null, req.body.overview, req.body.contact_person || '', req.body.contact_phone || '', req.body.contact_whatsapp || '']
     );
-  } catch {}
+  } catch (err: any) {
+    logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
+      code: err?.code,
+      sqlState: err?.sqlState,
+      message: err?.message
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Operasi gagal. Data tidak disimpan; periksa log backend.'
+    });
+  }
   const upd = dbFallback.updatePPDB(req.body);
   res.json({ success: true, message: 'Informasi PPDB berhasil diperbarui.', data: upd });
 });
