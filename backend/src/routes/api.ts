@@ -1833,7 +1833,7 @@ apiRouter.post('/admissions/applications', requireFeatureEnabled('ppdb'), admiss
   if (body.candidate_name.length > 150 || body.origin_school.length > 180 || body.parent_name.length > 150 || body.parent_phone.length > 40 || String(body.notes || '').length > 3000) {
     return res.status(400).json({ success: false, message: 'Sebagian data melebihi batas panjang yang diizinkan.' });
   }
-  if (body.birth_date && (typeof body.birth_date !== 'string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(body.birth_date))) {
+  if (body.birth_date && (typeof body.birth_date !== 'string' || !/^\d{4}-\\d{2}-\\d{2}$/.test(body.birth_date))) {
     return res.status(400).json({ success: false, message: 'Format tanggal lahir tidak valid.' });
   }
   const documents = body.documents && typeof body.documents === 'object' && !Array.isArray(body.documents) ? body.documents : {};
