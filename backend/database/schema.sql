@@ -132,6 +132,18 @@ CREATE TABLE IF NOT EXISTS `news_categories` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Kategori terpusat untuk program dan fasilitas.
+CREATE TABLE IF NOT EXISTS `content_categories` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `scope` ENUM('program','facility') NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `slug` VARCHAR(120) NOT NULL,
+  `description` TEXT DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `uq_content_category_scope_slug` (`scope`, `slug`),
+  UNIQUE KEY `uq_content_category_scope_name` (`scope`, `name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- 9. Berita, Artikel & Pengumuman
 CREATE TABLE IF NOT EXISTS `news` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
