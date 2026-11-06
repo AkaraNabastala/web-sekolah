@@ -1,4 +1,5 @@
 import React from 'react';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   MapPin,
@@ -154,7 +155,7 @@ export const Footer: React.FC = () => {
               <li>
                 <Link to="/ppdb" feature="ppdb" className="hover:text-amber-300 transition-colors flex items-center gap-1.5 font-semibold text-amber-300">
                   <ChevronRight className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Informasi PPDB</span>
+                  <span>Informasi {ADMISSION_LABEL}</span>
                 </Link>
               </li>
               <li>
