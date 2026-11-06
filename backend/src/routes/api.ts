@@ -402,10 +402,10 @@ apiRouter.get('/staff', async (_req: Request, res: Response) => {
 apiRouter.get('/news', async (req: Request, res: Response) => {
   const category = req.query.category as string;
   try {
-    let sql = 'SELECT * FROM news WHERE status = "published" ORDER BY published_at DESC';
+    let sql = 'SELECT n.*, c.name AS category_name, c.slug AS category_slug FROM news n LEFT JOIN news_categories c ON n.category_id = c.id WHERE n.status = "published" ORDER BY n.published_at DESC';
     const params: any[] = [];
     if (category) {
-      sql = 'SELECT n.* FROM news n JOIN news_categories c ON n.category_id = c.id WHERE n.status = "published" AND c.slug = ? ORDER BY n.published_at DESC';
+      sql = 'SELECT n.*, c.name AS category_name, c.slug AS category_slug FROM news n LEFT JOIN news_categories c ON n.category_id = c.id WHERE n.status = "published" AND c.slug = ? ORDER BY n.published_at DESC';
       params.push(category);
     }
     const [rows]: any = await getPool().query(sql, params);
@@ -428,7 +428,7 @@ apiRouter.get('/news/:slug', async (req: Request, res: Response) => {
   const slug = String(req.params.slug);
   try {
     const pool = getPool();
-    const [rows]: any = await pool.query('SELECT * FROM news WHERE slug = ? AND status = "published" LIMIT 1', [slug]);
+    const [rows]: any = await pool.query('SELECT n.*, c.name AS category_name, c.slug AS category_slug FROM news n LEFT JOIN news_categories c ON n.category_id = c.id WHERE n.slug = ? AND n.status = "published" LIMIT 1', [slug]);
     if (!rows.length) return res.status(404).json({ success: false, message: 'Berita tidak ditemukan.' });
     await pool.query('UPDATE news SET views_count = views_count + 1 WHERE id = ?', [rows[0].id]);
     return res.json({ success: true, data: rows[0] });
@@ -563,7 +563,7 @@ apiRouter.use('/admin', adminActivityLogger);
 apiRouter.get('/admin/news', requireAdmin, async (_req: Request, res: Response) => {
   const pool = getPool();
   try {
-    const [rows]: any = await pool.query('SELECT * FROM news ORDER BY id DESC');
+    const [rows]: any = await pool.query('SELECT n.*, c.name AS category_name, c.slug AS category_slug FROM news n LEFT JOIN news_categories c ON n.category_id = c.id ORDER BY n.id DESC');
     if (rows) return res.json({ success: true, data: rows });
   } catch (err: any) {
     logger.error('AdminMySQL', 'Operasi admin gagal saat mengakses MySQL.', {
@@ -823,6 +823,9 @@ apiRouter.post('/admin/users', requireSuperadmin, async (req: Request, res: Resp
   const { username, email, full_name, password, role } = req.body;
   if (!username || !email || !password || !full_name) {
     return res.status(400).json({ success: false, message: 'Semua kolom wajib diisi.' });
+  }
+  if (String(password).length < 8) {
+    return res.status(400).json({ success: false, message: 'Password administrator minimal 8 karakter.' });
   }
   const hashed = await bcrypt.hash(password, 10);
   const pool = getPool();
