@@ -67,7 +67,7 @@ async function buildProduction() {
     // Salin backend dist ke deployment/backend
     copyRecursive(path.join(ROOT_DIR, 'backend', 'dist'), path.join(DEPLOY_DIR, 'backend'));
     // Salin skema, migrasi, dan seed SQL agar bootstrap produksi dapat
-    // menerapkan perubahan database. Data fallback JSON tetap dikecualikan.
+    // menerapkan perubahan database. Data JSON tidak digunakan sebagai sumber penyimpanan aplikasi.
     copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'schema.sql'), path.join(DEPLOY_DIR, 'database', 'schema.sql'));
     copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'migrations'), path.join(DEPLOY_DIR, 'database', 'migrations'));
     copyRecursive(path.join(ROOT_DIR, 'backend', 'database', 'seeds'), path.join(DEPLOY_DIR, 'database', 'seeds'));
