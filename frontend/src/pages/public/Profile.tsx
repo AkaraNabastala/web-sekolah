@@ -63,7 +63,7 @@ export const Profile: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400">Jenjang Pendidikan</p>
-              <p className="text-base font-bold text-stone-900">{profile?.education_level || 'Sekolah Menengah Pertama (SMP)'}</p>
+              <p className="text-base font-bold text-stone-900">{profile?.education_level || 'Jenjang Pendidikan'}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
@@ -117,7 +117,7 @@ export const Profile: React.FC = () => {
               {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan yang berkomitmen memberikan layanan pembelajaran berkualitas dan mendukung perkembangan setiap peserta didik.'}
             </p>
             <p>
-              Pendidikan di Nama Sekolah Anda mengikuti kurikulum nasional dengan penguatan pendidikan agama Islam, karakter, dan budi pekerti.
+              Pendidikan di Nama Sekolah Anda diselenggarakan sesuai kurikulum yang berlaku dengan penguatan kompetensi, karakter, dan budi pekerti.
             </p>
             <p>
               Iklim sekolah yang asri, tenang, dan jauh dari kebisingan kota menciptakan suasana yang sangat kondusif untuk menumbuhkan minat belajar, kematangan budi pekerti, dan kepedulian sosial terhadap sesama.
