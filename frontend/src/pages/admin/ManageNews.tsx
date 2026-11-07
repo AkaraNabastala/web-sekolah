@@ -172,7 +172,7 @@ export const ManageNews: React.FC = () => {
             <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              value={search}
+              value={search ?? ''}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50/50"
             />
@@ -272,7 +272,7 @@ export const ManageNews: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={formData.title}
+                  value={formData.title ?? ''}
                   onChange={handleTitleChange}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -283,7 +283,7 @@ export const ManageNews: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Slug URL</label>
                   <input
                     type="text"
-                    value={formData.slug}
+                    value={formData.slug ?? ''}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-mono"
                   />
@@ -292,12 +292,12 @@ export const ManageNews: React.FC = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
                   <select
-                    value={formData.category_id}
+                    value={formData.category_id ?? ''}
                     onChange={(e) => setFormData({ ...formData, category_id: parseInt(e.target.value) })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   >
                     {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
+                      <option key={c.id} value={c.id ?? ''}>{c.name}</option>
                     ))}
                   </select>
                 </div>
@@ -307,7 +307,7 @@ export const ManageNews: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Ringkasan Singkat (Lead)</label>
                 <textarea
                   rows={2}
-                  value={formData.summary}
+                  value={formData.summary ?? ''}
                   onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -324,7 +324,7 @@ export const ManageNews: React.FC = () => {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      value={formData.thumbnail}
+                      value={formData.thumbnail ?? ''}
                       onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
                       className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                     />
@@ -339,7 +339,7 @@ export const ManageNews: React.FC = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Status Publikasi</label>
                   <select
-                    value={formData.status}
+                    value={formData.status ?? ''}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   >
