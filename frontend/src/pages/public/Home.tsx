@@ -243,7 +243,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. SEKILAS TENTANG SMP ISLAM CARUY (DUA KOLOM EDITORIAL) */}
+      {/* 2. SEKILAS TENTANG SEKOLAH (DUA KOLOM EDITORIAL) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -260,7 +260,7 @@ export const Home: React.FC = () => {
               
               <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed space-y-4 font-normal">
                 <p>
-                  {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di lokasi sekolah.'}
+                  {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan yang berkomitmen memberikan layanan pembelajaran berkualitas dan mendukung perkembangan setiap peserta didik.'}
                 </p>
                 <p>
                   Nama Sekolah Anda mengutamakan pembelajaran akademik, pendidikan agama, dan pembentukan karakter. Lingkungan belajar yang nyaman mendukung siswa untuk berkembang, mandiri, dan berprestasi.
@@ -279,7 +279,7 @@ export const Home: React.FC = () => {
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-[#ECE7DD] col-span-2 sm:col-span-1">
                   <span className="text-[11px] text-[#7A827B] uppercase block">Jenjang Sekolah</span>
-                  <span className="text-sm font-bold text-[#1F2621]">SMP Swasta Islam</span>
+                  <span className="text-sm font-bold text-[#1F2621]">Sekolah</span>
                 </div>
               </div>
 
@@ -450,7 +450,7 @@ export const Home: React.FC = () => {
               {
                 id: 1,
                 name: 'Pendidikan Agama & Karakter',
-                description: 'Pembelajaran pendidikan agama Islam dan pembiasaan karakter positif.',
+                description: 'Pembelajaran akademik dan penguatan karakter positif.',
                 schedule_info: 'Setiap Hari Kerja ba’da Sholat Dhuha & Ashar',
                 instructor: 'Guru Pendidikan Agama'
               },
@@ -464,7 +464,7 @@ export const Home: React.FC = () => {
               {
                 id: 3,
                 name: 'Pengembangan Bakat & Kepanduan',
-                description: 'Wadah pembinaan minat melalui kepanduan Pramuka, olahraga futsal, seni kaligrafi Islam, dan rebana untuk membentuk jiwa pemimpin.',
+                description: 'Wadah pengembangan minat melalui kegiatan kepanduan, olahraga, seni, dan keterampilan untuk membangun kerja sama serta jiwa kepemimpinan.',
                 schedule_info: 'Setiap Jumat & Sabtu',
                 instructor: 'Pembina Ekstrakurikuler'
               }
@@ -858,7 +858,7 @@ export const Home: React.FC = () => {
                 Penerimaan Peserta Didik Baru Resmi Dibuka
               </h2>
               <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed font-normal">
-                {ppdb?.overview || 'Mari bergabung membina generasi Qurani yang cerdas dan mandiri. Tersedia kuota beasiswa prestasi, pembebasan biaya bagi anak yatim, dan keringanan khusus bagi keluarga prasejahtera.'}
+                {ppdb?.overview || 'Penerimaan peserta didik baru mengikuti periode yang ditetapkan sekolah. Informasi persyaratan, jadwal, dan alur pendaftaran dapat disesuaikan melalui panel pengelola.'}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
