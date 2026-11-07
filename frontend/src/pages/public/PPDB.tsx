@@ -263,17 +263,17 @@ export const PPDB: React.FC = () => {
           {submitted && <div role="status" className="mx-auto max-w-2xl rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">Pendaftaran berhasil dikirim. Simpan nomor pendaftaran Anda: <strong>{applicationCode}</strong>. Panitia akan memeriksa data dan dokumen yang dikirim.</div>}
           <form onSubmit={handleFormSubmit} className="max-w-2xl mx-auto space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label className="space-y-1.5 text-xs font-bold text-stone-700">Tempat Lahir<input type="text" value={formData.birthPlace} onChange={e=>setFormData({...formData,birthPlace:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
-              <label className="space-y-1.5 text-xs font-bold text-stone-700">Tanggal Lahir<input type="date" value={formData.birthDate} onChange={e=>setFormData({...formData,birthDate:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
+              <label className="space-y-1.5 text-xs font-bold text-stone-700">Tempat Lahir<input type="text" value={(formData.birthPlace) ?? ''} onChange={e=>setFormData({...formData,birthPlace:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
+              <label className="space-y-1.5 text-xs font-bold text-stone-700">Tanggal Lahir<input type="date" value={(formData.birthDate) ?? ''} onChange={e=>setFormData({...formData,birthDate:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
             </div>
-            <label className="block space-y-1.5 text-xs font-bold text-stone-700">Jenis Kelamin<select value={formData.gender} onChange={e=>setFormData({...formData,gender:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></label>
+            <label className="block space-y-1.5 text-xs font-bold text-stone-700">Jenis Kelamin<select value={(formData.gender) ?? ''} onChange={e=>setFormData({...formData,gender:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Nama Calon Siswa *</label>
                 <input
                   type="text"
                   required
-                  value={formData.candidateName}
+                  value={(formData.candidateName) ?? ''}
                   onChange={(e) => setFormData({ ...formData, candidateName: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -284,7 +284,7 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={formData.originSchool}
+                  value={(formData.originSchool) ?? ''}
                   onChange={(e) => setFormData({ ...formData, originSchool: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -297,7 +297,7 @@ export const PPDB: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={formData.parentName}
+                  value={(formData.parentName) ?? ''}
                   onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -308,15 +308,15 @@ export const PPDB: React.FC = () => {
                 <input
                   type="tel"
                   required
-                  value={formData.phone}
+                  value={(formData.phone) ?? ''}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
               </div>
             </div>
 
-            <label className="block space-y-1.5 text-xs font-bold text-stone-700">NIK (opsional)<input type="text" inputMode="numeric" maxLength={32} value={formData.nationalId} onChange={event=>setFormData({...formData,nationalId:event.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
-            <label className="block space-y-1.5 text-xs font-bold text-stone-700">Alamat Domisili<textarea rows={2} value={formData.address} onChange={e=>setFormData({...formData,address:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
+            <label className="block space-y-1.5 text-xs font-bold text-stone-700">NIK (opsional)<input type="text" inputMode="numeric" maxLength={32} value={(formData.nationalId) ?? ''} onChange={event=>setFormData({...formData,nationalId:event.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
+            <label className="block space-y-1.5 text-xs font-bold text-stone-700">Alamat Domisili<textarea rows={2} value={(formData.address) ?? ''} onChange={e=>setFormData({...formData,address:e.target.value})} className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"/></label>
             <div className="space-y-2"><label className="text-xs font-bold text-stone-700">Dokumen Pendukung (PDF, JPG, PNG, WebP)</label>
               {['Kartu Keluarga','Akta Kelahiran','Ijazah atau Surat Keterangan Lulus'].map(label=><div key={label} className="grid gap-2 sm:grid-cols-[180px_1fr] sm:items-center"><span className="text-xs text-stone-600">{label}</span><input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" onChange={e=>setDocumentFiles(prev=>({...prev,[label]:e.target.files?.[0]||null}))} className="w-full text-xs"/></div>)}
             </div>
@@ -325,7 +325,7 @@ export const PPDB: React.FC = () => {
               <input
                 type="text"
                 maxLength={120}
-                value={formData.program}
+                value={(formData.program) ?? ''}
                 onChange={event => setFormData({ ...formData, program: event.target.value })}
                 placeholder="Reguler"
                 className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-xs font-normal"
@@ -336,7 +336,7 @@ export const PPDB: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Pertanyaan atau Catatan Khusus</label>
               <textarea
                 rows={3}
-                value={formData.notes}
+                value={(formData.notes) ?? ''}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
