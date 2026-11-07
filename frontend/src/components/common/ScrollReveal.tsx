@@ -31,8 +31,9 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
 
   useEffect(() => {
     // Aksesibilitas: Cek preferensi pengguna untuk gerakan yang dikurangi
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
+    const prefersReducedMotion = typeof window.matchMedia === 'function'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || typeof IntersectionObserver === 'undefined') {
       setIsVisible(true);
       return;
     }
@@ -60,7 +61,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     observer.observe(currentEl);
 
     return () => {
-      if (currentEl) observer.unobserve(currentEl);
+      observer.disconnect();
     };
   }, [threshold, once]);
 
