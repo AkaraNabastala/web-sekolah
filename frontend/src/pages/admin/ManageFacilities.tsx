@@ -197,7 +197,7 @@ export const ManageFacilities: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.name}
+                  value={(form.name) ?? ''}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -206,9 +206,9 @@ export const ManageFacilities: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
-                  <input type="text" list="facility-category-options" value={form.category || ''} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
+                  <input type="text" list="facility-category-options" value={(form.category || '') ?? ''} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
                   <datalist id="facility-category-options">
-                    {categoryOptions.map(category => <option key={category.id} value={category.name} />)}
+                    {categoryOptions.map(category => <option key={category.id} value={(category.name) ?? ''} />)}
                   </datalist>
                 </div>
 
@@ -216,7 +216,7 @@ export const ManageFacilities: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Kapasitas</label>
                   <input
                     type="text"
-                    value={form.capacity}
+                    value={(form.capacity) ?? ''}
                     onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -226,7 +226,7 @@ export const ManageFacilities: React.FC = () => {
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Kondisi Fisik</label>
                 <select
-                  value={form.condition_status}
+                  value={(form.condition_status) ?? ''}
                   onChange={(e) => setForm({ ...form, condition_status: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 >
@@ -242,7 +242,7 @@ export const ManageFacilities: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={form.photo}
+                    value={(form.photo) ?? ''}
                     onChange={(e) => setForm({ ...form, photo: e.target.value })}
                     className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -256,7 +256,7 @@ export const ManageFacilities: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Uraian / Spesifikasi</label>
-                <RichTextEditor rows={5} value={form.description || ''} onChange={description => setForm({ ...form, description })}/>
+                <RichTextEditor rows={5} value={(form.description || '') ?? ''} onChange={description => setForm({ ...form, description })}/>
               </div>
 
               <div className="pt-4 border-t border-stone-100 flex justify-end gap-3">
