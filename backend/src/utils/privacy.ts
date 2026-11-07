@@ -2,11 +2,9 @@ import crypto from 'crypto';
 import { Request } from 'express';
 
 export function getClientIp(req: Request): string {
-  const forwarded = req.headers['x-forwarded-for'];
-  if (typeof forwarded === 'string') {
-    return forwarded.split(',')[0].trim();
-  }
-  return req.socket.remoteAddress || '127.0.0.1';
+  // Gunakan IP yang telah diproses Express. Dengan trust proxy nonaktif secara default,
+  // header X-Forwarded-For dari klien tidak dipercaya dan tidak dapat dipalsukan untuk statistik.
+  return req.ip || req.socket.remoteAddress || '127.0.0.1';
 }
 
 export function hashVisitor(req: Request): { visitorHash: string; ipHash: string } {
