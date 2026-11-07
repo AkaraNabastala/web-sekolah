@@ -86,7 +86,6 @@ export const AdminLayout: React.FC = () => {
     { label: 'Data Pendaftar', path: '/admin/penerimaan', icon: UserCheck },
     { label: 'Pesan Masuk', path: '/admin/pesan', icon: Mail, badge: unreadCount },
     { label: 'Pengaturan Website', path: '/admin/pengaturan', icon: Settings },
-    { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }
   ];
 
   const currentPageTitle = menuItems.find(item => item.path === location.pathname)?.label || 'Dashboard Admin';
@@ -212,7 +211,7 @@ export const AdminLayout: React.FC = () => {
               <Menu className="w-5 h-5" />
             </button>
             <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100 hidden sm:inline-block">
-              Panel Pengelola Sekolah
+              Panel Pengelola
             </span>
           </div>
 
@@ -230,19 +229,20 @@ export const AdminLayout: React.FC = () => {
             </Link>
 
             {/* Admin Avatar Profile */}
-            <div className="flex items-center gap-3 pl-2 border-l border-stone-200">
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300">
-                <img
-                  src={admin?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200'}
-                  alt={admin?.full_name || 'Admin'}
-                  className="w-full h-full object-cover"
-                />
+            <Link
+              to="/admin/akun"
+              aria-label="Buka profil dan pengaturan akun"
+              title="Profil dan pengaturan akun"
+              className="flex items-center gap-3 pl-3 border-l border-stone-200 rounded-xl py-1 pr-2 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+            >
+              <div className="w-9 h-9 rounded-full overflow-hidden bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs">
+                {admin?.avatar ? <img src={admin.avatar} alt={admin?.full_name || 'Admin'} className="w-full h-full object-cover" /> : (admin?.full_name || 'A').trim().charAt(0).toUpperCase()}
               </div>
               <div className="hidden sm:block text-left leading-tight">
                 <p className="text-xs font-bold text-stone-900">{admin?.full_name || 'Administrator'}</p>
-                <p className="text-[10px] text-emerald-700 font-medium">@{admin?.username || 'admin'}</p>
+                <p className="text-[10px] text-stone-500 font-medium">Profil & akun</p>
               </div>
-            </div>
+            </Link>
           </div>
         </header>
 
