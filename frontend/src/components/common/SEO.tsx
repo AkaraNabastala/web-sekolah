@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import defaultLogo from '../../assets/logo.png';
 import { useSchool } from '../../context/SchoolContext';
 
 interface SEOProps {
@@ -11,14 +10,14 @@ interface SEOProps {
 
 export const SEO: React.FC<SEOProps> = ({
   title,
-  description = 'Portal Resmi SMP Islam Caruy.',
+  description = 'Website resmi sekolah. Informasi profil, program, berita, kegiatan, dan layanan pendidikan.',
   ogType = 'website',
   ogImage
 }) => {
   const { settings, profile } = useSchool();
-  const schoolName = settings?.school_name || profile?.name || 'SMP Islam Caruy';
-  const resolvedOgImage = ogImage || settings?.logo_url || defaultLogo;
-  const resolvedFavicon = settings?.favicon_url || settings?.logo_url || defaultLogo;
+  const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah Anda';
+  const resolvedOgImage = ogImage || settings?.logo_url || undefined;
+  const resolvedFavicon = settings?.favicon_url || settings?.logo_url || '/favicon.svg';
 
   useEffect(() => {
     const fullTitle = title ? `${title} | ${schoolName}` : schoolName;
