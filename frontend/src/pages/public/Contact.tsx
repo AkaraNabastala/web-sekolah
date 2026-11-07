@@ -131,7 +131,7 @@ export const Contact: React.FC = () => {
               </p>
               {profile?.whatsapp && (
                 <a
-                  href={`https://wa.me/${String(profile.whatsapp).replace(/\\D/g, '')}?text=${encodeURIComponent(`Halo, saya ingin bertanya kepada ${profile?.name || 'pihak sekolah'}.`)}`}
+                  href={`https://wa.me/${String(profile.whatsapp).replace(/\D/g, '')}?text=${encodeURIComponent(`Halo, saya ingin bertanya kepada ${profile?.name || 'pihak sekolah'}.`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-emerald-950 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all"
