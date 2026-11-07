@@ -40,7 +40,7 @@ export const DesignPreviewV2: React.FC = () => {
   const slides: Slide[] = [
     {
       id: 1,
-      image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
+      image: '/demo/demo-classroom.svg',
       tag: 'Suasana Belajar Berkarakter',
       title: 'Pendidikan Islami yang Teduh, Mendalam & Beradab',
       subtitle: 'Memadukan Kurikulum Nasional Terpadu dengan penguatan aqidah, tahfidzul quran, serta pembiasaan adab keseharian dalam ekosistem belajar yang asri.',
@@ -48,7 +48,7 @@ export const DesignPreviewV2: React.FC = () => {
     },
     {
       id: 2,
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1920&auto=format&fit=crop',
+      image: '/demo/demo-classroom.svg',
       tag: 'Kolaborasi & Literasi',
       title: 'Menumbuhkan Nalar Kritis & Kecintaan Terhadap Ilmu',
       subtitle: 'Membina generasi pembelajar yang berwawasan luas, adaptif terhadap perkembangan teknologi, dan berpegang teguh pada nilai-nilai keislaman.',
