@@ -129,7 +129,7 @@ export const ManageAgendas: React.FC = () => {
         <Search className="w-4 h-4 text-stone-400" />
         <input
           type="text"
-          value={search}
+          value={search ?? ''}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full text-xs bg-transparent focus:outline-none text-stone-800"
         />
@@ -230,7 +230,7 @@ export const ManageAgendas: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.title}
+                  value={form.title ?? ''}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
@@ -242,7 +242,7 @@ export const ManageAgendas: React.FC = () => {
                   <input
                     type="date"
                     required
-                    value={form.event_date}
+                    value={form.event_date ?? ''}
                     onChange={(e) => setForm({ ...form, event_date: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
@@ -251,7 +251,7 @@ export const ManageAgendas: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Jam Mulai</label>
                   <input
                     type="text"
-                    value={form.start_time}
+                    value={form.start_time ?? ''}
                     onChange={(e) => setForm({ ...form, start_time: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
@@ -260,7 +260,7 @@ export const ManageAgendas: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Jam Selesai</label>
                   <input
                     type="text"
-                    value={form.end_time}
+                    value={form.end_time ?? ''}
                     onChange={(e) => setForm({ ...form, end_time: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
@@ -272,7 +272,7 @@ export const ManageAgendas: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Lokasi Kegiatan</label>
                   <input
                     type="text"
-                    value={form.location}
+                    value={form.location ?? ''}
                     onChange={(e) => setForm({ ...form, location: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
@@ -281,7 +281,7 @@ export const ManageAgendas: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Penyelenggara</label>
                   <input
                     type="text"
-                    value={form.organizer}
+                    value={form.organizer ?? ''}
                     onChange={(e) => setForm({ ...form, organizer: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
