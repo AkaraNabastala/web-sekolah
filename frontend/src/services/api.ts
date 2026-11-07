@@ -31,8 +31,8 @@ export const api = axios.create({
 // Session JWT berada di cookie HttpOnly; JavaScript hanya mengirim token CSRF non-HttpOnly.
 api.interceptors.request.use((config) => {
   if (typeof document !== 'undefined' && !['get', 'head', 'options'].includes((config.method || 'get').toLowerCase())) {
-    const csrfCookie = document.cookie.split('; ').find(part => part.startsWith('caruy_csrf='));
-    const csrfToken = csrfCookie ? decodeURIComponent(csrfCookie.slice('caruy_csrf='.length)) : '';
+    const csrfCookie = document.cookie.split('; ').find(part => part.startsWith('school_csrf='));
+    const csrfToken = csrfCookie ? decodeURIComponent(csrfCookie.slice('school_csrf='.length)) : '';
     if (csrfToken) config.headers['X-CSRF-Token'] = csrfToken;
   }
   return config;
@@ -43,8 +43,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
-      localStorage.removeItem('caruy_admin_token');
-      localStorage.removeItem('caruy_admin_user');
+      localStorage.removeItem('school_admin_token');
+      localStorage.removeItem('school_admin_user');
       window.location.href = '/admin/login';
     }
     return Promise.reject(error);
