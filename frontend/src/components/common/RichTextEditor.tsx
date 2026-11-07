@@ -23,7 +23,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({ value, onChange, rows = 
     if (action.linePrefix) {
       const lineStart = safeValue.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
       const lineEndIndex = safeValue.indexOf('\n', end);
-      const lineEnd = lineEndIndex === -1 ? value.length : lineEndIndex;
+      const lineEnd = lineEndIndex === -1 ? safeValue.length : lineEndIndex;
       const block = safeValue.slice(lineStart, lineEnd);
       const formatted = block.split('\n').map(line => line ? action.linePrefix + line : line).join('\n');
       const next = safeValue.slice(0, lineStart) + formatted + safeValue.slice(lineEnd);
