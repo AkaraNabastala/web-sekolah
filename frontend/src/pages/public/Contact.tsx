@@ -52,7 +52,7 @@ export const Contact: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] min-h-screen pb-24">
       <SEO
         title="Kontak & Lokasi Sekolah"
-        description="Alamat resmi, peta Google Maps, nomor WhatsApp, email, dan formulir pengiriman pesan langsung ke sekretariat SMP Islam Caruy."
+        description="Alamat resmi, peta Google Maps, nomor WhatsApp, email, dan formulir pengiriman pesan langsung ke sekretariat Nama Sekolah Anda."
       />
       <PageHeader
         title="Kontak & Lokasi Sekolah"
@@ -71,7 +71,7 @@ export const Contact: React.FC = () => {
                   Informasi Sekretariat
                 </span>
                 <h3 className="text-xl font-bold text-[#1F2621]">
-                  Kantor SMP Islam Caruy
+                  Kantor Nama Sekolah Anda
                 </h3>
               </div>
 
@@ -247,7 +247,7 @@ export const Contact: React.FC = () => {
                 Peta Lokasi Interaktif
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-[#1F2621]">
-                Kunjungi Kampus SMP Islam Caruy
+                Kunjungi Kampus Nama Sekolah Anda
               </h3>
               <p className="text-xs text-[#5C645D] font-normal">
                 Terletak di lingkungan yang asri dan sejuk di Desa Caruy, Kec. Cipari, Kabupaten Cilacap.
@@ -267,7 +267,7 @@ export const Contact: React.FC = () => {
           <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-inner border border-[#ECE7DD]">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d989.207700109521!2d108.80624188077323!3d-7.3728531454210495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6f7fff948b5e1f%3A0xacd0a9e0f75a7f04!2sSMP%20Islam%20Caruy!5e0!3m2!1sid!2sid!4v1793771189615!5m2!1sid!2sid"
-              title="Peta Lokasi Resmi SMP Islam Caruy"
+              title="Peta Lokasi Resmi Nama Sekolah Anda"
               className="w-full h-full border-0"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
