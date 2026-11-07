@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSchool } from '../../context/SchoolContext';
 
 interface SEOProps {
@@ -15,9 +15,13 @@ export const SEO: React.FC<SEOProps> = ({
   ogImage
 }) => {
   const { settings, profile } = useSchool();
+  const [assetVersion] = useState(() => Date.now());
   const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah Anda';
   const resolvedOgImage = ogImage || settings?.logo_url || undefined;
-  const resolvedFavicon = settings?.favicon_url || settings?.logo_url || '/favicon.svg';
+  const faviconSource = settings?.favicon_url || settings?.logo_url;
+  const resolvedFavicon = faviconSource
+    ? `${faviconSource}${faviconSource.includes('?') ? '&' : '?'}v=${assetVersion}`
+    : '/favicon.svg';
 
   useEffect(() => {
     const fullTitle = title ? `${title} | ${schoolName}` : schoolName;
