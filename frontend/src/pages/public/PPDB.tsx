@@ -70,11 +70,11 @@ export const PPDB: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title={`${ADMISSION_LABEL} ${ppdb?.academic_year || '2026/2027'}`}
-        description={`Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
+        description={`Informasi ${ADMISSION_LABEL} sekolah.`}
       />
       <PageHeader
         title={`${ADMISSION_LABEL} Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`}
-        subtitle="Penerimaan Peserta Didik Baru SMP Islam Caruy. Mari bergabung membina generasi berkarakter Qurani."
+        subtitle="Penerimaan Peserta Didik Baru sekolah. Mari bergabung membina peserta didik yang unggul dan berkarakter."
         badge="Penerimaan Peserta Didik Baru"
         breadcrumbs={[{ label: ADMISSION_LABEL }]}
       />
@@ -97,7 +97,7 @@ export const PPDB: React.FC = () => {
             </h2>
 
             <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed font-normal">
-              {applyAdmissionLabel(ppdb?.overview) || `Informasi ${ADMISSION_LABEL} SMP Islam Caruy.`}
+              {applyAdmissionLabel(ppdb?.overview) || `Informasi ${ADMISSION_LABEL} sekolah.`}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-4">
