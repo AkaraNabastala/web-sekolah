@@ -129,14 +129,16 @@ export const Contact: React.FC = () => {
               <p className="text-xs text-emerald-100 font-normal leading-relaxed">
                 Butuh tanggapan cepat mengenai pendaftaran santri baru atau persyaratan beasiswa? Tim kami siap melayani chat Anda.
               </p>
-              <a
-                href={`https://wa.me/${profile?.whatsapp || '6282132972773'}?text=Assalamu’alaikum%20Admin%20SMP%20Islam%20Caruy`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-emerald-950 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all"
-              >
-                <span>Buka WhatsApp Sekarang</span>
-              </a>
+              {profile?.whatsapp && (
+                <a
+                  href={`https://wa.me/${String(profile.whatsapp).replace(/\\D/g, '')}?text=${encodeURIComponent(`Halo, saya ingin bertanya kepada ${profile?.name || 'pihak sekolah'}.`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-emerald-950 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all"
+                >
+                  <span>Buka WhatsApp</span>
+                </a>
+              )}
             </div>
           </div>
 
@@ -253,27 +255,35 @@ export const Contact: React.FC = () => {
                 Informasi lokasi akan ditampilkan setelah alamat sekolah diisi melalui panel pengelola.
               </p>
             </div>
-            <a
-              href="https://maps.app.goo.gl/bXeheSRzzDqizqT6A"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] text-xs font-bold px-5 py-3 rounded-xl shadow-sm transition-all self-start sm:self-auto"
-            >
-              <span>Buka di Google Maps</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            {profile?.address && (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] text-xs font-bold px-5 py-3 rounded-xl shadow-sm transition-all self-start sm:self-auto"
+              >
+                <span>Buka di Google Maps</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
           </div>
 
-          <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-inner border border-[#ECE7DD]">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d989.207700109521!2d108.80624188077323!3d-7.3728531454210495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6f7fff948b5e1f%3A0xacd0a9e0f75a7f04!2sSMP%20Islam%20Caruy!5e0!3m2!1sid!2sid!4v1793771189615!5m2!1sid!2sid"
-              title="Peta Lokasi Resmi Nama Sekolah Anda"
-              className="w-full h-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
-          </div>
+          {profile?.maps_embed_url ? (
+            <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-inner border border-[#ECE7DD]">
+              <iframe
+                src={profile.maps_embed_url}
+                title={`Peta lokasi ${profile.name || 'sekolah'}`}
+                className="w-full h-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-6 py-10 text-center text-sm text-stone-500">
+              Peta lokasi akan tampil setelah URL Google Maps diisi melalui profil sekolah.
+            </div>
+          )}>
         </div>
       </div>
     </div>
