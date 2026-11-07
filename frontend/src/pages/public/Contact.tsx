@@ -175,7 +175,7 @@ export const Contact: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={formData.name}
+                    value={(formData.name) ?? ''}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -186,7 +186,7 @@ export const Contact: React.FC = () => {
                   <input
                     type="email"
                     required
-                    value={formData.email}
+                    value={(formData.email) ?? ''}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -198,7 +198,7 @@ export const Contact: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Nomor Telepon / WhatsApp</label>
                   <input
                     type="tel"
-                    value={formData.phone}
+                    value={(formData.phone) ?? ''}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -209,7 +209,7 @@ export const Contact: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={formData.subject}
+                    value={(formData.subject) ?? ''}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -221,7 +221,7 @@ export const Contact: React.FC = () => {
                 <textarea
                   rows={4}
                   required
-                  value={formData.message}
+                  value={(formData.message) ?? ''}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
