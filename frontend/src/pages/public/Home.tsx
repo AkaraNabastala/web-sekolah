@@ -153,7 +153,7 @@ export const Home: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] selection:bg-[#E2EBE4] selection:text-[#1B3B2B] overflow-x-hidden">
       <SEO
         title="Beranda Resmi"
-        description="Portal resmi Nama Sekolah Anda, sekolah menengah pertama di lokasi sesuai alamat sekolah."
+        description="Portal resmi Nama Sekolah Anda. Informasi sekolah dan layanan pendidikan tersedia melalui website ini."
       />
 
       {/* 1. HERO / COVER FULL-WIDTH (DESAIN V2) */}
