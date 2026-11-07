@@ -342,7 +342,7 @@ apiRouter.post('/setup/first-admin', requireTrustedOrigin, firstAdminSetupRateLi
 
     return res.json({
       success: true,
-      message: 'Administrator utama Nama Sekolah Anda berhasil dibuat. Setup telah terkunci.'
+      message: 'Administrator utama berhasil dibuat. Setup telah terkunci.'
     });
   } catch (err: any) {
     logger.error('SetupRoute', 'Gagal membuat administrator pertama.', { code: err?.code, sqlState: err?.sqlState, message: err?.message });
