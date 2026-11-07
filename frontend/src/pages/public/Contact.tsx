@@ -9,7 +9,6 @@ import {
   Phone,
   Mail,
   Send,
-  MessageSquare,
   CheckCircle,
   AlertCircle,
   ExternalLink
@@ -37,11 +36,11 @@ export const Contact: React.FC = () => {
     try {
       const res = await schoolApi.sendContactMessage(formData);
       if (res.success) {
-        setSuccessMsg('Alhamdulillah, pesan Anda berhasil terkirim ke sekretariat sekolah. Kami akan segera merespons.');
+        setSuccessMsg('Pesan berhasil dikirim.');
         setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       }
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || 'Gagal mengirim pesan. Silakan coba lagi atau hubungi via WhatsApp.');
+      setErrorMsg(err.response?.data?.message || 'Pesan gagal dikirim. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -51,18 +50,18 @@ export const Contact: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] min-h-screen pb-24">
       <SEO
         title="Kontak & Lokasi Sekolah"
-        description="Alamat resmi, peta Google Maps, nomor WhatsApp, email, dan formulir pengiriman pesan langsung ke sekretariat Nama Sekolah Anda."
+        description="Informasi kontak dan formulir pesan sekolah."
       />
       <PageHeader
         title="Kontak & Lokasi Sekolah"
-        subtitle="Hubungi kami untuk informasi pendaftaran, kerja sama, dan layanan administrasi sekolah."
+        subtitle="Informasi kontak sekolah."
         badge="Layanan Komunikasi"
         breadcrumbs={[{ label: 'Kontak' }]}
       />
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 -mt-8 relative z-20 space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Kolom Kiri: Informasi Kontak & Jam Kerja (5 cols) */}
+          {/* Informasi kontak */}
           <div className="lg:col-span-5 space-y-6">
             {(profile?.address || profile?.phone || profile?.whatsapp || profile?.email) && (
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E7E2D8] space-y-6">
@@ -96,13 +95,7 @@ export const Contact: React.FC = () => {
             {/* Direct WhatsApp Consultation Card */}
             {profile?.whatsapp && (
             <div className="bg-gradient-to-br from-emerald-800 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-emerald-950 px-2.5 py-1 rounded-full">
-                Fast Response
-              </span>
               <h4 className="text-lg font-bold">Konsultasi via WhatsApp</h4>
-              <p className="text-xs text-emerald-100 font-normal leading-relaxed">
-                Butuh tanggapan cepat mengenai pendaftaran peserta didik baru atau informasi program sekolah? Tim kami siap melayani chat Anda.
-              </p>
               <a
                   href={`https://wa.me/${String(profile.whatsapp).replace(/\D/g, '')}?text=${encodeURIComponent(`Halo, saya ingin bertanya kepada ${profile?.name || 'pihak sekolah'}.`)}`}
                   target="_blank"
@@ -118,15 +111,9 @@ export const Contact: React.FC = () => {
           {/* Kolom Kanan: Formulir Kirim Pesan (7 cols) */}
           <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-stone-100 space-y-6">
             <div className="border-b border-stone-100 pb-4">
-              <span className="text-emerald-700 text-xs font-bold uppercase tracking-wider">
-                Kotak Surat Pengunjung
-              </span>
               <h3 className="text-xl sm:text-2xl font-bold text-stone-900 mt-1">
                 Kirimkan Pertanyaan atau Saran
               </h3>
-              <p className="text-xs text-stone-500 font-normal mt-1">
-                Pesan akan langsung diteruskan ke dashboard administrator sekolah.
-              </p>
             </div>
 
             {successMsg && (
@@ -214,7 +201,8 @@ export const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* Peta Lokasi Google Maps */}
+        {/* Peta lokasi ditampilkan setelah dikonfigurasi */}
+        {(profile?.maps_embed_url || profile?.address) && (
         <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-[#ECE7DD] space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
@@ -222,11 +210,8 @@ export const Contact: React.FC = () => {
                 Peta Lokasi Interaktif
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-[#1F2621]">
-                Kunjungi Kampus Nama Sekolah Anda
+                Lokasi Sekolah
               </h3>
-              <p className="text-xs text-[#5C645D] font-normal">
-                Informasi lokasi akan ditampilkan setelah alamat sekolah diisi melalui panel pengelola.
-              </p>
             </div>
             {profile?.address && (
               <a
@@ -252,12 +237,9 @@ export const Contact: React.FC = () => {
                 allowFullScreen
               />
             </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-6 py-10 text-center text-sm text-stone-500">
-              Peta lokasi akan tampil setelah URL Google Maps diisi melalui profil sekolah.
-            </div>
-          )}
+          ) : null}
         </div>
+        )}
       </div>
     </div>
   );
