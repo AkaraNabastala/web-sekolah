@@ -38,7 +38,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Nama Sekolah</label>
               <input
                 type="text"
-                value={profile.name}
+                value={(profile.name) ?? ''}
                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -48,7 +48,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Nomor Pokok Sekolah Nasional (NPSN)</label>
               <input
                 type="text"
-                value={profile.npsn}
+                value={(profile.npsn) ?? ''}
                 onChange={(e) => setProfile({ ...profile, npsn: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -58,7 +58,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Jenjang Pendidikan</label>
               <input
                 type="text"
-                value={profile.education_level}
+                value={(profile.education_level) ?? ''}
                 onChange={(e) => setProfile({ ...profile, education_level: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -68,7 +68,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Status Sekolah</label>
               <input
                 type="text"
-                value={profile.status}
+                value={(profile.status) ?? ''}
                 onChange={(e) => setProfile({ ...profile, status: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -78,7 +78,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Akreditasi</label>
               <input
                 type="text"
-                value={profile.accreditation}
+                value={(profile.accreditation) ?? ''}
                 onChange={(e) => setProfile({ ...profile, accreditation: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -88,7 +88,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Tahun Berdiri</label>
               <input
                 type="text"
-                value={profile.founding_year}
+                value={(profile.founding_year) ?? ''}
                 onChange={(e) => setProfile({ ...profile, founding_year: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -98,7 +98,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Telepon</label>
               <input
                 type="text"
-                value={profile.phone}
+                value={(profile.phone) ?? ''}
                 onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -108,7 +108,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Nomor WhatsApp</label>
               <input
                 type="text"
-                value={profile.whatsapp}
+                value={(profile.whatsapp) ?? ''}
                 onChange={(e) => setProfile({ ...profile, whatsapp: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -118,7 +118,7 @@ export const ManageProfile: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Email Sekolah</label>
               <input
                 type="email"
-                value={profile.email}
+                value={(profile.email) ?? ''}
                 onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -129,7 +129,7 @@ export const ManageProfile: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Alamat Lengkap Sekolah</label>
             <textarea
               rows={2}
-              value={profile.address}
+              value={(profile.address) ?? ''}
               onChange={(e) => setProfile({ ...profile, address: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
             />
@@ -139,7 +139,7 @@ export const ManageProfile: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Deskripsi Ringkas Sekolah</label>
             <textarea
               rows={4}
-              value={profile.description}
+              value={(profile.description) ?? ''}
               onChange={(e) => setProfile({ ...profile, description: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
             />
@@ -149,7 +149,7 @@ export const ManageProfile: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Google Maps Embed URL</label>
             <input
               type="text"
-              value={profile.maps_embed_url}
+              value={(profile.maps_embed_url) ?? ''}
               onChange={(e) => setProfile({ ...profile, maps_embed_url: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-mono text-[11px]"
             />
