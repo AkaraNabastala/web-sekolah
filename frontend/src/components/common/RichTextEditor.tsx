@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 
 type EditorProps = {
-  value: string;
+  value?: string | null;
   onChange: (value: string) => void;
   rows?: number;
   placeholder?: string;
@@ -11,21 +11,22 @@ type FormatAction = { label: string; before: string; after?: string; linePrefix?
 
 export const RichTextEditor: React.FC<EditorProps> = ({ value, onChange, rows = 6, placeholder }) => {
   const ref = useRef<HTMLTextAreaElement>(null);
+  const safeValue = value ?? '';
 
   const insert = (action: FormatAction) => {
     const element = ref.current;
     if (!element) return;
     const start = element.selectionStart;
     const end = element.selectionEnd;
-    const selected = value.slice(start, end);
+    const selected = safeValue.slice(start, end);
 
     if (action.linePrefix) {
-      const lineStart = value.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
-      const lineEndIndex = value.indexOf('\n', end);
+      const lineStart = safeValue.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
+      const lineEndIndex = safeValue.indexOf('\n', end);
       const lineEnd = lineEndIndex === -1 ? value.length : lineEndIndex;
-      const block = value.slice(lineStart, lineEnd);
+      const block = safeValue.slice(lineStart, lineEnd);
       const formatted = block.split('\n').map(line => line ? action.linePrefix + line : line).join('\n');
-      const next = value.slice(0, lineStart) + formatted + value.slice(lineEnd);
+      const next = safeValue.slice(0, lineStart) + formatted + safeValue.slice(lineEnd);
       onChange(next);
       requestAnimationFrame(() => {
         element.focus();
@@ -37,7 +38,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({ value, onChange, rows = 
     const text = selected || 'teks';
     const before = action.before;
     const after = action.after || '';
-    const next = value.slice(0, start) + before + text + after + value.slice(end);
+    const next = safeValue.slice(0, start) + before + text + after + safeValue.slice(end);
     onChange(next);
     requestAnimationFrame(() => {
       element.focus();
@@ -74,7 +75,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({ value, onChange, rows = 
       <textarea
         ref={ref}
         rows={rows}
-        value={(value) ?? ''}
+        value={safeValue}
         onChange={event => onChange(event.target.value)}
         placeholder={placeholder}
         className="w-full resize-y border-0 px-3.5 py-3 text-sm leading-6 outline-none focus:ring-0"
