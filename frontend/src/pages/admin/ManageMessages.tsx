@@ -181,7 +181,7 @@ export const ManageMessages: React.FC = () => {
               <div className="flex gap-2">
                 {selectedMsg.phone && (
                   <a
-                    href={`https://wa.me/${selectedMsg.phone.replace(/[^0-9]/g, '')}?text=Halo%20${encodeURIComponent(selectedMsg.name)},%20kami%20dari%20SMP%20Islam%20Caruy%20merespons%20pesan%20Anda:`}
+                    href={`https://wa.me/${selectedMsg.phone.replace(/[^0-9]/g, '')}?text=Halo%20${encodeURIComponent(selectedMsg.name)},%20kami%20dari%20pihak%20sekolah%20merespons%20pesan%20Anda:`}
                     target="_blank"
                     rel="noreferrer"
                     className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
