@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SKEMA RESMI DATABASE SMP ISLAM CARUY (MySQL 8.0+)
+-- SKEMA DATABASE TEMPLATE WEBSITE SEKOLAH (MySQL 8.0+)
 -- Profil Sekolah, Akademik, Sistem Informasi & Statistik Kunjungan Terpadu
 -- Catatan: Eksekusi tabel menggunakan database aktif pada sesi koneksi.
 -- ==============================================================================
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `admins` (
 -- 2. Profil Lembaga Sekolah
 CREATE TABLE IF NOT EXISTS `school_profile` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `name` VARCHAR(150) NOT NULL DEFAULT 'SMP Islam Caruy',
+  `name` VARCHAR(150) NOT NULL DEFAULT 'Nama Sekolah Anda',
   `npsn` VARCHAR(30) DEFAULT NULL,
   `education_level` VARCHAR(60) DEFAULT 'Sekolah Menengah Pertama (SMP)',
   `status` VARCHAR(30) DEFAULT 'Swasta',
@@ -36,10 +36,10 @@ CREATE TABLE IF NOT EXISTS `school_profile` (
   `headmaster_welcome` TEXT DEFAULT NULL,
   `description` TEXT DEFAULT NULL,
   `address` TEXT DEFAULT NULL,
-  `village` VARCHAR(100) DEFAULT 'Desa Caruy',
-  `district` VARCHAR(100) DEFAULT 'Kec. Cipari',
-  `regency` VARCHAR(100) DEFAULT 'Kab. Cilacap',
-  `province` VARCHAR(100) DEFAULT 'Jawa Tengah',
+  `village` VARCHAR(100) DEFAULT 'NULL',
+  `district` VARCHAR(100) DEFAULT 'NULL',
+  `regency` VARCHAR(100) DEFAULT 'NULL',
+  `province` VARCHAR(100) DEFAULT 'NULL',
   `postal_code` VARCHAR(20) DEFAULT NULL,
   `phone` VARCHAR(40) DEFAULT NULL,
   `whatsapp` VARCHAR(40) DEFAULT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `school_profile` (
 -- 3. Sejarah & Kilas Balik Sekolah
 CREATE TABLE IF NOT EXISTS `school_history` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `title` VARCHAR(180) NOT NULL DEFAULT 'Sejarah Berdirinya SMP Islam Caruy',
+  `title` VARCHAR(180) NOT NULL DEFAULT 'Sejarah Berdirinya Nama Sekolah Anda',
   `content` LONGTEXT NOT NULL,
   `featured_image` VARCHAR(255) DEFAULT NULL,
   `milestones` JSON DEFAULT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `news` (
   `summary` TEXT NOT NULL,
   `content` LONGTEXT NOT NULL,
   `thumbnail` VARCHAR(255) DEFAULT NULL,
-  `author` VARCHAR(100) DEFAULT 'Humas SMP Islam Caruy',
+  `author` VARCHAR(100) DEFAULT 'Tim Redaksi',
   `views_count` INT NOT NULL DEFAULT 0,
   `status` ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'published',
   `published_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -304,11 +304,11 @@ CREATE TABLE IF NOT EXISTS `contact_messages` (
 -- 16. Pengaturan Tampilan & Identitas Website
 CREATE TABLE IF NOT EXISTS `website_settings` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `school_name` VARCHAR(150) NOT NULL DEFAULT 'SMP Islam Caruy',
+  `school_name` VARCHAR(150) NOT NULL DEFAULT 'Nama Sekolah Anda',
   `tagline` VARCHAR(255) DEFAULT 'Membentuk Generasi Qurani, Cerdas & Berkarakter',
   `logo_url` VARCHAR(255) DEFAULT '/src/assets/logo.png',
   `favicon_url` VARCHAR(255) DEFAULT '/src/assets/logo.png',
-  `hero_title` VARCHAR(255) DEFAULT 'Selamat Datang di SMP Islam Caruy',
+  `hero_title` VARCHAR(255) DEFAULT 'Selamat Datang di Website Sekolah',
   `hero_subtitle` TEXT DEFAULT NULL,
   `hero_image` VARCHAR(255) DEFAULT NULL,
   `hero_slides` JSON DEFAULT NULL,
@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS `website_settings` (
   `instagram_url` VARCHAR(255) DEFAULT NULL,
   `youtube_url` VARCHAR(255) DEFAULT NULL,
   `tiktok_url` VARCHAR(255) DEFAULT NULL,
-  `seo_title` VARCHAR(220) DEFAULT 'SMP Islam Caruy - Website Resmi Profil & Informasi',
+  `seo_title` VARCHAR(220) DEFAULT 'Nama Sekolah Anda - Website Resmi Profil & Informasi',
   `seo_description` TEXT DEFAULT NULL,
   `footer_text` TEXT DEFAULT NULL,
   `stats_students` INT DEFAULT 0,
@@ -391,7 +391,7 @@ CREATE TABLE IF NOT EXISTS `agendas` (
   `event_date` DATE NOT NULL,
   `start_time` VARCHAR(20) DEFAULT '08:00',
   `end_time` VARCHAR(20) DEFAULT 'Selesai',
-  `location` VARCHAR(150) NOT NULL DEFAULT 'Kampus SMP Islam Caruy',
+  `location` VARCHAR(150) NOT NULL DEFAULT 'Lokasi Sekolah',
   `organizer` VARCHAR(100) DEFAULT 'Panitia Sekolah',
   `is_published` TINYINT(1) NOT NULL DEFAULT 1,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
