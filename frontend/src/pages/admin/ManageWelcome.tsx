@@ -47,7 +47,7 @@ export const ManageWelcome: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Nama Lengkap & Gelar Pimpinan</label>
               <input
                 type="text"
-                value={profile.headmaster_name}
+                value={(profile.headmaster_name) ?? ''}
                 onChange={(e) => setProfile({ ...profile, headmaster_name: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -58,7 +58,7 @@ export const ManageWelcome: React.FC = () => {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  value={profile.headmaster_photo}
+                  value={(profile.headmaster_photo) ?? ''}
                   onChange={(e) => setProfile({ ...profile, headmaster_photo: e.target.value })}
                   className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -80,7 +80,7 @@ export const ManageWelcome: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Teks Lengkap Sambutan Kepala Sekolah</label>
             <textarea
               rows={8}
-              value={profile.headmaster_welcome}
+              value={(profile.headmaster_welcome) ?? ''}
               onChange={(e) => setProfile({ ...profile, headmaster_welcome: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
             />
