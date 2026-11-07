@@ -470,7 +470,7 @@ export const Navbar: React.FC = () => {
                 <Link to="/agenda" feature="agenda" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
                   Agenda Kegiatan
                 </Link>
-                <Link to="/pengumuman" feature="news" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
+                <Link to="/pengumuman" feature="announcements" className="block py-2 text-xs font-semibold text-[#5C645D] hover:text-[#1B3B2B]">
                   Pengumuman Resmi
                 </Link>
               </div>
