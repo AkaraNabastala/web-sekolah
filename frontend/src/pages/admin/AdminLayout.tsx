@@ -235,8 +235,16 @@ export const AdminLayout: React.FC = () => {
               title="Profil dan pengaturan akun"
               className="flex items-center gap-3 pl-3 border-l border-stone-200 rounded-xl py-1 pr-2 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
             >
-              <div className="w-9 h-9 rounded-full overflow-hidden bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs">
-                {admin?.avatar ? <img src={admin.avatar} alt={admin?.full_name || 'Admin'} className="w-full h-full object-cover" /> : (admin?.full_name || 'A').trim().charAt(0).toUpperCase()}
+              <div className="relative w-9 h-9 rounded-full overflow-hidden bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs">
+                <span>{(admin?.full_name || 'A').trim().charAt(0).toUpperCase()}</span>
+                {admin?.avatar && (
+                  <img
+                    src={admin.avatar}
+                    alt={admin?.full_name || 'Admin'}
+                    onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
               </div>
               <div className="hidden sm:block text-left leading-tight">
                 <p className="text-xs font-bold text-stone-900">{admin?.full_name || 'Administrator'}</p>
