@@ -38,6 +38,8 @@ export const Contact: React.FC = () => {
       if (res.success) {
         setSuccessMsg('Pesan berhasil dikirim.');
         setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        setErrorMsg(res.message || 'Pesan gagal dikirim. Silakan coba lagi.');
       }
     } catch (err: any) {
       setErrorMsg(err.response?.data?.message || 'Pesan gagal dikirim. Silakan coba lagi.');
