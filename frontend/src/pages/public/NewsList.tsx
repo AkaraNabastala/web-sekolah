@@ -101,7 +101,7 @@ export const NewsList: React.FC = () => {
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
                   <img
-                    src={article.thumbnail || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800'}
+                    src={article.thumbnail || '/demo/demo-event.svg'}
                     alt={article.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
