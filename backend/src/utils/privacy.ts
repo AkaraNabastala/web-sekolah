@@ -13,7 +13,7 @@ export function hashVisitor(req: Request): { visitorHash: string; ipHash: string
   const ip = getClientIp(req);
   const userAgent = req.headers['user-agent'] || 'UnknownAgent';
   const today = new Date().toISOString().split('T')[0];
-  const salt = process.env.JWT_SECRET || 'caruy-salt';
+  const salt = process.env.JWT_SECRET || 'school-website-local-privacy-salt';
 
   // Hashing per hari: tidak menyimpan IP mentah, privasi terjaga
   const visitorHash = crypto
