@@ -164,7 +164,7 @@ export const App: React.FC = () => {
               <Route path="penerimaan" element={<RoleRoute roles={PPDB_ADMIN_ROLES}><ManageAdmissionApplications /></RoleRoute>} />
               <Route path="pesan" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageMessages /></RoleRoute>} />
               <Route path="pengaturan" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageSettings /></RoleRoute>} />
-              <Route path="akun" element={<RoleRoute roles={SUPERADMIN_ROLES}><ManageAccount /></RoleRoute>} />
+              <Route path="akun" element={<RoleRoute roles={CONTENT_ADMIN_ROLES.concat(PPDB_ADMIN_ROLES)}><ManageAccount /></RoleRoute>} />
             </Route>
 
             {/* 404 NOT FOUND ROUTE */}
