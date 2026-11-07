@@ -90,7 +90,7 @@ export const Home: React.FC = () => {
     id: 1,
     image: settings?.hero_image || '/demo/demo-classroom.svg',
     tag: '',
-    title: settings?.hero_title || 'Selamat Datang di Nama Sekolah Anda',
+    title: settings?.hero_title || 'Selamat Datang',
     subtitle: settings?.hero_subtitle || '',
     badge: ''
   }];
@@ -153,7 +153,7 @@ export const Home: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] selection:bg-[#E2EBE4] selection:text-[#1B3B2B] overflow-x-hidden">
       <SEO
         title="Beranda Resmi"
-        description="Portal resmi Nama Sekolah Anda. Informasi sekolah dan layanan pendidikan tersedia melalui website ini."
+        description="Informasi dan layanan pendidikan sekolah."
       />
 
       {/* 1. HERO / COVER FULL-WIDTH (DESAIN V2) */}
@@ -258,14 +258,11 @@ export const Home: React.FC = () => {
               </h2>
               <div className="w-16 h-1 bg-[#DEBD7A] rounded-full"></div>
               
-              <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed space-y-4 font-normal">
-                <p>
-                  {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan yang berkomitmen memberikan layanan pembelajaran berkualitas dan mendukung perkembangan setiap peserta didik.'}
-                </p>
-                <p>
-                  Lingkungan belajar yang nyaman, program yang terarah, dan pendampingan pendidik membantu setiap peserta didik berkembang, mandiri, dan berprestasi.
-                </p>
-              </div>
+              {profile?.description && (
+                <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed font-normal">
+                  <p>{profile.description}</p>
+                </div>
+              )}
 
               {/* Data Kunci Resmi (Hanya yang Terkonfirmasi) */}
               {(profile?.npsn || profile?.accreditation || profile?.education_level) && (
@@ -632,7 +629,7 @@ export const Home: React.FC = () => {
                 <div className="aspect-[16/10] overflow-hidden bg-[#EAE5DC] relative">
                   <img
                     src={album.cover_image || '/demo/demo-classroom.svg'}
-                    alt={album.name || 'Galeri Nama Sekolah Anda'}
+                    alt={album.name || 'Galeri sekolah'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <span className="absolute top-3 left-3 bg-[#132A1E]/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
