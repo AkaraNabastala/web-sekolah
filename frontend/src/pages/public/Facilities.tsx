@@ -29,7 +29,7 @@ export const Facilities: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Sarana & Fasilitas Sekolah"
-        description="Daftar sarana dan prasarana belajar SMP Islam Caruy: Ruang Kelas Ber-AC, Laboratorium Komputer & IPA, Perpustakaan, Musholla At-Tarbiyah, dan Lapangan Olahraga."
+        description="Daftar sarana dan prasarana sekolah, seperti ruang kelas, laboratorium, perpustakaan, ruang kegiatan, dan area olahraga."
       />
       <PageHeader
         title="Sarana & Fasilitas Sekolah"
