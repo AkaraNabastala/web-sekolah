@@ -57,8 +57,8 @@ export const ManageAccount: React.FC = () => {
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    if (admin?.role === 'superadmin') loadUsers();
+  }, [admin?.role]);
 
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -69,7 +69,7 @@ export const ManageAccount: React.FC = () => {
       if (res.success && res.user) {
         updateAdminUser(res.user);
         toast.success('Profil akun administrator berhasil disimpan!');
-        loadUsers();
+        if (admin?.role === 'superadmin') loadUsers();
       }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Gagal memperbarui profil.');
@@ -253,7 +253,7 @@ export const ManageAccount: React.FC = () => {
               <input
                 type="password"
                 required
-                minLength={6}
+                minLength={8}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -284,6 +284,8 @@ export const ManageAccount: React.FC = () => {
         </div>
       </div>
 
+      {admin?.role === 'superadmin' && (
+      <>
       {/* Multi-User & Role Management Section */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 pb-4">
@@ -322,8 +324,9 @@ export const ManageAccount: React.FC = () => {
                 <tr key={user.id} className="hover:bg-stone-50/50">
                   <td className="p-3 flex items-center gap-3">
                     <img
-                      src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100'}
+                      src={user.avatar || undefined}
                       alt={user.full_name}
+                      onError={(event) => { event.currentTarget.style.display = 'none'; }}
                       className="w-8 h-8 rounded-full object-cover border border-emerald-300"
                     />
                     <span className="font-bold text-stone-900">{user.full_name}</span>
@@ -438,7 +441,7 @@ export const ManageAccount: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-stone-700">Password Awal (Min. 6 Karakter)</label>
+                <label className="text-xs font-bold text-stone-700">Password Awal (Min. 8 Karakter)</label>
                 <input
                   type="password"
                   required
@@ -468,6 +471,8 @@ export const ManageAccount: React.FC = () => {
             </form>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );
