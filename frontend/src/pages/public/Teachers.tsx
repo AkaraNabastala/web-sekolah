@@ -41,11 +41,11 @@ export const Teachers: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Guru & Tenaga Kependidikan"
-        description="Daftar profil dewan guru, asatidz, dan tenaga kependidikan SMP Islam Caruy dengan kualifikasi pendidikan dan mata pelajaran yang diampu."
+        description="Daftar profil guru dan tenaga kependidikan beserta bidang keahlian dan mata pelajaran yang diampu."
       />
       <PageHeader
         title="Guru & Tenaga Kependidikan"
-        subtitle="Profil guru dan tenaga kependidikan SMP Islam Caruy."
+        subtitle="Profil guru dan tenaga kependidikan sekolah."
         badge="Civitas Akademika"
         breadcrumbs={[{ label: 'Guru & Staf' }]}
       />
