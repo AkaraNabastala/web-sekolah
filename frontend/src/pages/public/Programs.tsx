@@ -5,7 +5,7 @@ import { RichTextContent } from '../../components/common/RichTextEditor';
 import { SEO } from '../../components/common/SEO';
 import { ScrollReveal } from '../../components/common/ScrollReveal';
 import { schoolApi } from '../../services/api';
-import { Award, BookOpen, Clock, Users, Check, Sparkles } from 'lucide-react';
+import { Clock, Users } from 'lucide-react';
 
 export const Programs: React.FC = () => {
   const { pathname } = useLocation();
@@ -20,7 +20,7 @@ export const Programs: React.FC = () => {
       ? 'Ekstrakurikuler'
       : 'Program Unggulan';
   const pageDescription = pathname === '/kurikulum'
-    ? 'Informasi kurikulum lengkap akan ditampilkan setelah data resmi sekolah dimasukkan. Daftar di bawah ini memuat program akademik yang tercatat di sistem.'
+    ? 'Kurikulum dan program akademik sekolah.'
     : pathname === '/ekstrakurikuler'
       ? 'Daftar kegiatan ekstrakurikuler yang dikelola dan dipublikasikan sekolah.'
       : 'Program unggulan sekolah yang dikelola dan dipublikasikan melalui sistem informasi sekolah.';
