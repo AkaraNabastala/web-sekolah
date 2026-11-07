@@ -21,10 +21,10 @@ export const History: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Sejarah Perjalanan Sekolah"
-        description="Jejak langkah perjuangan berdirinya SMP Islam Caruy sejak tahun 2005 hingga berkembang menjadi lembaga pendidikan Islam terpercaya di Cilacap."
+        description="Jejak langkah perjuangan berdirinya Nama Sekolah Anda sejak tahun 2005 hingga berkembang menjadi lembaga pendidikan Islam terpercaya di Cilacap."
       />
       <PageHeader
-        title="Sejarah SMP Islam Caruy"
+        title="Sejarah Nama Sekolah Anda"
         subtitle="Jejak langkah perjuangan, dedikasi pendiri, dan tonggak kemajuan sekolah dari masa ke masa."
         badge="Napak Tilas"
         breadcrumbs={[{ label: 'Profil', href: '/profil' }, { label: 'Sejarah Sekolah' }]}
@@ -38,7 +38,7 @@ export const History: React.FC = () => {
               Kisah Perjalanan & Pendirian
             </span>
             <h2 className="text-2xl sm:text-4xl font-bold text-stone-900 tracking-tight leading-tight">
-              {history?.title || 'Langkah Panjang Mengabdi: Sejarah Berdirinya SMP Islam Caruy'}
+              {history?.title || 'Langkah Panjang Mengabdi: Sejarah Berdirinya Nama Sekolah Anda'}
             </h2>
             <div className="w-20 h-1 bg-amber-400 rounded-full"></div>
           </div>
@@ -48,11 +48,11 @@ export const History: React.FC = () => {
             <div className="relative aspect-[16/8] rounded-2xl overflow-hidden shadow-md">
               <img
                 src={history.featured_image}
-                alt="Dokumentasi Sejarah SMP Islam Caruy"
+                alt="Dokumentasi Sejarah Nama Sekolah Anda"
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-4 left-4 right-4 bg-emerald-950/80 backdrop-blur-sm text-white px-4 py-2 rounded-xl text-xs font-normal">
-                Dokumentasi: Perkembangan Kampus Terpadu SMP Islam Caruy
+                Dokumentasi: Perkembangan Kampus Terpadu Nama Sekolah Anda
               </div>
             </div>
           )}
