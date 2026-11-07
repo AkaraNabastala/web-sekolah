@@ -39,11 +39,11 @@ export const NewsList: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Berita & Artikel"
-        description="Kabar terkini, artikel edukatif, liputan prestasi, agenda kegiatan sekolah, dan pengumuman resmi SMP Islam Caruy."
+        description="Berita, artikel, liputan kegiatan, prestasi, dan pengumuman terbaru dari sekolah."
       />
       <PageHeader
         title="Berita, Artikel & Pengumuman"
-        subtitle="Informasi terbaru, kegiatan, prestasi siswa, dan pengumuman SMP Islam Caruy."
+        subtitle="Informasi terbaru, kegiatan, prestasi peserta didik, dan pengumuman sekolah."
         badge="Warta Sekolah"
         breadcrumbs={[{ label: 'Berita & Artikel' }]}
       />
