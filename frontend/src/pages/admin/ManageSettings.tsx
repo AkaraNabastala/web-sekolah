@@ -155,7 +155,7 @@ export const ManageSettings: React.FC = () => {
               <input
                 type="text"
                 required
-                value={settings.school_name}
+                value={settings.school_name ?? ''}
                 onChange={(e) => setSettings({ ...settings, school_name: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -165,7 +165,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Tagline / Slogan Sekolah</label>
               <input
                 type="text"
-                value={settings.tagline}
+                value={settings.tagline ?? ''}
                 onChange={(e) => setSettings({ ...settings, tagline: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -177,7 +177,7 @@ export const ManageSettings: React.FC = () => {
             <div className="flex gap-2">
               <input
                 type="text"
-                value={settings.logo_url}
+                value={settings.logo_url ?? ''}
                 onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })}
                 className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -250,7 +250,7 @@ export const ManageSettings: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Headline Hero Beranda</label>
             <input
               type="text"
-              value={settings.hero_title}
+              value={settings.hero_title ?? ''}
               onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-bold"
             />
@@ -260,7 +260,7 @@ export const ManageSettings: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Sub-Headline / Paragraf Sambutan Hero</label>
             <textarea
               rows={3}
-              value={settings.hero_subtitle}
+              value={settings.hero_subtitle ?? ''}
               onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
             />
@@ -288,12 +288,12 @@ export const ManageSettings: React.FC = () => {
                       {heroUploading === index ? 'Mengunggah...' : 'Unggah gambar'}
                       <input type="file" accept="image/*" className="hidden" onChange={event => handleHeroSlideUpload(index, event.target.files?.[0])} />
                     </label>
-                    <input type="text" value={slide.image} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, image: event.target.value } : item) })} placeholder="URL gambar (opsional)" className="min-w-0 flex-1 rounded-lg border border-stone-200 px-3 py-2 text-xs" />
+                    <input type="text" value={slide.image ?? ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, image: event.target.value } : item) })} placeholder="URL gambar (opsional)" className="min-w-0 flex-1 rounded-lg border border-stone-200 px-3 py-2 text-xs" />
                   </div>
                 </div>
                 <input type="text" value={slide.tag || ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, tag: event.target.value } : item) })} placeholder="Label kecil" className="rounded-lg border border-stone-200 px-3 py-2 text-xs" />
                 <input type="text" value={slide.badge || ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, badge: event.target.value } : item) })} placeholder="Badge (opsional)" className="rounded-lg border border-stone-200 px-3 py-2 text-xs" />
-                <input type="text" value={slide.title} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, title: event.target.value } : item) })} placeholder="Judul slide" className="rounded-lg border border-stone-200 px-3 py-2 text-xs sm:col-span-2" />
+                <input type="text" value={slide.title ?? ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, title: event.target.value } : item) })} placeholder="Judul slide" className="rounded-lg border border-stone-200 px-3 py-2 text-xs sm:col-span-2" />
                 <textarea rows={2} value={slide.subtitle || ''} onChange={event => setSettings({ ...settings, hero_slides: normalizeHeroSlides(settings.hero_slides).map((item, i) => i === index ? { ...item, subtitle: event.target.value } : item) })} placeholder="Deskripsi slide" className="rounded-lg border border-stone-200 px-3 py-2 text-xs sm:col-span-2" />
               </div>
             ))}
@@ -312,7 +312,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Siswa Aktif</label>
               <input
                 type="number"
-                value={settings.stats_students}
+                value={settings.stats_students ?? ''}
                 onChange={(e) => setSettings({ ...settings, stats_students: parseInt(e.target.value) || 0 })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-bold"
               />
@@ -322,7 +322,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Guru & Tenaga Staf</label>
               <input
                 type="number"
-                value={settings.stats_teachers}
+                value={settings.stats_teachers ?? ''}
                 onChange={(e) => setSettings({ ...settings, stats_teachers: parseInt(e.target.value) || 0 })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-bold"
               />
@@ -332,7 +332,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Prestasi Juara</label>
               <input
                 type="number"
-                value={settings.stats_achievements}
+                value={settings.stats_achievements ?? ''}
                 onChange={(e) => setSettings({ ...settings, stats_achievements: parseInt(e.target.value) || 0 })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-bold"
               />
@@ -342,7 +342,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Total Alumni</label>
               <input
                 type="number"
-                value={settings.stats_alumni}
+                value={settings.stats_alumni ?? ''}
                 onChange={(e) => setSettings({ ...settings, stats_alumni: parseInt(e.target.value) || 0 })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-bold"
               />
@@ -361,7 +361,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Instagram URL</label>
               <input
                 type="text"
-                value={settings.instagram_url}
+                value={settings.instagram_url ?? ''}
                 onChange={(e) => setSettings({ ...settings, instagram_url: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -371,7 +371,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Facebook URL</label>
               <input
                 type="text"
-                value={settings.facebook_url}
+                value={settings.facebook_url ?? ''}
                 onChange={(e) => setSettings({ ...settings, facebook_url: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -381,7 +381,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">YouTube Channel URL</label>
               <input
                 type="text"
-                value={settings.youtube_url}
+                value={settings.youtube_url ?? ''}
                 onChange={(e) => setSettings({ ...settings, youtube_url: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -391,7 +391,7 @@ export const ManageSettings: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">TikTok URL</label>
               <input
                 type="text"
-                value={settings.tiktok_url}
+                value={settings.tiktok_url ?? ''}
                 onChange={(e) => setSettings({ ...settings, tiktok_url: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -402,7 +402,7 @@ export const ManageSettings: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Meta Title SEO</label>
             <input
               type="text"
-              value={settings.seo_title}
+              value={settings.seo_title ?? ''}
               onChange={(e) => setSettings({ ...settings, seo_title: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
             />
@@ -412,7 +412,7 @@ export const ManageSettings: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Meta Description SEO</label>
             <textarea
               rows={2}
-              value={settings.seo_description}
+              value={settings.seo_description ?? ''}
               onChange={(e) => setSettings({ ...settings, seo_description: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
             />
@@ -422,7 +422,7 @@ export const ManageSettings: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Teks Copyright Footer</label>
             <input
               type="text"
-              value={settings.footer_text}
+              value={settings.footer_text ?? ''}
               onChange={(e) => setSettings({ ...settings, footer_text: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
             />
