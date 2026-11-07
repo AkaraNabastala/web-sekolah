@@ -25,7 +25,7 @@ export const DesignPreview: React.FC = () => {
   const [deviceView, setDeviceView] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
   // Foto latar cover full width (menggunakan foto yang sudah ada di settings atau placeholder terkurasi)
-  const coverImage = settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop';
+  const coverImage = settings?.hero_image || '/demo/demo-classroom.svg';
 
   return (
     <div className="font-poppins bg-slate-100 min-h-screen pb-20">
