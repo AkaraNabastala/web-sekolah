@@ -141,11 +141,11 @@ export const ManageAdmissionApplications: React.FC = () => {
       <div className="flex flex-col gap-3 sm:flex-row">
         <label className="flex flex-1 items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5">
           <Search size={16} className="text-stone-400" />
-          <input aria-label="Cari pendaftar" className="w-full text-sm outline-none" placeholder="Cari nama, nomor, sekolah, atau kontak" value={search} onChange={event => setSearch(event.target.value)} />
+          <input aria-label="Cari pendaftar" className="w-full text-sm outline-none" placeholder="Cari nama, nomor, sekolah, atau kontak" value={(search) ?? ''} onChange={event => setSearch(event.target.value)} />
         </label>
-        <select aria-label="Filter status pendaftaran" className="rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm" value={statusFilter} onChange={event => setStatusFilter(event.target.value)}>
+        <select aria-label="Filter status pendaftaran" className="rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm" value={(statusFilter) ?? ''} onChange={event => setStatusFilter(event.target.value)}>
           <option value="all">Semua status</option>
-          {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={(value) ?? ''}>{label}</option>)}
         </select>
       </div>
 
@@ -228,13 +228,13 @@ export const ManageAdmissionApplications: React.FC = () => {
 
             <label className="block text-sm font-semibold text-stone-800">
               Status seleksi
-              <select className="mt-1.5 w-full rounded-lg border border-stone-200 p-3 font-normal" value={selected.status} onChange={event => setSelected({ ...selected, status: event.target.value })}>
-                {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+              <select className="mt-1.5 w-full rounded-lg border border-stone-200 p-3 font-normal" value={(selected.status) ?? ''} onChange={event => setSelected({ ...selected, status: event.target.value })}>
+                {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={(value) ?? ''}>{label}</option>)}
               </select>
             </label>
             <label className="block text-sm font-semibold text-stone-800">
               Catatan panitia
-              <textarea rows={3} maxLength={5000} className="mt-1.5 w-full rounded-lg border border-stone-200 p-3 font-normal" value={selected.admin_notes || ''} onChange={event => setSelected({ ...selected, admin_notes: event.target.value })}/>
+              <textarea rows={3} maxLength={5000} className="mt-1.5 w-full rounded-lg border border-stone-200 p-3 font-normal" value={(selected.admin_notes || '') ?? ''} onChange={event => setSelected({ ...selected, admin_notes: event.target.value })}/>
             </label>
             <div className="flex justify-end gap-2">
               <button onClick={() => setSelected(null)} className="rounded-xl border border-stone-200 px-4 py-2 text-sm">Batal</button>
