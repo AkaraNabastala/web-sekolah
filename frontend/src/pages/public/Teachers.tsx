@@ -110,7 +110,7 @@ export const Teachers: React.FC = () => {
                 >
                   <div className="relative aspect-[3/4] overflow-hidden bg-stone-100">
                     <img
-                      src={teacher.photo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400'}
+                      src={teacher.photo || '/demo/demo-person.svg'}
                       alt={teacher.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -157,7 +157,7 @@ export const Teachers: React.FC = () => {
                 >
                   <div className="relative aspect-[3/4] overflow-hidden bg-stone-100">
                     <img
-                      src={staf.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400'}
+                      src={staf.photo || '/demo/demo-person.svg'}
                       alt={staf.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
