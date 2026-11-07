@@ -23,11 +23,11 @@ export const Profile: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] min-h-screen pb-24">
       <SEO
         title="Profil & Identitas Sekolah"
-        description="Identitas resmi, status sekolah, data kelembagaan, dan karakteristik pendidikan SMP Islam Caruy."
+        description="Identitas resmi, status sekolah, data kelembagaan, dan karakteristik pendidikan Nama Sekolah Anda."
       />
       <PageHeader
         title="Profil & Identitas Sekolah"
-        subtitle="Mengenal lebih dekat identitas resmi, legalitas, dan komitmen mutu SMP Islam Caruy."
+        subtitle="Mengenal lebih dekat identitas resmi, legalitas, dan komitmen mutu Nama Sekolah Anda."
         badge="Tentang Sekolah"
         breadcrumbs={[{ label: 'Profil Sekolah' }]}
       />
@@ -41,7 +41,7 @@ export const Profile: React.FC = () => {
                 Data Pokok Pendidikan
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1F2621] mt-1">
-                Identitas Resmi SMP Islam Caruy
+                Identitas Resmi Nama Sekolah Anda
               </h2>
             </div>
             <div className="bg-[#E8EFEA] text-[#1D4A32] border border-[#D1E0D5] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -53,7 +53,7 @@ export const Profile: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400">Nama Sekolah</p>
-              <p className="text-base font-bold text-stone-900">{profile?.name || 'SMP Islam Caruy'}</p>
+              <p className="text-base font-bold text-stone-900">{profile?.name || 'Nama Sekolah Anda'}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
@@ -83,7 +83,7 @@ export const Profile: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400">Kepala Sekolah</p>
-              <p className="text-base font-bold text-stone-900">{profile?.headmaster_name || 'Kepala Sekolah SMP Islam Caruy'}</p>
+              <p className="text-base font-bold text-stone-900">{profile?.headmaster_name || 'Kepala Sekolah Nama Sekolah Anda'}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
@@ -114,10 +114,10 @@ export const Profile: React.FC = () => {
           
           <div className="text-stone-600 text-sm sm:text-base leading-relaxed space-y-4 font-normal">
             <p>
-              {profile?.description || 'SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di Desa Caruy, Kecamatan Cipari, Kabupaten Cilacap.'}
+              {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di Desa Caruy, Kecamatan Cipari, Kabupaten Cilacap.'}
             </p>
             <p>
-              Pendidikan di SMP Islam Caruy mengikuti kurikulum nasional dengan penguatan pendidikan agama Islam, karakter, dan budi pekerti.
+              Pendidikan di Nama Sekolah Anda mengikuti kurikulum nasional dengan penguatan pendidikan agama Islam, karakter, dan budi pekerti.
             </p>
             <p>
               Iklim sekolah yang asri, tenang, dan jauh dari kebisingan kota menciptakan suasana yang sangat kondusif untuk menumbuhkan minat belajar, kematangan budi pekerti, dan kepedulian sosial terhadap sesama.
