@@ -179,8 +179,8 @@ app.get('/api/system/database-status', async (_req, res) => {
       connected: test.connected
     },
     fallback_storage: {
-      enabled: process.env.ALLOW_JSON_FALLBACK === 'true' && process.env.NODE_ENV !== 'production',
-      status: 'Development offline only'
+      enabled: false,
+      status: 'Disabled; MySQL is the only data store'
     }
   });
 });
