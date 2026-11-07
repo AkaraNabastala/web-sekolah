@@ -34,7 +34,7 @@ export const ManageNews: React.FC = () => {
     summary: '',
     content: '',
     thumbnail: '',
-    author: 'Humas SMP Islam Caruy',
+    author: 'Tim Redaksi',
     status: 'draft'
   });
 
@@ -65,7 +65,7 @@ export const ManageNews: React.FC = () => {
       summary: '',
       content: '',
       thumbnail: '/demo/demo-event.svg',
-      author: 'Humas SMP Islam Caruy',
+      author: 'Tim Redaksi',
       status: 'published'
     });
     setModalOpen(true);
