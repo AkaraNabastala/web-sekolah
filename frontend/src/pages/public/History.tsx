@@ -21,7 +21,7 @@ export const History: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Sejarah Perjalanan Sekolah"
-        description="Jejak langkah perjuangan berdirinya Nama Sekolah Anda sejak tahun 2005 hingga berkembang menjadi lembaga pendidikan Islam terpercaya di Cilacap."
+        description="Sejarah, perjalanan, dan perkembangan sekolah akan ditampilkan setelah pengelola mengisi konten profil."
       />
       <PageHeader
         title="Sejarah Nama Sekolah Anda"
