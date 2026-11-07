@@ -9,7 +9,7 @@ INSERT INTO `school_profile` (
   `address`, `village`, `district`, `regency`, `province`, `postal_code`,
   `phone`, `whatsapp`, `email`, `maps_embed_url`
 ) VALUES (
-  1, 'Nama Sekolah Anda', NULL, 'Sekolah Menengah Pertama', 'Swasta', NULL, NULL,
+  1, 'Nama Sekolah Anda', NULL, NULL, NULL, NULL, NULL,
   'Nama Kepala Sekolah', NULL,
   'Selamat datang di website resmi sekolah kami. Informasi ini dapat disesuaikan melalui panel pengelola.',
   'Deskripsi singkat sekolah Anda. Ganti teks contoh ini dengan profil, keunggulan, dan informasi resmi sekolah.',
