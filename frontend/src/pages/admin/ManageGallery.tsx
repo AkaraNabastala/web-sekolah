@@ -163,7 +163,7 @@ export const ManageGallery: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.title}
+                  value={form.title ?? ''}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -173,7 +173,7 @@ export const ManageGallery: React.FC = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Jenis Media</label>
                   <select
-                    value={form.media_type}
+                    value={form.media_type ?? ''}
                     onChange={(e) => setForm({ ...form, media_type: e.target.value as any })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   >
@@ -185,7 +185,7 @@ export const ManageGallery: React.FC = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Kategori Album</label>
                   <select
-                    value={form.category}
+                    value={form.category ?? ''}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   >
@@ -203,7 +203,7 @@ export const ManageGallery: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={form.file_url}
+                    value={form.file_url ?? ''}
                     onChange={(e) => setForm({ ...form, file_url: e.target.value })}
                     className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -220,7 +220,7 @@ export const ManageGallery: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">URL Tautan Video (YouTube)</label>
                   <input
                     type="text"
-                    value={form.video_url}
+                    value={form.video_url ?? ''}
                     onChange={(e) => setForm({ ...form, video_url: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -231,7 +231,7 @@ export const ManageGallery: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Keterangan / Caption</label>
                 <textarea
                   rows={2}
-                  value={form.caption}
+                  value={form.caption ?? ''}
                   onChange={(e) => setForm({ ...form, caption: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
