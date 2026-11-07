@@ -9,8 +9,8 @@ if (!configuredJwtSecret || configuredJwtSecret.length < 32) {
 }
 export const JWT_SECRET: string = configuredJwtSecret;
 
-const SESSION_COOKIE = 'caruy_admin_session';
-const CSRF_COOKIE = 'caruy_csrf';
+const SESSION_COOKIE = 'school_admin_session';
+const CSRF_COOKIE = 'school_csrf';
 
 export interface AuthenticatedUser {
   id: number;
@@ -76,7 +76,7 @@ export function requireAdmin(req: AuthenticatedRequest, res: Response, next: Nex
   try {
     decoded = jwt.verify(token, JWT_SECRET, {
       algorithms: ['HS256'],
-      issuer: 'smp-islam-caruy',
+      issuer: 'school-website-cms',
       audience: 'admin-panel'
     });
   } catch {
