@@ -51,7 +51,7 @@ const isSpecialLine = (line: string) =>
 
 export const RichTextContent: React.FC<{ value?: string | null; className?: string }> = ({ value, className = '' }) => {
   const content = String(value || '');
-  const containsHtml = /<(p|h[1-6]|ul|ol|li|strong|em|a|blockquote|br|span|div)\\b/i.test(content);
+  const containsHtml = /<(p|h[1-6]|ul|ol|li|strong|em|a|blockquote|br|span|div)\b/i.test(content);
   if (containsHtml) {
     const cleanHtml = DOMPurify.sanitize(content, {
       ALLOWED_TAGS: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'blockquote', 'a', 'span', 'div'],
