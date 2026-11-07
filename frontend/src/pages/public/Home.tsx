@@ -88,7 +88,7 @@ export const Home: React.FC = () => {
     : [];
   const heroSlides: HeroSlide[] = configuredHeroSlides.length > 0 ? configuredHeroSlides : [{
     id: 1,
-    image: settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
+    image: settings?.hero_image || '/demo/demo-classroom.svg',
     tag: '',
     title: settings?.hero_title || 'Selamat Datang di SMP Islam Caruy',
     subtitle: settings?.hero_subtitle || '',
@@ -299,7 +299,7 @@ export const Home: React.FC = () => {
               <div className="relative">
                 <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-[#EAE5DC]">
                   <img
-                    src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop"
+                    src="/demo/demo-classroom.svg"
                     alt="Lingkungan Kampus SMP Islam Caruy"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
@@ -327,7 +327,7 @@ export const Home: React.FC = () => {
             <ScrollReveal animation="fade-up" className="lg:col-span-4 flex flex-col items-center text-center">
               <div className="relative w-48 sm:w-56 aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-4 border-white bg-[#EAE5DC]">
                 <img
-                  src={profile?.headmaster_photo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop'}
+                  src={profile?.headmaster_photo || '/demo/demo-classroom.svg'}
                   alt={profile?.headmaster_name || 'Kepala Sekolah SMP Islam Caruy'}
                   className="w-full h-full object-cover"
                 />
@@ -521,7 +521,7 @@ export const Home: React.FC = () => {
               >
                 <div className="aspect-[4/3] overflow-hidden bg-[#EAE5DC]">
                   <img
-                    src={fac.photo || 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=600'}
+                    src={fac.photo || '/demo/demo-classroom.svg'}
                     alt={fac.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -575,7 +575,7 @@ export const Home: React.FC = () => {
               >
                 <div className="w-28 h-28 mx-auto rounded-full overflow-hidden border-2 border-white shadow-sm bg-[#EAE5DC]">
                   <img
-                    src={teacher.photo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400'}
+                    src={teacher.photo || '/demo/demo-classroom.svg'}
                     alt={teacher.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -625,7 +625,7 @@ export const Home: React.FC = () => {
               >
                 <div className="aspect-[16/10] overflow-hidden bg-[#EAE5DC] relative">
                   <img
-                    src={album.cover_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800'}
+                    src={album.cover_image || '/demo/demo-classroom.svg'}
                     alt={album.name || 'Galeri SMP Islam Caruy'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -742,7 +742,7 @@ export const Home: React.FC = () => {
               >
                 <div className="aspect-[16/10] overflow-hidden bg-[#EAE5DC]">
                   <img
-                    src={item.thumbnail || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800'}
+                    src={item.thumbnail || '/demo/demo-classroom.svg'}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
