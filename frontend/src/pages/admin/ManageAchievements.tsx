@@ -17,7 +17,7 @@ export const ManageAchievements: React.FC = () => {
     rank: 'Juara 1',
     year: '2025',
     organizer: '',
-    photo: 'https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?q=80&w=600',
+    photo: '/demo/demo-event.svg',
     description: ''
   });
 
@@ -45,7 +45,7 @@ export const ManageAchievements: React.FC = () => {
       rank: 'Juara 1',
       year: '2025',
       organizer: '',
-      photo: 'https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?q=80&w=600',
+      photo: '/demo/demo-event.svg',
       description: ''
     });
     setModalOpen(true);
