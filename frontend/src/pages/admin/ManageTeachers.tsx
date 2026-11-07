@@ -27,7 +27,7 @@ export const ManageTeachers: React.FC = () => {
     name: '',
     title: 'S.Pd',
     nip: '-',
-    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400',
+    photo: '/demo/demo-person.svg',
     position: 'Guru Mata Pelajaran',
     subject: '',
     last_education: 'S1 Pendidikan',
@@ -37,7 +37,7 @@ export const ManageTeachers: React.FC = () => {
 
   const [staffForm, setStaffForm] = useState<Partial<Staff>>({
     name: '',
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400',
+    photo: '/demo/demo-person.svg',
     position: 'Staf Administrasi',
     department: 'Tata Usaha',
     last_education: 'S1 / D3',
@@ -70,7 +70,7 @@ export const ManageTeachers: React.FC = () => {
         name: '',
         title: 'S.Pd',
         nip: '-',
-        photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400',
+        photo: '/demo/demo-person.svg',
         position: 'Guru Mata Pelajaran',
         subject: '',
         last_education: 'S1 Pendidikan',
@@ -80,7 +80,7 @@ export const ManageTeachers: React.FC = () => {
     } else {
       setStaffForm({
         name: '',
-        photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400',
+        photo: '/demo/demo-person.svg',
         position: 'Staf Administrasi',
         department: 'Tata Usaha',
         last_education: 'S1 / D3',
