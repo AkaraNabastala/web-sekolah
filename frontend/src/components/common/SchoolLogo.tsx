@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import defaultLogo from '../../assets/logo.png';
+import React, { useEffect, useState } from 'react';
 import { useSchool } from '../../context/SchoolContext';
 
 interface SchoolLogoProps {
@@ -15,12 +14,19 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
   showText = true,
   lightText = false
 }) => {
+  const { settings, profile, isLoading } = useSchool();
   const [imgError, setImgError] = useState(false);
-  const { settings, profile } = useSchool();
-  const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah';
+  const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah Anda';
   const tagline = settings?.tagline || 'Website Resmi Sekolah';
-  const logoSrc = settings?.logo_url && !settings.logo_url.includes('/src/assets/logo.png') ? settings.logo_url : defaultLogo;
-  const initials = schoolName.split(/\s+/).filter(Boolean).slice(0, 3).map(word => word[0]).join('').toUpperCase();
+  const configuredLogo = settings?.logo_url?.trim();
+  const logoSrc = configuredLogo
+    ? `${configuredLogo}${configuredLogo.includes('?') ? '&' : '?'}v=${encodeURIComponent(String(settings?.updated_at || settings?.logo_url))}`
+    : '';
+  const initials = schoolName.split(/\\s+/).filter(Boolean).slice(0, 3).map(word => word[0]).join('').toUpperCase();
+
+  useEffect(() => {
+    setImgError(false);
+  }, [logoSrc]);
 
   const sizeClasses = {
     sm: 'w-8 h-8',
@@ -38,27 +44,30 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <div className={`relative ${sizeClasses[size]} shrink-0 flex items-center justify-center overflow-hidden`}>
-        {!imgError ? (
+      <div className={`relative ${sizeClasses[size]} shrink-0 flex items-center justify-center overflow-hidden rounded-lg`}>
+        {isLoading ? (
+          <div aria-hidden="true" className="h-full w-full animate-pulse rounded-lg bg-white/15" />
+        ) : logoSrc && !imgError ? (
           <img
+            key={logoSrc}
             src={logoSrc}
             alt={`Logo ${schoolName}`}
             onError={() => setImgError(true)}
             className="w-full h-full object-contain"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-current font-bold">
-            <span className="text-xs">{initials}</span>
+          <div aria-label={`Inisial ${schoolName}`} className="w-full h-full flex items-center justify-center rounded-lg bg-current/10 font-bold">
+            <span className="text-xs">{initials || 'SK'}</span>
           </div>
         )}
       </div>
 
       {showText && (
-        <div className="flex flex-col text-left leading-tight">
-          <div className={`font-bold uppercase tracking-tight ${textSizeClasses[size]} ${lightText ? 'text-white' : 'text-emerald-950'}`}>
+        <div className="flex flex-col text-left leading-tight min-w-0">
+          <div className={`font-bold uppercase tracking-tight truncate ${textSizeClasses[size]} ${lightText ? 'text-white' : 'text-emerald-950'}`}>
             <span>{schoolName}</span>
           </div>
-          <span className={`text-[9px] uppercase tracking-widest font-semibold ${lightText ? 'text-emerald-200' : 'text-emerald-700'}`}>
+          <span className={`text-[9px] uppercase tracking-widest font-semibold truncate ${lightText ? 'text-emerald-200' : 'text-emerald-700'}`}>
             {tagline}
           </span>
         </div>
