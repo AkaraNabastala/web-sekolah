@@ -52,7 +52,7 @@ export const AgendaList: React.FC = () => {
         subtitle={showPastActivities ? "Catatan kegiatan sekolah yang telah dilaksanakan." : "Jadwal kegiatan dan agenda sekolah yang akan datang."}
         breadcrumbs={[
           { label: 'Beranda', href: '/' },
-          { label: 'Informasi', href: '#' },
+          { label: 'Informasi' },
           { label: pageTitle, href: pathname }
         ]}
       />
@@ -112,7 +112,7 @@ export const AgendaList: React.FC = () => {
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${isPast ? 'bg-[#ECE7DD] text-[#7A827B]' : 'bg-[#E8EFEA] text-[#1D4A32]'}`}>
                           {isPast ? 'Selesai' : 'Mendatang'}
                         </span>
-                        <span className="text-xs text-[#7A827B]">{item.organizer || 'SMP Islam Caruy'}</span>
+                        <span className="text-xs text-[#7A827B]">{item.organizer || 'Panitia Sekolah'}</span>
                       </div>
                       <h3 className="text-lg font-bold text-[#1F2621]">{item.title}</h3>
                       {item.description && (
