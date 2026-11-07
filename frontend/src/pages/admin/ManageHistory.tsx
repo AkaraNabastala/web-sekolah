@@ -53,7 +53,7 @@ export const ManageHistory: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Foto Utama Dokumentasi Sejarah</label>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <img
-                src={history.featured_image || 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=400'}
+                src={history.featured_image || '/demo/demo-classroom.svg'}
                 alt="Sejarah"
                 className="w-32 h-20 rounded-xl object-cover border border-stone-200 shadow-xs"
               />
