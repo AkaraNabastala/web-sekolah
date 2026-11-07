@@ -24,12 +24,12 @@ Template ini dirancang sebagai produk generik yang dapat digunakan ulang untuk b
 ## Menjalankan secara lokal
 
 1. Gunakan Node.js 22 atau versi LTS yang kompatibel.
-2. Salin `.env.example` menjadi `.env` pada backend dan isi konfigurasi database lokal.
+2. Salin `.env.example` menjadi `.env`, isi konfigurasi database lokal, lalu buat secret acak untuk `JWT_SECRET` dan `ADMIN_SETUP_TOKEN` (masing-masing minimal 32 karakter; gunakan `openssl rand -hex 32`). Jangan memakai secret contoh atau mengunggah `.env` ke Git.
 3. Buat database MySQL baru khusus demo. Jangan gunakan database yang berisi data sekolah nyata.
 4. Pasang dependensi root, backend, dan frontend menggunakan `npm ci` pada direktori masing-masing.
 5. Jalankan migrasi database sesuai panduan backend.
 6. Isi database demo menggunakan `backend/database/seeds/seed.sql`.
-7. Buat akun administrator pertama melalui skrip setup admin.
+7. Jalankan backend, buka halaman `/admin/login`, lalu gunakan token `ADMIN_SETUP_TOKEN` untuk membuat akun superadmin pertama. Setelah setup berhasil, kosongkan/nonaktifkan token setup dari environment dan restart backend.
 8. Jalankan frontend dan backend dalam mode pengembangan.
 
 ## Identitas dan konten demo
