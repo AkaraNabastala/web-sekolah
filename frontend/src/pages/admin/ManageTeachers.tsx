@@ -281,7 +281,7 @@ export const ManageTeachers: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={activeTab === 'teachers' ? teacherForm.name : staffForm.name}
+                  value={(activeTab === 'teachers' ? teacherForm.name : staffForm.name) ?? ''}
                   onChange={(e) => {
                     if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, name: e.target.value });
                     else setStaffForm({ ...staffForm, name: e.target.value });
@@ -296,7 +296,7 @@ export const ManageTeachers: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={activeTab === 'teachers' ? teacherForm.position : staffForm.position}
+                    value={(activeTab === 'teachers' ? teacherForm.position : staffForm.position) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, position: e.target.value });
                       else setStaffForm({ ...staffForm, position: e.target.value });
@@ -312,7 +312,7 @@ export const ManageTeachers: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={activeTab === 'teachers' ? teacherForm.subject : staffForm.department}
+                    value={(activeTab === 'teachers' ? teacherForm.subject : staffForm.department) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, subject: e.target.value });
                       else setStaffForm({ ...staffForm, department: e.target.value });
@@ -327,7 +327,7 @@ export const ManageTeachers: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Pendidikan Terakhir</label>
                   <input
                     type="text"
-                    value={activeTab === 'teachers' ? teacherForm.last_education : staffForm.last_education}
+                    value={(activeTab === 'teachers' ? teacherForm.last_education : staffForm.last_education) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, last_education: e.target.value });
                       else setStaffForm({ ...staffForm, last_education: e.target.value });
@@ -340,7 +340,7 @@ export const ManageTeachers: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Urutan Tampilan</label>
                   <input
                     type="number"
-                    value={activeTab === 'teachers' ? teacherForm.display_order : staffForm.display_order}
+                    value={(activeTab === 'teachers' ? teacherForm.display_order : staffForm.display_order) ?? ''}
                     onChange={(e) => {
                       const v = parseInt(e.target.value) || 1;
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, display_order: v });
@@ -356,7 +356,7 @@ export const ManageTeachers: React.FC = () => {
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    value={activeTab === 'teachers' ? teacherForm.photo : staffForm.photo}
+                    value={(activeTab === 'teachers' ? teacherForm.photo : staffForm.photo) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, photo: e.target.value });
                       else setStaffForm({ ...staffForm, photo: e.target.value });
@@ -375,7 +375,7 @@ export const ManageTeachers: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Deskripsi Singkat / Bio</label>
                 <textarea
                   rows={2}
-                  value={activeTab === 'teachers' ? teacherForm.short_bio : staffForm.short_bio}
+                  value={(activeTab === 'teachers' ? teacherForm.short_bio : staffForm.short_bio) ?? ''}
                   onChange={(e) => {
                     if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, short_bio: e.target.value });
                     else setStaffForm({ ...staffForm, short_bio: e.target.value });
