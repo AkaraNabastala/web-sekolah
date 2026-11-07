@@ -200,7 +200,7 @@ export const NewsDetail: React.FC = () => {
                   >
                     <div className="w-20 h-16 rounded-xl overflow-hidden bg-stone-100 shrink-0">
                       <img
-                        src={rel.thumbnail || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=200'}
+                        src={rel.thumbnail || '/demo/demo-event.svg'}
                         alt={rel.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
