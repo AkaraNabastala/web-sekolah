@@ -39,7 +39,7 @@ export const Gallery: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Galeri Foto & Video"
-        description="Dokumentasi kegiatan belajar, ekstrakurikuler siswa, dan profil SMP Islam Caruy."
+        description="Dokumentasi kegiatan belajar, program sekolah, aktivitas peserta didik, dan lingkungan sekolah."
       />
       <PageHeader
         title="Galeri Foto & Video"
