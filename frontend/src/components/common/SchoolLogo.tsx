@@ -16,13 +16,14 @@ export const SchoolLogo: React.FC<SchoolLogoProps> = ({
 }) => {
   const { settings, profile, isLoading } = useSchool();
   const [imgError, setImgError] = useState(false);
+  const [cacheVersion] = useState(() => Date.now());
   const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah Anda';
   const tagline = settings?.tagline || 'Website Resmi Sekolah';
   const configuredLogo = settings?.logo_url?.trim();
   const logoSrc = configuredLogo
-    ? `${configuredLogo}${configuredLogo.includes('?') ? '&' : '?'}v=${encodeURIComponent(String(settings?.updated_at || settings?.logo_url))}`
+    ? `${configuredLogo}${configuredLogo.includes('?') ? '&' : '?'}v=${cacheVersion}`
     : '';
-  const initials = schoolName.split(/\\s+/).filter(Boolean).slice(0, 3).map(word => word[0]).join('').toUpperCase();
+  const initials = schoolName.split(/\s+/).filter(Boolean).slice(0, 3).map(word => word[0]).join('').toUpperCase();
 
   useEffect(() => {
     setImgError(false);
