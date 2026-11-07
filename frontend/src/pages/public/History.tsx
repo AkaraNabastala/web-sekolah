@@ -60,6 +60,7 @@ export const History: React.FC = () => {
             </div>
           )}
         </div>
+        )}
 
         {/* Milestone Timeline */}
         {history?.milestones && history.milestones.length > 0 && (
