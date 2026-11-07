@@ -89,6 +89,8 @@ export const AdminLayout: React.FC = () => {
     { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }
   ];
 
+  const currentPageTitle = menuItems.find(item => item.path === location.pathname)?.label || 'Dashboard Admin';
+
   const visibleMenuItems = menuItems.filter(item => {
     if (admin?.role === 'superadmin') return true;
     if (admin?.role === 'admin_ppdb') return ['/admin', '/admin/ppdb', '/admin/penerimaan'].includes(item.path);
@@ -112,7 +114,7 @@ export const AdminLayout: React.FC = () => {
 
   return (
     <>
-      <SEO title="SMP Islam Caruy" />
+      <SEO title={`${currentPageTitle} — Admin`} />
       <div className="admin-shell min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
       {/* Global Toaster — mounted once at layout level */}
       <Toaster />
