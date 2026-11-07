@@ -17,7 +17,7 @@ export const ManageAgendas: React.FC = () => {
     event_date: new Date().toISOString().split('T')[0],
     start_time: '08:00',
     end_time: '11:30',
-    location: 'Kampus SMP Islam Caruy',
+    location: 'Lokasi kegiatan',
     organizer: 'Panitia Sekolah',
     is_published: 1
   });
@@ -44,7 +44,7 @@ export const ManageAgendas: React.FC = () => {
       event_date: new Date().toISOString().split('T')[0],
       start_time: '08:00',
       end_time: '11:30',
-      location: 'Kampus SMP Islam Caruy',
+      location: 'Lokasi kegiatan',
       organizer: 'Panitia Sekolah',
       is_published: 1
     });
@@ -59,7 +59,7 @@ export const ManageAgendas: React.FC = () => {
       event_date: item.event_date ? String(item.event_date).split('T')[0] : '',
       start_time: item.start_time || '08:00',
       end_time: item.end_time || 'Selesai',
-      location: item.location || 'Kampus SMP Islam Caruy',
+      location: item.location || 'Lokasi kegiatan',
       organizer: item.organizer || 'Panitia Sekolah',
       is_published: item.is_published ?? 1
     });
