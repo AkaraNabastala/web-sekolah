@@ -108,7 +108,7 @@ export const Programs: React.FC = () => {
                 <div>
                   <div className="aspect-[16/10] overflow-hidden bg-[#EAE5DC] relative">
                     <img
-                      src={item.photo || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800'}
+                      src={item.photo || '/demo/demo-classroom.svg'}
                       alt={item.name}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                     />

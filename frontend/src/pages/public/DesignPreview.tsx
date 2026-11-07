@@ -31,7 +31,7 @@ export const DesignPreview: React.FC = () => {
     <div className="font-poppins bg-slate-100 min-h-screen pb-20">
       <SEO
         title="Pratinjau Desain Cover / Hero"
-        description="Halaman pratinjau rancangan cover full width website SMP Islam Caruy sebelum diterapkan ke halaman utama."
+        description="Halaman pratinjau rancangan cover full width website Nama Sekolah Anda sebelum diterapkan ke halaman utama."
       />
 
       {/* Control Panel Sticky Bar */}
@@ -133,7 +133,7 @@ export const DesignPreview: React.FC = () => {
               <div className="absolute inset-0 z-0">
                 <img
                   src={coverImage}
-                  alt="Background Kampus SMP Islam Caruy"
+                  alt="Background Kampus Nama Sekolah Anda"
                   className="w-full h-full object-cover object-center scale-[1.02] transform transition-transform duration-1000"
                 />
                 {/* Multi-layered cinematic gradient overlay: Gelap di kiri untuk teks, transparan di kanan untuk memperlihatkan foto */}
@@ -172,7 +172,7 @@ export const DesignPreview: React.FC = () => {
 
                   {/* Subtitle / Deskripsi */}
                   <p className="text-emerald-100/95 text-sm sm:text-base lg:text-lg font-normal leading-relaxed max-w-2xl drop-shadow">
-                    SMP Islam Caruy memadukan kurikulum nasional terpadu dengan kedalaman nilai kepesantrenan, tahfidz Al-Quran, serta penguasaan sains dan teknologi dalam lingkungan belajar yang asri dan beradab.
+                    Nama Sekolah Anda memadukan kurikulum nasional terpadu dengan penguatan literasi, numerasi, dan karakter, serta penguasaan sains dan teknologi dalam lingkungan belajar yang asri dan beradab.
                   </p>
 
                   {/* Call to Actions (CTAs) */}
@@ -200,7 +200,7 @@ export const DesignPreview: React.FC = () => {
                       <p className="text-[11px] text-emerald-200/90 font-medium">Predikat Unggul</p>
                     </div>
                     <div>
-                      <p className="text-xl sm:text-2xl font-black text-white">Tahfidz</p>
+                      <p className="text-xl sm:text-2xl font-black text-white">Literasi</p>
                       <p className="text-[11px] text-emerald-200/90 font-medium">Target Minimal 3 Juz</p>
                     </div>
                     <div>
@@ -228,7 +228,7 @@ export const DesignPreview: React.FC = () => {
               <div className="absolute inset-0 z-0">
                 <img
                   src={coverImage}
-                  alt="Background Kampus SMP Islam Caruy"
+                  alt="Background Kampus Nama Sekolah Anda"
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Radial & Dark Overlay menyeluruh yang simetris */}
@@ -241,7 +241,7 @@ export const DesignPreview: React.FC = () => {
                 {/* Badge Center */}
                 <div className="inline-flex items-center gap-2 bg-emerald-900/90 border border-emerald-700/80 text-amber-300 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-lg">
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Situs Resmi SMP Islam Caruy • Cipari, Cilacap</span>
+                  <span>Situs Resmi Nama Sekolah Anda • Lokasi Sekolah</span>
                 </div>
 
                 {/* Headline Center */}
@@ -280,7 +280,7 @@ export const DesignPreview: React.FC = () => {
                   </div>
                   <div className="h-8 w-px bg-white/20 hidden sm:block"></div>
                   <div className="text-center">
-                    <p className="text-2xl font-black text-white">Tahfidz Quran</p>
+                    <p className="text-2xl font-black text-white">Literasi</p>
                     <p className="text-xs text-emerald-200">Kelas Unggulan</p>
                   </div>
                   <div className="h-8 w-px bg-white/20 hidden sm:block"></div>

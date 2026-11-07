@@ -43,7 +43,7 @@ export const DesignPreviewV2: React.FC = () => {
       image: '/demo/demo-classroom.svg',
       tag: 'Suasana Belajar Berkarakter',
       title: 'Pendidikan Islami yang Teduh, Mendalam & Beradab',
-      subtitle: 'Memadukan Kurikulum Nasional Terpadu dengan penguatan aqidah, tahfidzul quran, serta pembiasaan adab keseharian dalam ekosistem belajar yang asri.',
+      subtitle: 'Memadukan Kurikulum Nasional Terpadu dengan penguatan literasi, numerasi, karakter, serta pembiasaan belajar positif dalam ekosistem belajar yang asri.',
       badge: 'Tahun Ajaran 2026/2027'
     },
     {
@@ -79,7 +79,7 @@ export const DesignPreviewV2: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] min-h-screen pb-24 selection:bg-[#E2EBE4] selection:text-[#1B3B2B]">
       <SEO
         title="Redesign V2 — Preview Cover & Hero Alami"
-        description="Pratinjau konsep desain cover baru yang lebih natural, elegan, warm ivory, dan profesional untuk website SMP Islam Caruy."
+        description="Pratinjau konsep desain cover baru yang lebih natural, elegan, warm ivory, dan profesional untuk website Nama Sekolah Anda."
       />
 
       {/* Top Banner Kontrol Pratinjau V2 */}
@@ -259,7 +259,7 @@ export const DesignPreviewV2: React.FC = () => {
                 <div>
                   <h3 className="text-sm font-bold text-[#1F2621]">Adab & Karakter Islami</h3>
                   <p className="text-xs text-[#5C645D] leading-relaxed mt-1">
-                    Pembiasaan sholat dhuha, tadarus Al-Quran, dan adab kesantunan sebagai pondasi utama keseharian santri.
+                    Pembiasaan membaca, kolaborasi, dan sikap saling menghargai sebagai bagian dari keseharian peserta didik.
                   </p>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export const DesignPreviewV2: React.FC = () => {
                 <div>
                   <h3 className="text-sm font-bold text-[#1F2621]">Lingkungan Asri & Tenang</h3>
                   <p className="text-xs text-[#5C645D] leading-relaxed mt-1">
-                    Kampus bernuansa pedesaan yang sejuk di Desa Caruy, mendukung konsentrasi dan kenyamanan belajar.
+                    Kampus bernuansa pedesaan yang sejuk di lingkungan sekitar, mendukung konsentrasi dan kenyamanan belajar.
                   </p>
                 </div>
               </div>
@@ -296,13 +296,13 @@ export const DesignPreviewV2: React.FC = () => {
           <section className="bg-white py-16 px-6 sm:px-10 lg:px-16">
             <div className="max-w-4xl mx-auto text-center space-y-4">
               <span className="text-xs font-semibold uppercase tracking-widest text-[#5C7E69]">
-                Tentang SMP Islam Caruy
+                Tentang Nama Sekolah Anda
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1B291F] tracking-tight">
                 Mendidik dengan Hati, Membimbing dengan Ilmu
               </h2>
               <p className="text-sm sm:text-base text-[#576159] leading-relaxed font-normal">
-                Didirikan atas musyawarah para tokoh masyarakat dan cendekiawan muslim di Kecamatan Cipari, SMP Islam Caruy berikhtiar mendampingi generasi muda tumbuh menjadi pribadi yang beriman kokoh, berwawasan luas, dan bermanfaat bagi sesama.
+                Didirikan atas musyawarah para tokoh masyarakat dan pemerhati pendidikan di wilayah setempat, Nama Sekolah Anda berikhtiar mendampingi generasi muda tumbuh menjadi pribadi yang berkarakter kuat, berwawasan luas, dan bermanfaat bagi sesama.
               </p>
               <div className="pt-2">
                 <Link

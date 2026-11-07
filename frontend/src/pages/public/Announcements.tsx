@@ -11,7 +11,7 @@ export const Announcements: React.FC = () => {
   const [loading,setLoading]=useState(true);
   useEffect(()=>{ schoolApi.getAnnouncements().then(setItems).catch(()=>setItems([])).finally(()=>setLoading(false)); },[]);
   return <div className="min-h-screen bg-stone-50">
-    <SEO title="Pengumuman Sekolah" description="Informasi dan pengumuman resmi SMP Islam Caruy."/>
+    <SEO title="Pengumuman Sekolah" description="Informasi dan pengumuman sekolah yang dapat dikelola melalui panel admin."/>
     <PageHeader title="Pengumuman" subtitle="Informasi resmi dari sekolah." breadcrumbs={[{label:'Beranda',href:'/'},{label:'Pengumuman'}]}/>
     <section className="mx-auto max-w-5xl space-y-4 px-4 py-12 sm:px-6">
       {loading ? <p className="py-12 text-center text-sm text-stone-500">Memuat pengumuman…</p> : items.length ? items.map(item=><article key={item.id} className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
