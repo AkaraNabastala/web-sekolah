@@ -385,7 +385,7 @@ export const ManageAccount: React.FC = () => {
             <div className="flex items-center justify-between border-b border-stone-100 pb-3">
               <div>
                 <h3 className="text-base font-bold text-stone-900">Tambah Akun Pengelola Baru</h3>
-                <p className="text-xs text-stone-400 font-normal">Sistem Multi-User SMP Islam Caruy</p>
+                <p className="text-xs text-stone-400 font-normal">Manajemen akun dan peran pengelola</p>
               </div>
               <button onClick={() => setShowAddUserModal(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
