@@ -83,7 +83,7 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
     // 1c. Inisialisasi record minimum yang dibutuhkan formulir admin.
     // Hanya membuat baris jika tabel benar-benar kosong; tidak mengimpor data demo dari data.json.
     await pool.query(
-      "INSERT INTO school_profile (name) SELECT 'SMP Islam Caruy' WHERE NOT EXISTS (SELECT 1 FROM school_profile)"
+      "INSERT INTO school_profile (name) SELECT 'Nama Sekolah Anda' WHERE NOT EXISTS (SELECT 1 FROM school_profile)"
     );
     await pool.query(
       "INSERT INTO school_history (title, content, milestones) SELECT 'Sejarah Sekolah', '', JSON_ARRAY() WHERE NOT EXISTS (SELECT 1 FROM school_history)"
@@ -92,7 +92,7 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
       "INSERT INTO school_vision_mission (vision, missions, goals, core_values) SELECT '', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY() WHERE NOT EXISTS (SELECT 1 FROM school_vision_mission)"
     );
     await pool.query(
-      "INSERT INTO website_settings (school_name, feature_flags) SELECT 'SMP Islam Caruy', JSON_OBJECT() WHERE NOT EXISTS (SELECT 1 FROM website_settings)"
+      "INSERT INTO website_settings (school_name, feature_flags) SELECT 'Nama Sekolah Anda', JSON_OBJECT() WHERE NOT EXISTS (SELECT 1 FROM website_settings)"
     );
     await pool.query(
       "INSERT INTO ppdb_information (academic_year, is_open, overview, requirements, schedules, steps, show_fees, fees_items) SELECT 'Belum ditentukan', 0, '', JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY(), 0, JSON_ARRAY() WHERE NOT EXISTS (SELECT 1 FROM ppdb_information)"
