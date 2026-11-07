@@ -82,7 +82,7 @@ export const Contact: React.FC = () => {
                   </div>
                   <div>
                     <p className="font-bold text-stone-900">Alamat Sekolah:</p>
-                    <p className="mt-0.5 leading-relaxed">{profile?.address || 'Jl. Raya Caruy No. 12, Desa Caruy, Kec. Cipari, Kabupaten Cilacap, Jawa Tengah 53262'}</p>
+                    <p className="mt-0.5 leading-relaxed">{profile?.address || 'Alamat sekolah belum diisi'}</p>
                   </div>
                 </div>
 
@@ -250,7 +250,7 @@ export const Contact: React.FC = () => {
                 Kunjungi Kampus Nama Sekolah Anda
               </h3>
               <p className="text-xs text-[#5C645D] font-normal">
-                Terletak di lingkungan yang asri dan sejuk di Desa Caruy, Kec. Cipari, Kabupaten Cilacap.
+                Informasi lokasi akan ditampilkan setelah alamat sekolah diisi melalui panel pengelola.
               </p>
             </div>
             <a
