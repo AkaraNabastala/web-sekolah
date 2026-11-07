@@ -309,7 +309,7 @@ export const DashboardHome: React.FC = () => {
                   className="p-3 rounded-2xl border border-stone-100 hover:border-emerald-200 transition-all flex items-center gap-3.5 bg-stone-50/50 hover:bg-emerald-50/30"
                 >
                   <img
-                    src={item.thumbnail || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=200'}
+                    src={item.thumbnail || '/demo/demo-event.svg'}
                     alt={item.title}
                     className="w-14 h-14 rounded-xl object-cover shrink-0 border border-stone-200"
                   />
