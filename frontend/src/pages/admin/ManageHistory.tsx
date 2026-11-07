@@ -31,7 +31,7 @@ export const ManageHistory: React.FC = () => {
     <div className="space-y-6 font-poppins pb-12">
       <div>
         <h1 className="text-2xl font-bold text-stone-900">Sejarah & Linimasa Sekolah</h1>
-        <p className="text-xs text-stone-500 font-normal mt-0.5">Kelola artikel sejarah dan tonggak perjalanan SMP Islam Caruy.</p>
+        <p className="text-xs text-stone-500 font-normal mt-0.5">Kelola artikel sejarah dan tonggak perjalanan sekolah.</p>
       </div>
       {history && (<form onSubmit={handleSaveHistory} className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
           <div className="border-b border-stone-100 pb-4">
