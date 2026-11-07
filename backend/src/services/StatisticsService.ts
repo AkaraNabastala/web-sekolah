@@ -1,5 +1,4 @@
 import { getPool, checkConnection } from '../config/database.js';
-import { db } from '../db/index.js';
 import { logger } from '../utils/logger.js';
 import { RowDataPacket } from 'mysql2';
 import ExcelJS from 'exceljs';
@@ -14,8 +13,8 @@ export class StatisticsService {
    * Catat kunjungan publik baru atau perbarui sesi aktif.
    * Catatan Arsitektur:
    * - Menghilangkan split-brain: Jika koneksi MySQL aktif, MySQL menjadi satu-satunya penyimpanan data.
-   * - Data.json hanya digunakan jika MySQL benar-benar tidak terhubung (misal lingkungan offline tanpa MySQL).
-   * - Kesalahan query MySQL tidak akan diam-diam dialihkan ke data.json.
+   * - Tidak ada fallback JSON; MySQL merupakan satu-satunya sumber data.
+   * - Kesalahan query tidak dialihkan ke penyimpanan alternatif.
    * - Endpoint tetap mengembalikan respons 200 agar rendering halaman publik tidak terganggu.
    */
   static async recordVisit(params: {
@@ -61,17 +60,7 @@ export class StatisticsService {
       }
     }
 
-    // Jika MySQL tidak terhubung (offline standalone mode)
-    try {
-      db.logVisitor(
-        params.visitorHash,
-        params.browser,
-        params.path,
-        params.referrer || ''
-      );
-    } catch (jsonErr: any) {
-      logger.error('StatisticsService', `Gagal mencatat kunjungan ke data.json fallback: ${jsonErr.message}`, jsonErr);
-    }
+    logger.warn('StatisticsService', 'Kunjungan tidak disimpan karena MySQL tidak terhubung. Tidak ada fallback penyimpanan lokal.');
   }
 
   /**
@@ -139,30 +128,7 @@ export class StatisticsService {
       }
     }
 
-    // Fallback jika MySQL offline
-    const jsonStats = db.getDashboardStats();
-    return {
-      today: {
-        sessions_today: jsonStats.visitorsToday,
-        unique_visitors_today: jsonStats.visitorsToday,
-        pageviews_today: jsonStats.visitorsToday * 2
-      },
-      last_7_days: {
-        sessions_7d: jsonStats.visitorsThisMonth,
-        unique_visitors_7d: jsonStats.visitorsThisMonth,
-        pageviews_7d: jsonStats.visitorsThisMonth * 2
-      },
-      last_30_days: {
-        sessions_30d: jsonStats.visitorsThisMonth,
-        unique_visitors_30d: jsonStats.visitorsThisMonth,
-        pageviews_30d: jsonStats.visitorsThisMonth * 2
-      },
-      all_time: {
-        total_sessions: jsonStats.totalVisitors,
-        total_unique_visitors: jsonStats.totalVisitors,
-        total_pageviews: jsonStats.totalVisitors * 2
-      }
-    };
+    throw new Error('Statistik tidak tersedia karena koneksi MySQL tidak aktif.');
   }
 
   /**
@@ -232,26 +198,7 @@ export class StatisticsService {
       }
     }
 
-    // Fallback jika MySQL offline
-    const jsonStats = db.getDashboardStats();
-    return {
-      trends: jsonStats.visitorTraffic.map((t: any) => ({
-        date: t.date,
-        unique_visitors: t.visitors,
-        sessions: t.visitors,
-        pageviews: t.pageViews
-      })),
-      popular_pages: [{ path: '/', views: jsonStats.totalVisitors }],
-      devices: [
-        { device_type: 'desktop', count: Math.round(jsonStats.totalVisitors * 0.6) },
-        { device_type: 'mobile', count: Math.round(jsonStats.totalVisitors * 0.4) }
-      ],
-      browsers: [
-        { browser: 'Chrome', count: Math.round(jsonStats.totalVisitors * 0.7) },
-        { browser: 'Safari', count: Math.round(jsonStats.totalVisitors * 0.2) },
-        { browser: 'Firefox', count: Math.round(jsonStats.totalVisitors * 0.1) }
-      ]
-    };
+    throw new Error('Analitik tidak tersedia karena koneksi MySQL tidak aktif.');
   }
 
   /**
@@ -262,7 +209,7 @@ export class StatisticsService {
     const summary = await this.getSummaryMetrics();
 
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'SMP Islam Caruy';
+    workbook.creator = 'Website Sekolah';
     workbook.created = new Date();
 
     // Sheet 1: Ringkasan
@@ -324,7 +271,7 @@ export class StatisticsService {
    */
   static async generateCsvReport(days: number = 30): Promise<string> {
     const analytics = await this.getDetailedAnalytics(days);
-    let csv = `Laporan Statistik Pengunjung SMP Islam Caruy\n`;
+    let csv = `Laporan Statistik Pengunjung Website Sekolah\n`;
     csv += `Dibuat Pada,${new Date().toISOString()}\n`;
     csv += `Rentang Hari,${days} Hari Terakhir\n\n`;
     csv += `Tanggal,Unique Visitors,Sessions,Page Views\n`;

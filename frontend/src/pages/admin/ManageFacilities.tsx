@@ -3,9 +3,11 @@ import { schoolApi } from '../../services/api';
 import { Facility } from '../../types';
 import { Plus, Edit, Trash2, CheckCircle, AlertCircle, X, Building, Upload } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
+import { RichTextEditor } from '../../components/common/RichTextEditor';
 
 export const ManageFacilities: React.FC = () => {
   const [facilities, setFacilities] = useState<Facility[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -14,7 +16,7 @@ export const ManageFacilities: React.FC = () => {
     name: '',
     category: 'Ruang Belajar',
     description: '',
-    photo: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=800',
+    photo: '/demo/demo-classroom.svg',
     capacity: '32 Siswa',
     condition_status: 'Sangat Baik',
     display_order: 1
@@ -31,6 +33,7 @@ export const ManageFacilities: React.FC = () => {
 
   useEffect(() => {
     loadData();
+    schoolApi.getContentCategories('facility').then(setCategoryOptions).catch(() => undefined);
   }, []);
 
 
@@ -40,7 +43,7 @@ export const ManageFacilities: React.FC = () => {
       name: '',
       category: 'Ruang Belajar',
       description: '',
-      photo: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=800',
+      photo: '/demo/demo-classroom.svg',
       capacity: '32 Siswa',
       condition_status: 'Sangat Baik',
       display_order: facilities.length + 1
@@ -105,9 +108,6 @@ export const ManageFacilities: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Sarana & Fasilitas</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola ruang kelas, laboratorium komputer, perpustakaan, musholla, dan sarana olahraga sekolah.
-          </p>
         </div>
 
         <button
@@ -115,7 +115,7 @@ export const ManageFacilities: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Fasilitas</span>
+          <span>Fasilitas</span>
         </button>
       </div>
 
@@ -197,8 +197,7 @@ export const ManageFacilities: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Misal: Laboratorium Komputer Multimedia"
-                  value={form.name}
+                  value={(form.name) ?? ''}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -207,27 +206,17 @@ export const ManageFacilities: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
-                  <select
-                    value={form.category}
-                    onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                  >
-                    <option value="Ruang Belajar">Ruang Belajar</option>
-                    <option value="Laboratorium">Laboratorium</option>
-                    <option value="Perpustakaan">Perpustakaan</option>
-                    <option value="Fasilitas Ibadah">Fasilitas Ibadah</option>
-                    <option value="Lapangan">Lapangan</option>
-                    <option value="Kesehatan">Kesehatan</option>
-                    <option value="Fasilitas Penunjang">Fasilitas Penunjang</option>
-                  </select>
+                  <input type="text" list="facility-category-options" value={(form.category || '') ?? ''} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
+                  <datalist id="facility-category-options">
+                    {categoryOptions.map(category => <option key={category.id} value={(category.name) ?? ''} />)}
+                  </datalist>
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Kapasitas</label>
                   <input
                     type="text"
-                    placeholder="Misal: 36 Siswa"
-                    value={form.capacity}
+                    value={(form.capacity) ?? ''}
                     onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -237,7 +226,7 @@ export const ManageFacilities: React.FC = () => {
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Kondisi Fisik</label>
                 <select
-                  value={form.condition_status}
+                  value={(form.condition_status) ?? ''}
                   onChange={(e) => setForm({ ...form, condition_status: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 >
@@ -253,7 +242,7 @@ export const ManageFacilities: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={form.photo}
+                    value={(form.photo) ?? ''}
                     onChange={(e) => setForm({ ...form, photo: e.target.value })}
                     className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -267,13 +256,7 @@ export const ManageFacilities: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Uraian / Spesifikasi</label>
-                <textarea
-                  rows={3}
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Deskripsi fasilitas, peralatan pendukung..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                />
+                <RichTextEditor rows={5} value={(form.description || '') ?? ''} onChange={description => setForm({ ...form, description })}/>
               </div>
 
               <div className="pt-4 border-t border-stone-100 flex justify-end gap-3">

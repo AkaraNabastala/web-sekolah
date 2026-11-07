@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
-import { Plus, Edit, Trash2, Award, CheckCircle, AlertCircle, X, Search, Sparkles } from 'lucide-react';
+import { Plus, Edit, Trash2, Award, CheckCircle, AlertCircle, X, Search, Sparkles, Clock } from 'lucide-react';
 import { toast } from '../../hooks/useToast';
+import { RichTextEditor } from '../../components/common/RichTextEditor';
 
 export const ManagePrograms: React.FC = () => {
   const [programs, setPrograms] = useState<any[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
@@ -15,7 +17,7 @@ export const ManagePrograms: React.FC = () => {
     name: '',
     category: 'unggulan',
     description: '',
-    photo: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800',
+    photo: '/demo/demo-classroom.svg',
     schedule_info: '',
     instructor: '',
     display_order: 1,
@@ -33,6 +35,7 @@ export const ManagePrograms: React.FC = () => {
 
   useEffect(() => {
     loadData();
+    schoolApi.getContentCategories('program').then(setCategoryOptions).catch(() => undefined);
   }, []);
 
 
@@ -42,7 +45,7 @@ export const ManagePrograms: React.FC = () => {
       name: '',
       category: 'unggulan',
       description: '',
-      photo: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800',
+      photo: '/demo/demo-classroom.svg',
       schedule_info: '',
       instructor: '',
       display_order: programs.length + 1,
@@ -129,16 +132,13 @@ export const ManagePrograms: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Program & Ekstrakurikuler</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola program unggulan sekolah, bimbingan tahfidz, dan kegiatan ekstrakurikuler santri.
-          </p>
         </div>
         <button
           onClick={handleOpenCreate}
           className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Program Baru</span>
+          <span>Program</span>
         </button>
       </div>
 
@@ -149,8 +149,7 @@ export const ManagePrograms: React.FC = () => {
         <Search className="w-4 h-4 text-stone-400" />
         <input
           type="text"
-          placeholder="Cari program atau ekstrakurikuler..."
-          value={search}
+          value={search ?? ''}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full text-xs bg-transparent focus:outline-none text-stone-800"
         />
@@ -171,7 +170,7 @@ export const ManagePrograms: React.FC = () => {
               <div>
                 <div className="aspect-[16/9] overflow-hidden bg-stone-100 relative">
                   <img
-                    src={item.photo || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800'}
+                    src={item.photo || '/demo/demo-classroom.svg'}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
@@ -186,7 +185,7 @@ export const ManagePrograms: React.FC = () => {
                   </p>
                   {item.schedule_info && (
                     <p className="text-[11px] text-emerald-700 font-medium pt-1">
-                      🗓️ {item.schedule_info}
+                      <Clock className="mr-1 inline h-3.5 w-3.5" />{item.schedule_info}
                     </p>
                   )}
                   {item.instructor && (
@@ -229,7 +228,7 @@ export const ManagePrograms: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-stone-100 space-y-5">
             <div className="flex items-center justify-between border-b border-stone-100 pb-4">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Ubah Program / Ekstrakurikuler' : 'Tambah Program Baru'}
+                {editingId ? 'Ubah Program' : 'Tambah Program'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
@@ -242,9 +241,8 @@ export const ManagePrograms: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.name}
+                  value={form.name ?? ''}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="Contoh: Bimbingan Tahfidz Al-Quran"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
@@ -252,24 +250,23 @@ export const ManagePrograms: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
-                  <select
-                    value={form.category}
+                  <input
+                    type="text"
+                    list="program-category-options"
+                    value={form.category ?? ''}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                  >
-                    <option value="unggulan">Program Unggulan</option>
-                    <option value="ekstrakurikuler">Ekstrakurikuler</option>
-                    <option value="keagamaan">Keagamaan & Adab</option>
-                    <option value="akademik">Akademik & Sains</option>
-                  </select>
+                  />
+                  <datalist id="program-category-options">
+                    {categoryOptions.map(category => <option key={category.id} value={category.name ?? ''} />)}
+                  </datalist>
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-stone-700">Instruktur / Pembina</label>
                   <input
                     type="text"
-                    value={form.instructor}
+                    value={form.instructor ?? ''}
                     onChange={(e) => setForm({ ...form, instructor: e.target.value })}
-                    placeholder="Ustadz / Pembina"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
@@ -279,9 +276,8 @@ export const ManagePrograms: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Jadwal & Waktu Pelaksanaan</label>
                 <input
                   type="text"
-                  value={form.schedule_info}
+                  value={form.schedule_info ?? ''}
                   onChange={(e) => setForm({ ...form, schedule_info: e.target.value })}
-                  placeholder="Contoh: Setiap Jumat Pukul 14.00 - 16.00 WIB"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
@@ -291,9 +287,8 @@ export const ManagePrograms: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <input
                     type="text"
-                    value={form.photo}
+                    value={form.photo ?? ''}
                     onChange={(e) => setForm({ ...form, photo: e.target.value })}
-                    placeholder="URL gambar atau unggah file..."
                     className="flex-1 px-3.5 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none"
                   />
                   <label className="cursor-pointer bg-stone-100 hover:bg-stone-200 px-3 py-2 rounded-xl text-xs font-semibold text-stone-700 transition-colors">
@@ -305,13 +300,7 @@ export const ManagePrograms: React.FC = () => {
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-stone-700">Deskripsi Program</label>
-                <textarea
-                  rows={3}
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Penjelasan tujuan dan manfaat program bagi santri..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
+                <RichTextEditor rows={5} value={form.description || ''} onChange={description => setForm({ ...form, description })}/>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-stone-100">

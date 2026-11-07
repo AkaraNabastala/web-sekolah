@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { SchoolLogo } from '../../components/common/SchoolLogo';
+import { SEO } from '../../components/common/SEO';
 import { Toaster } from '../../components/common/Toaster';
 import { toast } from '../../hooks/useToast';
 import {
   LayoutDashboard,
   Building2,
+  UserRound,
   BookOpen,
   Compass,
   Newspaper,
@@ -26,9 +28,11 @@ import {
   Bell,
   Eye,
   Award,
-  Calendar
+  Calendar,
+  Tags
 } from 'lucide-react';
 import { schoolApi } from '../../services/api';
+import { ADMISSION_LABEL } from '../../config/admissions';
 
 export const AdminLayout: React.FC = () => {
   const { admin, isAuthenticated, isLoading, logout } = useAuth();
@@ -38,14 +42,16 @@ export const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && admin?.role === 'superadmin') {
       schoolApi.getAdminMessages()
         .then(res => {
           setUnreadCount(res.filter(m => !m.is_read).length);
         })
-        .catch(() => {});
+        .catch(error => {
+          console.error('Gagal memuat jumlah pesan belum dibaca:', error);
+        });
     }
-  }, [isAuthenticated, location.pathname]);
+  }, [isAuthenticated, admin?.role, location.pathname]);
 
   if (isLoading) {
     return (
@@ -63,21 +69,41 @@ export const AdminLayout: React.FC = () => {
     { label: 'Dashboard Utama', path: '/admin', icon: LayoutDashboard },
     { label: 'Statistik Pengunjung', path: '/admin/statistik', icon: Eye },
     { label: 'Profil Sekolah', path: '/admin/profil', icon: Building2 },
+    { label: 'Sambutan Kepala Sekolah', path: '/admin/sambutan', icon: UserRound },
     { label: 'Sejarah Sekolah', path: '/admin/sejarah', icon: BookOpen },
     { label: 'Visi & Misi', path: '/admin/visi-misi', icon: Compass },
     { label: 'Struktur Organisasi', path: '/admin/organisasi', icon: GraduationCap },
     { label: 'Guru & Tenaga Staf', path: '/admin/guru-staf', icon: Users },
     { label: 'Program & Ekstrakurikuler', path: '/admin/program', icon: Award },
     { label: 'Manajemen Berita', path: '/admin/berita', icon: Newspaper },
-    { label: 'Agenda & Pengumuman', path: '/admin/agenda', icon: Calendar },
+    { label: 'Agenda Kegiatan', path: '/admin/agenda', icon: Calendar },
+    { label: 'Pengumuman', path: '/admin/pengumuman', icon: Bell },
+    { label: 'Kategori Konten', path: '/admin/kategori', icon: Tags },
     { label: 'Galeri & Dokumentasi', path: '/admin/galeri', icon: Image },
     { label: 'Prestasi Sekolah', path: '/admin/prestasi', icon: Trophy },
     { label: 'Fasilitas Belajar', path: '/admin/fasilitas', icon: Landmark },
-    { label: 'Pengaturan PPDB', path: '/admin/ppdb', icon: FileText },
+    { label: `Pengaturan ${ADMISSION_LABEL}`, path: '/admin/ppdb', icon: FileText },
+    { label: 'Data Pendaftar', path: '/admin/penerimaan', icon: UserCheck },
     { label: 'Pesan Masuk', path: '/admin/pesan', icon: Mail, badge: unreadCount },
     { label: 'Pengaturan Website', path: '/admin/pengaturan', icon: Settings },
-    { label: 'Keamanan & Akun', path: '/admin/akun', icon: UserCheck }
   ];
+
+  const currentPageTitle = menuItems.find(item => item.path === location.pathname)?.label || 'Dashboard Admin';
+
+  const visibleMenuItems = menuItems.filter(item => {
+    if (admin?.role === 'superadmin') return true;
+    if (admin?.role === 'admin_ppdb') return ['/admin', '/admin/ppdb', '/admin/penerimaan'].includes(item.path);
+    if (admin?.role === 'admin_konten') {
+      return [
+        '/admin', '/admin/profil', '/admin/sambutan', '/admin/sejarah', '/admin/visi-misi',
+        '/admin/organisasi', '/admin/guru-staf', '/admin/program', '/admin/berita',
+        '/admin/agenda', '/admin/pengumuman', '/admin/kategori', '/admin/galeri', '/admin/prestasi', '/admin/fasilitas'
+      ].includes(item.path);
+    }
+    return false;
+  });
+
+  // Semua modul tetap tersedia di dashboard admin, termasuk modul yang disembunyikan dari publik.
 
   const handleLogout = () => {
     logout();
@@ -86,7 +112,9 @@ export const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
+    <>
+      <SEO title={`${currentPageTitle} — Admin`} />
+      <div className="admin-shell min-h-screen bg-[#F4F6F8] flex font-poppins text-stone-800">
       {/* Global Toaster — mounted once at layout level */}
       <Toaster />
       {/* SIDEBAR FOR DESKTOP */}
@@ -114,7 +142,7 @@ export const AdminLayout: React.FC = () => {
             Menu Manajemen
           </p>
 
-          {menuItems.map((item) => {
+          {visibleMenuItems.map((item) => {
             const Icon = item.icon;
             const active = location.pathname === item.path;
 
@@ -183,7 +211,7 @@ export const AdminLayout: React.FC = () => {
               <Menu className="w-5 h-5" />
             </button>
             <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100 hidden sm:inline-block">
-              Panel Pengelola Sekolah
+              Panel Pengelola
             </span>
           </div>
 
@@ -201,19 +229,28 @@ export const AdminLayout: React.FC = () => {
             </Link>
 
             {/* Admin Avatar Profile */}
-            <div className="flex items-center gap-3 pl-2 border-l border-stone-200">
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-100 border border-emerald-300">
-                <img
-                  src={admin?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200'}
-                  alt={admin?.full_name || 'Admin'}
-                  className="w-full h-full object-cover"
-                />
+            <Link
+              to="/admin/akun"
+              aria-label="Buka profil dan pengaturan akun"
+              title="Profil dan pengaturan akun"
+              className="flex items-center gap-3 pl-3 border-l border-stone-200 rounded-xl py-1 pr-2 hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+            >
+              <div className="relative w-9 h-9 rounded-full overflow-hidden bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs">
+                <span>{(admin?.full_name || 'A').trim().charAt(0).toUpperCase()}</span>
+                {admin?.avatar && (
+                  <img
+                    src={admin.avatar}
+                    alt={admin?.full_name || 'Admin'}
+                    onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
               </div>
               <div className="hidden sm:block text-left leading-tight">
                 <p className="text-xs font-bold text-stone-900">{admin?.full_name || 'Administrator'}</p>
-                <p className="text-[10px] text-emerald-700 font-medium">@{admin?.username || 'admin'}</p>
+                <p className="text-[10px] text-stone-500 font-medium">Profil & akun</p>
               </div>
-            </div>
+            </Link>
           </div>
         </header>
 
@@ -222,6 +259,7 @@ export const AdminLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
-    </div>
+      </div>
+    </>
   );
 };

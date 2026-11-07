@@ -2,6 +2,7 @@ import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { schoolApi } from '../../services/api';
 import { NewsArticle, NewsCategory } from '../../types';
+import { RichTextEditor } from '../../components/common/RichTextEditor';
 import {
   Plus,
   Edit,
@@ -33,8 +34,8 @@ export const ManageNews: React.FC = () => {
     summary: '',
     content: '',
     thumbnail: '',
-    author: 'Humas SMP Islam Caruy',
-    status: 'published'
+    author: 'Tim Redaksi',
+    status: 'draft'
   });
 
   const loadNews = async () => {
@@ -63,8 +64,8 @@ export const ManageNews: React.FC = () => {
       category_id: categories[0]?.id || 1,
       summary: '',
       content: '',
-      thumbnail: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800',
-      author: 'Humas SMP Islam Caruy',
+      thumbnail: '/demo/demo-event.svg',
+      author: 'Tim Redaksi',
       status: 'published'
     });
     setModalOpen(true);
@@ -150,10 +151,7 @@ export const ManageNews: React.FC = () => {
     <div className="space-y-6 font-poppins">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Manajemen Berita & Artikel</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Publikasikan agenda, prestasi siswa, liputan kegiatan, dan pengumuman resmi sekolah.
-          </p>
+          <h1 className="text-2xl font-bold text-stone-900">Berita & Artikel</h1>
         </div>
 
         <button
@@ -161,7 +159,7 @@ export const ManageNews: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Tulis Warta Baru</span>
+          <span>Berita</span>
         </button>
       </div>
 
@@ -174,8 +172,7 @@ export const ManageNews: React.FC = () => {
             <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Cari judul artikel..."
-              value={search}
+              value={search ?? ''}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50/50"
             />
@@ -262,7 +259,7 @@ export const ManageNews: React.FC = () => {
           <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-100 flex flex-col">
             <div className="p-6 border-b border-stone-100 flex justify-between items-center sticky top-0 bg-white z-10">
               <h3 className="text-lg font-bold text-stone-900">
-                {editingId ? 'Edit Warta Berita' : 'Tulis Berita Baru'}
+                {editingId ? 'Ubah Berita' : 'Tambah Berita'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
@@ -275,9 +272,8 @@ export const ManageNews: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={formData.title}
+                  value={formData.title ?? ''}
                   onChange={handleTitleChange}
-                  placeholder="Masukkan judul artikel yang menarik..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
               </div>
@@ -287,7 +283,7 @@ export const ManageNews: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Slug URL</label>
                   <input
                     type="text"
-                    value={formData.slug}
+                    value={formData.slug ?? ''}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-mono"
                   />
@@ -296,12 +292,12 @@ export const ManageNews: React.FC = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
                   <select
-                    value={formData.category_id}
+                    value={formData.category_id ?? ''}
                     onChange={(e) => setFormData({ ...formData, category_id: parseInt(e.target.value) })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   >
                     {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
+                      <option key={c.id} value={c.id ?? ''}>{c.name}</option>
                     ))}
                   </select>
                 </div>
@@ -311,23 +307,15 @@ export const ManageNews: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Ringkasan Singkat (Lead)</label>
                 <textarea
                   rows={2}
-                  value={formData.summary}
+                  value={formData.summary ?? ''}
                   onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                  placeholder="Ringkasan 1-2 kalimat untuk preview..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-700">Isi Lengkap Artikel *</label>
-                <textarea
-                  rows={8}
-                  required
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Tuliskan isi berita selengkapnya (gunakan enter untuk paragraf)..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
-                />
+                <RichTextEditor rows={10} value={formData.content || ''} onChange={content => setFormData({ ...formData, content })} placeholder="Tulis isi berita dan gunakan toolbar untuk memformatnya."/>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -336,9 +324,8 @@ export const ManageNews: React.FC = () => {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      value={formData.thumbnail}
+                      value={formData.thumbnail ?? ''}
                       onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
-                      placeholder="https://... atau upload file"
                       className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                     />
                     <label className="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer flex items-center gap-1 shrink-0">
@@ -352,7 +339,7 @@ export const ManageNews: React.FC = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Status Publikasi</label>
                   <select
-                    value={formData.status}
+                    value={formData.status ?? ''}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   >
@@ -374,7 +361,7 @@ export const ManageNews: React.FC = () => {
                   type="submit"
                   className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-2.5 rounded-xl shadow-md transition-all"
                 >
-                  {editingId ? 'Perbarui Warta' : 'Terbitkan Sekarang'}
+                  {editingId ? 'Perbarui Warta' : 'Simpan Berita'}
                 </button>
               </div>
             </form>

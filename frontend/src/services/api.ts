@@ -22,16 +22,18 @@ import {
 
 export const api = axios.create({
   baseURL: '/api',
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Attach JWT token to requests if available
+// Session JWT berada di cookie HttpOnly; JavaScript hanya mengirim token CSRF non-HttpOnly.
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('caruy_admin_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (typeof document !== 'undefined' && !['get', 'head', 'options'].includes((config.method || 'get').toLowerCase())) {
+    const csrfCookie = document.cookie.split('; ').find(part => part.startsWith('school_csrf='));
+    const csrfToken = csrfCookie ? decodeURIComponent(csrfCookie.slice('school_csrf='.length)) : '';
+    if (csrfToken) config.headers['X-CSRF-Token'] = csrfToken;
   }
   return config;
 });
@@ -41,8 +43,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
-      localStorage.removeItem('caruy_admin_token');
-      localStorage.removeItem('caruy_admin_user');
+      localStorage.removeItem('school_admin_token');
+      localStorage.removeItem('school_admin_user');
       window.location.href = '/admin/login';
     }
     return Promise.reject(error);
@@ -72,7 +74,8 @@ export const schoolApi = {
 
   // Auth
   login: (credentials: { username: string; password: string }) =>
-    api.post<{ success: boolean; token: string; user: AdminUser; message: string }>('/auth/login', credentials).then(r => r.data),
+    api.post<{ success: boolean; user: AdminUser; message: string }>('/auth/login', credentials).then(r => r.data),
+  logout: () => api.post<{ success: boolean; message: string }>('/auth/logout').then(r => r.data),
   getMe: () => api.get<{ success: boolean; user: AdminUser }>('/auth/me').then(r => r.data.user),
   updateAdminProfile: (data: any) => api.put<{ success: boolean; message: string; user: AdminUser }>('/auth/profile', data).then(r => r.data),
   changePassword: (data: { currentPassword: string; newPassword: string }) => api.put<{ success: boolean; message: string }>('/auth/password', data).then(r => r.data),
@@ -135,6 +138,30 @@ export const schoolApi = {
   createProgram: (data: any) => api.post<{ success: boolean; message: string; data: any }>('/admin/programs', data).then(r => r.data),
   updateProgram: (id: number, data: any) => api.put<{ success: boolean; message: string; data: any }>(`/admin/programs/${id}`, data).then(r => r.data),
   deleteProgram: (id: number) => api.delete<{ success: boolean; message: string }>(`/admin/programs/${id}`).then(r => r.data),
+
+  // Central content categories
+  getContentCategories: (scope: 'news' | 'program' | 'facility') => api.get<{ success:boolean; data:any[] }>('/admin/content-categories',{params:{scope}}).then(r=>r.data.data),
+  createContentCategory: (data:{scope:string;name:string;description?:string}) => api.post('/admin/content-categories',data).then(r=>r.data),
+  updateContentCategory: (id:number,scope:string,data:{name:string;description?:string}) => api.put(`/admin/content-categories/${scope}/${id}`,data).then(r=>r.data),
+  deleteContentCategory: (id:number,scope:string) => api.delete(`/admin/content-categories/${scope}/${id}`).then(r=>r.data),
+
+  // Announcements
+  getAnnouncements: () => api.get<{ success: boolean; data: any[] }>('/announcements').then(r => r.data.data),
+  getAdminAnnouncements: () => api.get<{ success: boolean; data: any[] }>('/admin/announcements').then(r => r.data.data),
+  createAnnouncement: (data: any) => api.post('/admin/announcements', data).then(r => r.data),
+  updateAnnouncement: (id: number, data: any) => api.put(`/admin/announcements/${id}`, data).then(r => r.data),
+  deleteAnnouncement: (id: number) => api.delete(`/admin/announcements/${id}`).then(r => r.data),
+
+  // SPMB / PPDB application workflow
+  submitAdmissionApplication: (data: any) => api.post('/admissions/applications', data).then(r => r.data),
+  uploadAdmissionDocument: async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post('/admissions/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return response.data;
+  },
+  getAdmissionApplications: () => api.get<{ success: boolean; data: any[] }>('/admin/admission-applications').then(r => r.data.data),
+  updateAdmissionApplication: (id: number, data: any) => api.put(`/admin/admission-applications/${id}`, data).then(r => r.data),
 
   // Admin PPDB
   updatePPDB: (data: Partial<PPDBInfo>) => api.put<{ success: boolean; message: string; data: PPDBInfo }>('/admin/ppdb', data).then(r => r.data),

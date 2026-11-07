@@ -2,6 +2,7 @@ import { toast } from '../../hooks/useToast';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { schoolApi } from '../../services/api';
+import { ADMISSION_LABEL } from '../../config/admissions';
 import {
   Save,
   Lock,
@@ -56,8 +57,8 @@ export const ManageAccount: React.FC = () => {
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    if (admin?.role === 'superadmin') loadUsers();
+  }, [admin?.role]);
 
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -68,7 +69,7 @@ export const ManageAccount: React.FC = () => {
       if (res.success && res.user) {
         updateAdminUser(res.user);
         toast.success('Profil akun administrator berhasil disimpan!');
-        loadUsers();
+        if (admin?.role === 'superadmin') loadUsers();
       }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Gagal memperbarui profil.');
@@ -83,8 +84,8 @@ export const ManageAccount: React.FC = () => {
       toast.error('Konfirmasi password baru tidak cocok.');
       return;
     }
-    if (newPassword.length < 6) {
-      toast.error('Password baru minimal 6 karakter.');
+    if (newPassword.length < 8) {
+      toast.error('Password baru minimal 8 karakter.');
       return;
     }
 
@@ -106,8 +107,8 @@ export const ManageAccount: React.FC = () => {
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newUser.password.length < 6) {
-      toast.error('Password minimal 6 karakter.');
+    if (newUser.password.length < 8) {
+      toast.error('Password minimal 8 karakter.');
       return;
     }
     setAddingUser(true);
@@ -146,9 +147,7 @@ export const ManageAccount: React.FC = () => {
     <div className="space-y-8 font-poppins pb-12">
       <div>
         <h1 className="text-2xl font-bold text-stone-900">Keamanan & Akun Administrator</h1>
-        <p className="text-xs text-stone-500 font-normal mt-0.5">
-          Kelola profil pengelola, amankan akses dengan hashing bcrypt, dan konfigurasi hak akses peran pengguna sekolah.
-        </p>
+        
       </div>
 
       
@@ -245,7 +244,6 @@ export const ManageAccount: React.FC = () => {
                 required
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Masukkan kata sandi lama"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
             </div>
@@ -255,10 +253,9 @@ export const ManageAccount: React.FC = () => {
               <input
                 type="password"
                 required
-                minLength={6}
+                minLength={8}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimal 6 karakter"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
             </div>
@@ -271,7 +268,6 @@ export const ManageAccount: React.FC = () => {
                 minLength={6}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Ulangi kata sandi baru"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
             </div>
@@ -288,6 +284,8 @@ export const ManageAccount: React.FC = () => {
         </div>
       </div>
 
+      {admin?.role === 'superadmin' && (
+      <>
       {/* Multi-User & Role Management Section */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-stone-200/80 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 pb-4">
@@ -295,9 +293,7 @@ export const ManageAccount: React.FC = () => {
             <Shield className="w-5 h-5 text-emerald-700" />
             <div>
               <h2 className="text-base font-bold text-stone-900">Struktur Pengguna & Peran Sistem (Role Management)</h2>
-              <p className="text-[11px] text-stone-400 font-normal">
-                Saat ini cukup 1 akun admin aktif, namun arsitektur sistem telah mendukung penambahan peran (Superadmin, Admin Konten, Admin PPDB) di kemudian hari.
-              </p>
+              
             </div>
           </div>
 
@@ -327,11 +323,17 @@ export const ManageAccount: React.FC = () => {
               {usersList.map((user) => (
                 <tr key={user.id} className="hover:bg-stone-50/50">
                   <td className="p-3 flex items-center gap-3">
-                    <img
-                      src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100'}
-                      alt={user.full_name}
-                      className="w-8 h-8 rounded-full object-cover border border-emerald-300"
-                    />
+                    <div className="relative w-8 h-8 rounded-full overflow-hidden border border-emerald-200 bg-emerald-50 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0">
+                      <span>{(user.full_name || 'A').trim().charAt(0).toUpperCase()}</span>
+                      {user.avatar && (
+                        <img
+                          src={user.avatar}
+                          alt={user.full_name}
+                          onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                          className="absolute w-8 h-8 rounded-full object-cover"
+                        />
+                      )}
+                    </div>
                     <span className="font-bold text-stone-900">{user.full_name}</span>
                   </td>
                   <td className="p-3">
@@ -346,7 +348,7 @@ export const ManageAccount: React.FC = () => {
                         ? 'bg-emerald-100 text-emerald-800'
                         : 'bg-amber-100 text-amber-800'
                     }`}>
-                      {user.role === 'superadmin' ? 'Superadmin' : user.role === 'admin_konten' ? 'Admin Konten' : 'Admin PPDB'}
+                      {user.role === 'superadmin' ? 'Superadmin' : user.role === 'admin_konten' ? 'Admin Konten' : `Admin ${ADMISSION_LABEL}`}
                     </span>
                   </td>
                   <td className="p-3 text-stone-600 text-[11px]">
@@ -354,7 +356,7 @@ export const ManageAccount: React.FC = () => {
                       ? 'Seluruh Akses Penuh (Full Access)'
                       : user.role === 'admin_konten'
                       ? 'Berita, Profil, Guru, Prestasi, Galeri'
-                      : 'Data PPDB & Verifikasi Siswa'}
+                      : `Data ${ADMISSION_LABEL} & Verifikasi Siswa`}
                   </td>
                   <td className="p-3">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-800">
@@ -388,7 +390,7 @@ export const ManageAccount: React.FC = () => {
             <div className="flex items-center justify-between border-b border-stone-100 pb-3">
               <div>
                 <h3 className="text-base font-bold text-stone-900">Tambah Akun Pengelola Baru</h3>
-                <p className="text-xs text-stone-400 font-normal">Sistem Multi-User SMP Islam Caruy</p>
+                <p className="text-xs text-stone-400 font-normal">Manajemen akun dan peran pengelola</p>
               </div>
               <button onClick={() => setShowAddUserModal(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-5 h-5" />
@@ -401,7 +403,6 @@ export const ManageAccount: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Contoh: Ustadz Ahmad, S.Pd"
                   value={newUser.full_name}
                   onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -414,7 +415,6 @@ export const ManageAccount: React.FC = () => {
                   <input
                     type="text"
                     required
-                    placeholder="namauser"
                     value={newUser.username}
                     onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -429,7 +429,7 @@ export const ManageAccount: React.FC = () => {
                   >
                     <option value="admin_konten">Admin Konten</option>
                     <option value="superadmin">Super Administrator</option>
-                    <option value="admin_ppdb">Admin PPDB</option>
+                    <option value="admin_ppdb">{`Admin ${ADMISSION_LABEL}`}</option>
                   </select>
                 </div>
               </div>
@@ -439,7 +439,6 @@ export const ManageAccount: React.FC = () => {
                 <input
                   type="email"
                   required
-                  placeholder="pengelola@smpislamcaruy.sch.id"
                   value={newUser.email}
                   onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -447,12 +446,11 @@ export const ManageAccount: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-stone-700">Password Awal (Min. 6 Karakter)</label>
+                <label className="text-xs font-bold text-stone-700">Password Awal (Min. 8 Karakter)</label>
                 <input
                   type="password"
                   required
                   minLength={6}
-                  placeholder="Masukkan kata sandi awal"
                   value={newUser.password}
                   onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -478,6 +476,8 @@ export const ManageAccount: React.FC = () => {
             </form>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

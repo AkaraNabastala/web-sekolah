@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSchool } from '../../context/SchoolContext';
 
 interface SEOProps {
   title: string;
@@ -9,43 +10,54 @@ interface SEOProps {
 
 export const SEO: React.FC<SEOProps> = ({
   title,
-  description = 'Portal Resmi SMP Islam Caruy - Lembaga Pendidikan Menengah Pertama Islam Modern, Unggul dalam IPTEK dan Berakhlakul Karimah di Desa Caruy, Kec. Cipari, Cilacap.',
+  description = 'Website resmi sekolah. Informasi profil, program, berita, kegiatan, dan layanan pendidikan.',
   ogType = 'website',
-  ogImage = '/src/assets/logo.png'
+  ogImage
 }) => {
-  useEffect(() => {
-    // Set document title
-    const fullTitle = `${title} | SMP Islam Caruy`;
-    document.title = fullTitle;
+  const { settings, profile } = useSchool();
+  const [assetVersion] = useState(() => Date.now());
+  const schoolName = settings?.school_name || profile?.name || 'Nama Sekolah Anda';
+  const resolvedOgImage = ogImage || settings?.logo_url || undefined;
+  const faviconSource = settings?.favicon_url || settings?.logo_url;
+  const resolvedFavicon = faviconSource
+    ? `${faviconSource}${faviconSource.includes('?') ? '&' : '?'}v=${assetVersion}`
+    : '/favicon.svg';
 
-    // Helper to update or create meta tags
+  useEffect(() => {
+    const fullTitle = title ? `${title} | ${schoolName}` : schoolName;
+    if (document.title !== fullTitle) document.title = fullTitle;
+
     const setMetaTag = (selector: string, attr: string, value: string) => {
       let element = document.querySelector(selector);
       if (!element) {
         element = document.createElement('meta');
-        if (selector.includes('property=')) {
-          const propName = selector.match(/property="([^"]+)"/)?.[1];
-          if (propName) element.setAttribute('property', propName);
-        } else if (selector.includes('name=')) {
-          const nameValue = selector.match(/name="([^"]+)"/)?.[1];
-          if (nameValue) element.setAttribute('name', nameValue);
-        }
+        const property = selector.match(/property="([^"]+)"/)?.[1];
+        const name = selector.match(/name="([^"]+)"/)?.[1];
+        if (property) element.setAttribute('property', property);
+        if (name) element.setAttribute('name', name);
         document.head.appendChild(element);
       }
       element.setAttribute(attr, value);
     };
 
-    // Update Meta Description
     setMetaTag('meta[name="description"]', 'content', description);
-
-    // Update OpenGraph
     setMetaTag('meta[property="og:title"]', 'content', fullTitle);
     setMetaTag('meta[property="og:description"]', 'content', description);
     setMetaTag('meta[property="og:type"]', 'content', ogType);
-    if (ogImage) {
-      setMetaTag('meta[property="og:image"]', 'content', ogImage);
+    if (resolvedOgImage) {
+      setMetaTag('meta[property="og:image"]', 'content', resolvedOgImage);
     }
-  }, [title, description, ogType, ogImage]);
+
+    // The browser favicon always represents the school brand. Article thumbnails
+    // belong exclusively to Open Graph and must never replace the tab icon.
+    let favicon = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+    if (!favicon) {
+      favicon = document.createElement('link');
+      favicon.rel = 'icon';
+      document.head.appendChild(favicon);
+    }
+    favicon.href = resolvedFavicon;
+  }, [schoolName, title, description, ogType, resolvedOgImage, resolvedFavicon]);
 
   return null;
 };

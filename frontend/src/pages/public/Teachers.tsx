@@ -41,11 +41,11 @@ export const Teachers: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Guru & Tenaga Kependidikan"
-        description="Daftar profil dewan guru, asatidz, dan tenaga kependidikan SMP Islam Caruy dengan kualifikasi pendidikan dan mata pelajaran yang diampu."
+        description="Daftar profil guru dan tenaga kependidikan beserta bidang keahlian dan mata pelajaran yang diampu."
       />
       <PageHeader
         title="Guru & Tenaga Kependidikan"
-        subtitle="Profil dewan pendidik dan staf tata usaha yang berdedikasi membina generasi santri."
+        subtitle="Profil guru dan tenaga kependidikan sekolah."
         badge="Civitas Akademika"
         breadcrumbs={[{ label: 'Guru & Staf' }]}
       />
@@ -110,7 +110,7 @@ export const Teachers: React.FC = () => {
                 >
                   <div className="relative aspect-[3/4] overflow-hidden bg-stone-100">
                     <img
-                      src={teacher.photo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400'}
+                      src={teacher.photo || '/demo/demo-person.svg'}
                       alt={teacher.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -157,7 +157,7 @@ export const Teachers: React.FC = () => {
                 >
                   <div className="relative aspect-[3/4] overflow-hidden bg-stone-100">
                     <img
-                      src={staf.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400'}
+                      src={staf.photo || '/demo/demo-person.svg'}
                       alt={staf.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />

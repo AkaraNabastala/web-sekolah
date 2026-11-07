@@ -1,0 +1,34 @@
+name: Build Verification
+
+on:
+  push:
+    branches:
+      - fix/project-structure-backend
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  production-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
+      - name: Audit backend dependencies
+        run: npm audit --prefix backend --audit-level=moderate
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+      - name: Check audit script syntax
+        run: node --check scripts/auditAll.mjs
+      - name: Build backend and frontend
+        run: npm run build

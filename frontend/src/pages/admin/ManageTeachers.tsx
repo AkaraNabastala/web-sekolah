@@ -27,7 +27,7 @@ export const ManageTeachers: React.FC = () => {
     name: '',
     title: 'S.Pd',
     nip: '-',
-    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400',
+    photo: '/demo/demo-person.svg',
     position: 'Guru Mata Pelajaran',
     subject: '',
     last_education: 'S1 Pendidikan',
@@ -37,7 +37,7 @@ export const ManageTeachers: React.FC = () => {
 
   const [staffForm, setStaffForm] = useState<Partial<Staff>>({
     name: '',
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400',
+    photo: '/demo/demo-person.svg',
     position: 'Staf Administrasi',
     department: 'Tata Usaha',
     last_education: 'S1 / D3',
@@ -70,7 +70,7 @@ export const ManageTeachers: React.FC = () => {
         name: '',
         title: 'S.Pd',
         nip: '-',
-        photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400',
+        photo: '/demo/demo-person.svg',
         position: 'Guru Mata Pelajaran',
         subject: '',
         last_education: 'S1 Pendidikan',
@@ -80,7 +80,7 @@ export const ManageTeachers: React.FC = () => {
     } else {
       setStaffForm({
         name: '',
-        photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400',
+        photo: '/demo/demo-person.svg',
         position: 'Staf Administrasi',
         department: 'Tata Usaha',
         last_education: 'S1 / D3',
@@ -170,9 +170,6 @@ export const ManageTeachers: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Guru & Tenaga Kependidikan</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Kelola profil pendidik, mata pelajaran, riwayat pendidikan, dan staf tata usaha sekolah.
-          </p>
         </div>
 
         <button
@@ -180,7 +177,7 @@ export const ManageTeachers: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>{activeTab === 'teachers' ? 'Tambah Guru' : 'Tambah Staf'}</span>
+          <span>{activeTab === 'teachers' ? 'Guru' : 'Staf'}</span>
         </button>
       </div>
 
@@ -284,7 +281,7 @@ export const ManageTeachers: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={activeTab === 'teachers' ? teacherForm.name : staffForm.name}
+                  value={(activeTab === 'teachers' ? teacherForm.name : staffForm.name) ?? ''}
                   onChange={(e) => {
                     if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, name: e.target.value });
                     else setStaffForm({ ...staffForm, name: e.target.value });
@@ -299,7 +296,7 @@ export const ManageTeachers: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={activeTab === 'teachers' ? teacherForm.position : staffForm.position}
+                    value={(activeTab === 'teachers' ? teacherForm.position : staffForm.position) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, position: e.target.value });
                       else setStaffForm({ ...staffForm, position: e.target.value });
@@ -315,7 +312,7 @@ export const ManageTeachers: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={activeTab === 'teachers' ? teacherForm.subject : staffForm.department}
+                    value={(activeTab === 'teachers' ? teacherForm.subject : staffForm.department) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, subject: e.target.value });
                       else setStaffForm({ ...staffForm, department: e.target.value });
@@ -330,7 +327,7 @@ export const ManageTeachers: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Pendidikan Terakhir</label>
                   <input
                     type="text"
-                    value={activeTab === 'teachers' ? teacherForm.last_education : staffForm.last_education}
+                    value={(activeTab === 'teachers' ? teacherForm.last_education : staffForm.last_education) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, last_education: e.target.value });
                       else setStaffForm({ ...staffForm, last_education: e.target.value });
@@ -343,7 +340,7 @@ export const ManageTeachers: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Urutan Tampilan</label>
                   <input
                     type="number"
-                    value={activeTab === 'teachers' ? teacherForm.display_order : staffForm.display_order}
+                    value={(activeTab === 'teachers' ? teacherForm.display_order : staffForm.display_order) ?? ''}
                     onChange={(e) => {
                       const v = parseInt(e.target.value) || 1;
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, display_order: v });
@@ -359,7 +356,7 @@ export const ManageTeachers: React.FC = () => {
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    value={activeTab === 'teachers' ? teacherForm.photo : staffForm.photo}
+                    value={(activeTab === 'teachers' ? teacherForm.photo : staffForm.photo) ?? ''}
                     onChange={(e) => {
                       if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, photo: e.target.value });
                       else setStaffForm({ ...staffForm, photo: e.target.value });
@@ -378,7 +375,7 @@ export const ManageTeachers: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Deskripsi Singkat / Bio</label>
                 <textarea
                   rows={2}
-                  value={activeTab === 'teachers' ? teacherForm.short_bio : staffForm.short_bio}
+                  value={(activeTab === 'teachers' ? teacherForm.short_bio : staffForm.short_bio) ?? ''}
                   onChange={(e) => {
                     if (activeTab === 'teachers') setTeacherForm({ ...teacherForm, short_bio: e.target.value });
                     else setStaffForm({ ...staffForm, short_bio: e.target.value });

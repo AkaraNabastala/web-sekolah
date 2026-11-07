@@ -17,7 +17,6 @@ import {
   ShieldCheck,
   HeartHandshake,
   Compass,
-  School,
   ArrowUpRight,
   MapPin,
   Clock,
@@ -39,7 +38,9 @@ import {
   GalleryAlbum
 } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { SchoolLogo } from '../../components/common/SchoolLogo';
 import { ScrollReveal } from '../../components/common/ScrollReveal';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 
 interface HeroSlide {
   id: number;
@@ -52,6 +53,11 @@ interface HeroSlide {
 
 export const Home: React.FC = () => {
   const { profile, settings } = useSchool();
+  let featureFlags: any = settings?.feature_flags;
+  if (typeof featureFlags === 'string') {
+    try { featureFlags = JSON.parse(featureFlags); } catch { featureFlags = null; }
+  }
+  const isFeatureEnabled = (feature: string) => featureFlags?.[feature] !== false;
   const [latestNews, setLatestNews] = useState<NewsArticle[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -66,24 +72,28 @@ export const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
-  const heroSlides: HeroSlide[] = [
-    {
-      id: 1,
-      image: settings?.hero_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1920&auto=format&fit=crop',
-      tag: 'Suasana Belajar Berkarakter',
-      title: 'Pendidikan Islami yang Teduh, Mendalam & Beradab',
-      subtitle: settings?.hero_subtitle || 'Memadukan Kurikulum Nasional Terpadu dengan penguatan aqidah, tahfidzul quran, serta pembiasaan adab keseharian dalam ekosistem belajar yang asri.',
-      badge: `Tahun Ajaran ${ppdb?.academic_year || '2026/2027'}`
-    },
-    {
-      id: 2,
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1920&auto=format&fit=crop',
-      tag: 'Kolaborasi & Nalar Kritis',
-      title: 'Menumbuhkan Kecintaan Terhadap Ilmu & Al-Quran',
-      subtitle: 'Membina generasi pembelajar yang berwawasan luas, adaptif terhadap perkembangan teknologi, dan berpegang teguh pada nilai-nilai keislaman.',
-      badge: 'Program Unggulan Terpadu'
-    }
-  ];
+  let configuredSlides: any = settings?.hero_slides;
+  if (typeof configuredSlides === 'string') {
+    try { configuredSlides = JSON.parse(configuredSlides); } catch { configuredSlides = []; }
+  }
+  const configuredHeroSlides: HeroSlide[] = Array.isArray(configuredSlides)
+    ? configuredSlides.filter((slide: any) => slide?.image && slide?.title).map((slide: any, index: number) => ({
+        id: Number(slide.id) || index + 1,
+        image: slide.image,
+        tag: slide.tag || '',
+        title: slide.title,
+        subtitle: slide.subtitle || '',
+        badge: slide.badge || ''
+      }))
+    : [];
+  const heroSlides: HeroSlide[] = configuredHeroSlides.length > 0 ? configuredHeroSlides : [{
+    id: 1,
+    image: settings?.hero_image || '/demo/demo-classroom.svg',
+    tag: '',
+    title: settings?.hero_title || 'Selamat Datang',
+    subtitle: settings?.hero_subtitle || '',
+    badge: ''
+  }];
 
   // Auto-slide tenang dengan interval 7 detik
   useEffect(() => {
@@ -143,7 +153,7 @@ export const Home: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] selection:bg-[#E2EBE4] selection:text-[#1B3B2B] overflow-x-hidden">
       <SEO
         title="Beranda Resmi"
-        description="Portal Resmi SMP Islam Caruy - Lembaga Pendidikan Menengah Pertama Islam Modern di Desa Caruy, Kec. Cipari, Kab. Cilacap. Memadukan kurikulum terpadu, tahfidz Al-Quran, dan sains teknologi."
+        description="Informasi dan layanan pendidikan sekolah."
       />
 
       {/* 1. HERO / COVER FULL-WIDTH (DESAIN V2) */}
@@ -196,7 +206,7 @@ export const Home: React.FC = () => {
                 to="/ppdb"
                 className="inline-flex items-center justify-center gap-2.5 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-sm px-7 py-3.5 rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:scale-95"
               >
-                <span>Informasi Pendaftaran Santri</span>
+                <span>Informasi Pendaftaran Siswa</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
@@ -233,7 +243,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. SEKILAS TENTANG SMP ISLAM CARUY (DUA KOLOM EDITORIAL) */}
+      {/* 2. SEKILAS TENTANG SEKOLAH (DUA KOLOM EDITORIAL) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -244,34 +254,39 @@ export const Home: React.FC = () => {
                 Sekilas Sekolah
               </div>
               <h2 className="text-2xl sm:text-4xl font-bold text-[#1F2621] tracking-tight leading-tight">
-                Membangun Pondasi Generasi Berkarakter di Pedesaan yang Asri
+                Membangun Generasi Unggul, Berkarakter, dan Berprestasi
               </h2>
               <div className="w-16 h-1 bg-[#DEBD7A] rounded-full"></div>
               
-              <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed space-y-4 font-normal">
-                <p>
-                  {profile?.description || 'SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di Kecamatan Cipari, Kabupaten Cilacap.'}
-                </p>
-                <p>
-                  Sekolah ini berdedikasi memadukan keunggulan akademik sains dan teknologi dengan kedalaman nilai-nilai akhlakul karimah dan tahfidz Al-Quran. Lingkungan pedesaan yang damai dan asri menghadirkan iklim belajar yang kondusif bagi santri untuk bertumbuh mandiri, santun, dan berwawasan luas.
-                </p>
-              </div>
+              {profile?.description && (
+                <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed font-normal">
+                  <p>{profile.description}</p>
+                </div>
+              )}
 
               {/* Data Kunci Resmi (Hanya yang Terkonfirmasi) */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#EAE5DC]">
-                <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
-                  <span className="text-[11px] text-[#7A827B] uppercase block">NPSN Resmi</span>
-                  <span className="text-sm font-bold text-[#1F2621] font-mono">{profile?.npsn || '20301988'}</span>
+              {(profile?.npsn || profile?.accreditation || profile?.education_level) && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#EAE5DC]">
+                  {profile?.npsn && (
+                    <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
+                      <span className="text-[11px] text-[#7A827B] uppercase block">NPSN</span>
+                      <span className="text-sm font-bold text-[#1F2621] font-mono">{profile.npsn}</span>
+                    </div>
+                  )}
+                  {profile?.accreditation && (
+                    <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
+                      <span className="text-[11px] text-[#7A827B] uppercase block">Akreditasi</span>
+                      <span className="text-sm font-bold text-[#2A5C40]">{profile.accreditation}</span>
+                    </div>
+                  )}
+                  {profile?.education_level && (
+                    <div className="p-3 bg-white rounded-xl border border-[#ECE7DD] col-span-2 sm:col-span-1">
+                      <span className="text-[11px] text-[#7A827B] uppercase block">Jenjang Pendidikan</span>
+                      <span className="text-sm font-bold text-[#1F2621]">{profile.education_level}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
-                  <span className="text-[11px] text-[#7A827B] uppercase block">Status Akreditasi</span>
-                  <span className="text-sm font-bold text-[#2A5C40]">{profile?.accreditation || 'A (Unggul)'}</span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-[#ECE7DD] col-span-2 sm:col-span-1">
-                  <span className="text-[11px] text-[#7A827B] uppercase block">Jenjang Sekolah</span>
-                  <span className="text-sm font-bold text-[#1F2621]">SMP Swasta Islam</span>
-                </div>
-              </div>
+              )}
 
               <div className="pt-2">
                 <Link
@@ -289,19 +304,17 @@ export const Home: React.FC = () => {
               <div className="relative">
                 <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-[#EAE5DC]">
                   <img
-                    src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop"
-                    alt="Lingkungan Kampus SMP Islam Caruy"
+                    src="/demo/demo-classroom.svg"
+                    alt="Ilustrasi lingkungan belajar sekolah"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="absolute -bottom-6 -left-6 bg-[#132A1E] text-white p-5 rounded-2xl shadow-xl border border-white/15 max-w-xs hidden sm:block">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#E8CF94] text-[#1B3B2B] flex items-center justify-center flex-shrink-0 font-bold">
-                      <School className="w-5 h-5" />
-                    </div>
+                    <SchoolLogo size="sm" showText={false} />
                     <div>
                       <p className="text-xs font-bold text-[#FAF9F5]">Pendidikan Holistik</p>
-                      <p className="text-[11px] text-[#D5E0D7] leading-tight mt-0.5">Berakar pada adab & sains modern</p>
+                      <p className="text-[11px] text-[#D5E0D7] leading-tight mt-0.5">Belajar, bertumbuh, dan berprestasi</p>
                     </div>
                   </div>
                 </div>
@@ -312,6 +325,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 3. SAMBUTAN KEPALA SEKOLAH */}
+      {profile?.headmaster_name && profile?.headmaster_welcome && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-6xl mx-auto">
           <div className="bg-[#FAF8F5] rounded-3xl p-8 sm:p-12 lg:p-16 border border-[#ECE7DD] grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -319,16 +333,16 @@ export const Home: React.FC = () => {
             <ScrollReveal animation="fade-up" className="lg:col-span-4 flex flex-col items-center text-center">
               <div className="relative w-48 sm:w-56 aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-4 border-white bg-[#EAE5DC]">
                 <img
-                  src={profile?.headmaster_photo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop'}
-                  alt={profile?.headmaster_name || 'Kepala Sekolah SMP Islam Caruy'}
+                  src={profile?.headmaster_photo || '/demo/demo-classroom.svg'}
+                  alt={profile?.headmaster_name || 'Kepala Sekolah'}
                   className="w-full h-full object-cover"
                 />
               </div>
               <h3 className="text-base sm:text-lg font-bold text-[#1F2621] mt-4">
-                {profile?.headmaster_name || 'Kepala Sekolah SMP Islam Caruy'}
+                {profile.headmaster_name}
               </h3>
               <p className="text-xs text-[#2A5C40] font-semibold tracking-wide">
-                Kepala Sekolah SMP Islam Caruy
+                Kepala Sekolah
               </p>
             </ScrollReveal>
 
@@ -339,18 +353,14 @@ export const Home: React.FC = () => {
                 Sambutan Pimpinan
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-3xl font-bold text-[#1F2621] tracking-tight">
-                Mendidik dengan Hati, Merajut Generasi Beradab
+                Mendampingi Setiap Langkah Menuju Masa Depan
               </h2>
               <div className="w-12 h-1 bg-[#DEBD7A] rounded-full"></div>
               
               <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed space-y-3 font-normal pt-2">
-                {profile?.headmaster_welcome ? (
-                  profile.headmaster_welcome.split('\n\n').slice(0, 3).map((par, i) => (
-                    <p key={i}>{par}</p>
-                  ))
-                ) : (
-                  <p>Selamat datang di portal resmi SMP Islam Caruy. Kami berkomitmen mendampingi setiap peserta didik agar berkembang secara intelektual, emosional, dan spiritual dalam iklim belajar yang hangat dan berkarakter.</p>
-                )}
+                {profile.headmaster_welcome.split('\n\n').slice(0, 3).map((par, i) => (
+                  <p key={i}>{par}</p>
+                ))}
               </div>
 
               <div className="pt-4 flex items-center gap-4">
@@ -366,120 +376,58 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+      )}
 
-      {/* 4. VISI DAN MISI (LAYOUT EDITORIAL ELEGAN) */}
-      <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <ScrollReveal animation="fade-up" className="max-w-3xl">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#2A5C40]">
-              Arah dan Cita-Cita
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#1F2621] tracking-tight mt-1">
-              Visi & Misi Pendidikan Sekolah
-            </h2>
-            <div className="w-16 h-1 bg-[#DEBD7A] rounded-full mt-3"></div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Box Visi Utama */}
-            <ScrollReveal animation="fade-up" className="lg:col-span-5 bg-[#132A1E] text-white p-8 sm:p-10 rounded-3xl flex flex-col justify-between shadow-md">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#E5C178] text-xs font-semibold">
-                  <Target className="w-3.5 h-3.5" />
-                  <span>Visi Utama Sekolah</span>
-                </div>
-                <blockquote className="text-lg sm:text-xl font-medium leading-snug text-[#FAF9F5] italic pt-2">
-                  "{visionMission?.vision || 'Terwujudnya Generasi Muslim yang Berakhlakul Karimah, Unggul dalam Prestasi Akademik dan Non-Akademik, Menguasai IPTEK, serta Berwawasan Lingkungan Hidup.'}"
-                </blockquote>
-              </div>
-              <div className="pt-6 border-t border-white/10 mt-6 flex items-center justify-between">
-                <span className="text-xs text-[#D5E0D7] font-normal">Motto: {visionMission?.vision_motto || 'Mencetak Generasi Cerdas Berkarakter Islami'}</span>
-                <Link to="/visi-misi" className="text-xs text-[#E8CF94] hover:underline font-bold inline-flex items-center gap-1">
-                  Selengkapnya <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </ScrollReveal>
-
-            {/* List Misi */}
-            <ScrollReveal animation="fade-up" delay={200} className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-[#ECE7DD] flex flex-col justify-between shadow-sm">
-              <div className="space-y-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#2A5C40] block">
-                  Misi Penyelenggaraan Pendidikan
-                </span>
-                <ul className="space-y-3.5">
-                  {(visionMission?.missions && visionMission.missions.length > 0 ? visionMission.missions : [
-                    'Menanamkan aqidah Islamiyyah yang shahihah dan membiasakan pengamalan ibadah yaumiyyah serta akhlakul karimah.',
-                    'Menyelenggarakan proses pembelajaran berkualitas yang mengintegrasikan kurikulum nasional dengan kurikulum kepesantrenan.',
-                    'Mengembangkan potensi, minat, dan bakat peserta didik secara optimal melalui kegiatan akademik, ekstrakurikuler, dan keolahragaan.',
-                    'Memanfaatkan teknologi informasi dan komunikasi secara bijak dan produktif dalam kegiatan pembelajaran.'
-                  ]).slice(0, 4).map((mission, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-[#E8EFEA] text-[#1D4A32] flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold">
-                        {idx + 1}
-                      </div>
-                      <p className="text-xs sm:text-sm text-[#4E564F] leading-relaxed">
-                        {mission}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="pt-4 mt-6 border-t border-[#F2EFE9]">
-                <Link to="/visi-misi" className="text-xs font-bold text-[#1D4A32] hover:text-[#2A5C40] uppercase tracking-wider inline-flex items-center gap-1.5">
-                  <span>Lihat Seluruh Rincian Misi & Tujuan</span>
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </ScrollReveal>
+      {(isFeatureEnabled('vision') && Boolean(visionMission?.vision)) || (isFeatureEnabled('mission') && Boolean(visionMission?.missions?.length)) ? (
+        <section className="bg-stone-50 px-6 py-16 sm:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl space-y-8">
+            <div className="max-w-2xl space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--school-primary)]">Profil Sekolah</p>
+              <h2 className="text-2xl font-semibold text-stone-900 sm:text-3xl">Visi dan Misi</h2>
+            </div>
+            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+              {isFeatureEnabled('vision') && visionMission?.vision && (
+                <article className="rounded-3xl bg-[var(--school-primary)] p-7 text-white sm:p-9">
+                  <h3 className="mb-4 text-sm font-semibold text-[var(--school-secondary)]">Visi</h3>
+                  <RichTextContent value={visionMission.vision} className="text-lg font-medium leading-relaxed sm:text-xl"/>
+                  {visionMission.vision_motto && <p className="mt-5 border-t border-white/15 pt-4 text-sm text-white/75">{visionMission.vision_motto}</p>}
+                </article>
+              )}
+              {isFeatureEnabled('mission') && (visionMission?.missions?.length ?? 0) > 0 && (
+                <article className="rounded-3xl border border-stone-200 bg-white p-7 sm:p-9">
+                  <h3 className="mb-4 text-sm font-semibold text-stone-900">Misi</h3>
+                  <ol className="list-decimal space-y-3 pl-5 marker:font-semibold marker:text-[var(--school-primary)]">
+                    {visionMission?.missions.map((mission, index) => <li key={index} className="pl-2 text-sm leading-7 text-stone-600"><RichTextContent value={mission}/></li>)}
+                  </ol>
+                </article>
+              )}
+            </div>
+            <Link to="/visi-misi" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--school-primary)] hover:underline">
+              Lihat visi dan misi <ChevronRight className="h-4 w-4" />
+            </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      {/* 5. NILAI DAN KARAKTER PENDIDIKAN */}
-      <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <ScrollReveal animation="fade-up" className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#2A5C40]">
-              Pondasi Karakter
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1F2621] tracking-tight">
-              Nilai Utama Pendidikan SMP Islam Caruy
-            </h2>
-            <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed">
-              Empat pilar utama yang senantiasa dihidupkan dalam keseharian para pendidik dan santri.
-            </p>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(visionMission?.core_values && visionMission.core_values.length > 0 ? visionMission.core_values : [
-              { title: 'Integritas & Taqwa', desc: 'Menjadikan iman dan ketakwaan kepada Allah SWT sebagai landasan setiap langkah dan perbuatan.' },
-              { title: 'Akhlakul Karimah', desc: 'Membudayakan sikap santun, rendah hati, menghormati guru dan orang tua, serta menyayangi sesama.' },
-              { title: 'Keunggulan Akademik', desc: 'Mendorong daya nalar kritis, rasa ingin tahu yang tinggi, dan semangat pantang menyerah.' },
-              { title: 'Kemandirian & Disiplin', desc: 'Membentuk pribadi yang bertanggung jawab, jujur, tertib, dan mampu memimpin diri sendiri.' }
-            ]).map((val, idx) => (
-              <ScrollReveal
-                key={idx}
-                animation="fade-up"
-                delay={idx * 100}
-                className="bg-[#FAF8F5] p-6 rounded-2xl border border-[#ECE7DD] space-y-3 hover:border-[#2A5C40] transition-colors"
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#E8EFEA] text-[#1D4A32] flex items-center justify-center font-bold">
-                  {idx === 0 ? <HeartHandshake className="w-5 h-5" /> :
-                   idx === 1 ? <Smile className="w-5 h-5" /> :
-                   idx === 2 ? <GraduationCap className="w-5 h-5" /> :
-                   <ShieldCheck className="w-5 h-5" />}
-                </div>
-                <h3 className="font-bold text-base text-[#1F2621]">{val.title}</h3>
-                <p className="text-xs text-[#5C645D] leading-relaxed font-normal">
-                  {val.desc}
-                </p>
-              </ScrollReveal>
-            ))}
+      {isFeatureEnabled('coreValues') && (visionMission?.core_values?.length ?? 0) > 0 && (
+        <section className="border-b border-stone-200 bg-white px-6 py-16 sm:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl space-y-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-2xl font-semibold text-stone-900 sm:text-3xl">Nilai Utama Sekolah</h2>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {visionMission?.core_values?.map((value, index) => (
+                <article key={index} className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
+                  <h3 className="font-semibold text-stone-900">{value.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">{value.desc}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* 6. PROGRAM PENDIDIKAN UNGGULAN */}
+      {isFeatureEnabled('programs') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -504,10 +452,10 @@ export const Home: React.FC = () => {
             {(programs && programs.length > 0 ? programs : [
               {
                 id: 1,
-                name: 'Tahfidzul Quran & Adab',
-                description: 'Bimbingan hafalan Al-Quran dengan target minimal juz 30, didampingi guru pembina tahfidz bersanad dengan penekanan kaidah tajwid.',
+                name: 'Pendidikan Agama & Karakter',
+                description: 'Pembelajaran akademik dan penguatan karakter positif.',
                 schedule_info: 'Setiap Hari Kerja ba’da Sholat Dhuha & Ashar',
-                instructor: 'Ustadz Pembina Tahfidz'
+                instructor: 'Guru Pendidikan Agama'
               },
               {
                 id: 2,
@@ -519,7 +467,7 @@ export const Home: React.FC = () => {
               {
                 id: 3,
                 name: 'Pengembangan Bakat & Kepanduan',
-                description: 'Wadah pembinaan minat melalui kepanduan Pramuka, olahraga futsal, seni kaligrafi Islam, dan rebana untuk membentuk jiwa pemimpin.',
+                description: 'Wadah pengembangan minat melalui kegiatan kepanduan, olahraga, seni, dan keterampilan untuk membangun kerja sama serta jiwa kepemimpinan.',
                 schedule_info: 'Setiap Jumat & Sabtu',
                 instructor: 'Pembina Ekstrakurikuler'
               }
@@ -530,9 +478,7 @@ export const Home: React.FC = () => {
                     {idx === 0 ? <BookOpen className="w-6 h-6" /> : idx === 1 ? <GraduationCap className="w-6 h-6" /> : <Users className="w-6 h-6" />}
                   </div>
                   <h3 className="font-bold text-lg text-[#1F2621]">{prog.name}</h3>
-                  <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed font-normal">
-                    {prog.description}
-                  </p>
+                  <RichTextContent value={prog.description} className="text-xs sm:text-sm text-[#5C645D] leading-relaxed font-normal"/>
                 </div>
                 {prog.schedule_info && (
                   <div className="pt-3 border-t border-[#F2EFE9] text-xs text-[#2A5C40] flex items-center gap-1.5 font-medium">
@@ -545,8 +491,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 7. FASILITAS SEKOLAH (GRID GALERI EDITORIAL) */}
+      {isFeatureEnabled('facilities') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -577,7 +524,7 @@ export const Home: React.FC = () => {
               >
                 <div className="aspect-[4/3] overflow-hidden bg-[#EAE5DC]">
                   <img
-                    src={fac.photo || 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=600'}
+                    src={fac.photo || '/demo/demo-classroom.svg'}
                     alt={fac.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -587,9 +534,7 @@ export const Home: React.FC = () => {
                     <h3 className="font-bold text-sm text-[#1F2621] group-hover:text-[#1D4A32] transition-colors">
                       {fac.name}
                     </h3>
-                    <p className="text-xs text-[#5C645D] leading-relaxed line-clamp-2 mt-1 font-normal">
-                      {fac.description}
-                    </p>
+                    <RichTextContent value={fac.description} className="mt-1 text-xs text-[#5C645D] leading-relaxed line-clamp-2 font-normal"/>
                   </div>
                   <span className="text-[11px] font-semibold text-[#2A5C40] uppercase tracking-wider pt-2 block border-t border-[#F0EBE1]">
                     {fac.condition_status || 'Kondisi Baik'}
@@ -600,8 +545,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 8. GURU DAN TENAGA KEPENDIDIKAN */}
+      {isFeatureEnabled('teachers') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -632,7 +578,7 @@ export const Home: React.FC = () => {
               >
                 <div className="w-28 h-28 mx-auto rounded-full overflow-hidden border-2 border-white shadow-sm bg-[#EAE5DC]">
                   <img
-                    src={teacher.photo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400'}
+                    src={teacher.photo || '/demo/demo-classroom.svg'}
                     alt={teacher.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -642,15 +588,16 @@ export const Home: React.FC = () => {
                   <p className="text-xs text-[#2A5C40] font-medium mt-0.5">{teacher.subject}</p>
                 </div>
                 <p className="text-[11px] text-[#5C645D] leading-relaxed line-clamp-2 font-normal">
-                  {teacher.short_bio || 'Pengajar berpengalaman yang berdedikasi membina santri.'}
+                  {teacher.short_bio || 'Pengajar berpengalaman yang mendampingi siswa dalam belajar.'}
                 </p>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
+        )}
 
-      {/* 9. KEGIATAN & AKTIVITAS SEKOLAH (DOKUMENTASI ALBUM) */}
+      {isFeatureEnabled('gallery') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -659,7 +606,7 @@ export const Home: React.FC = () => {
                 Dokumentasi Kegiatan
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1F2621] tracking-tight mt-1">
-                Aktivitas & Keseharian Santri
+                Kegiatan Siswa
               </h2>
             </div>
             <Link
@@ -681,8 +628,8 @@ export const Home: React.FC = () => {
               >
                 <div className="aspect-[16/10] overflow-hidden bg-[#EAE5DC] relative">
                   <img
-                    src={album.cover_image || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800'}
-                    alt={album.name || 'Galeri SMP Islam Caruy'}
+                    src={album.cover_image || '/demo/demo-classroom.svg'}
+                    alt={album.name || 'Galeri sekolah'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <span className="absolute top-3 left-3 bg-[#132A1E]/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
@@ -710,8 +657,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 10. PRESTASI & PENCAPAIAN (HANYA SUMBER RESMI TERVERIFIKASI) */}
+      {isFeatureEnabled('achievements') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -720,7 +668,7 @@ export const Home: React.FC = () => {
                 Jejak Keberhasilan
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#1F2621] tracking-tight mt-1">
-                Prestasi Santri & Sekolah
+                Prestasi Siswa
               </h2>
             </div>
             <Link
@@ -764,8 +712,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 11. BERITA & ARTIKEL TERBARU */}
+      {isFeatureEnabled('news') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -796,7 +745,7 @@ export const Home: React.FC = () => {
               >
                 <div className="aspect-[16/10] overflow-hidden bg-[#EAE5DC]">
                   <img
-                    src={item.thumbnail || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800'}
+                    src={item.thumbnail || '/demo/demo-classroom.svg'}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -825,8 +774,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 11B. AGENDA & KEGIATAN MENDATANG */}
+      {isFeatureEnabled('agenda') && agendas.length > 0 && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -848,26 +798,7 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(agendas && agendas.length > 0 ? agendas : [
-              {
-                id: 1,
-                title: 'Masa Pengenalan Lingkungan Sekolah (MPLS) 2026',
-                event_date: '2026-07-15',
-                start_time: '07:30',
-                end_time: '12:00',
-                location: 'Aula & Lapangan Kampus',
-                organizer: 'Kesiswaan'
-              },
-              {
-                id: 2,
-                title: 'Ujian Pemetaan Tahfidzul Quran Santri',
-                event_date: '2026-08-10',
-                start_time: '08:00',
-                end_time: '11:30',
-                location: 'Musholla At-Tarbiyah',
-                organizer: 'Bidang Keagamaan'
-              }
-            ]).slice(0, 3).map((ag, idx) => (
+            {agendas.slice(0, 3).map((ag, idx) => (
               <ScrollReveal key={ag.id || idx} animation="fade-up" delay={idx * 150} className="bg-white rounded-2xl p-6 border border-[#ECE7DD] shadow-sm flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -878,7 +809,7 @@ export const Home: React.FC = () => {
                   </div>
                   <h3 className="font-bold text-base text-[#1F2621] line-clamp-2">{ag.title}</h3>
                   {ag.description && (
-                    <p className="text-xs text-[#5C645D] font-normal line-clamp-2">{ag.description}</p>
+                    <RichTextContent value={ag.description} className="text-xs text-[#5C645D] font-normal line-clamp-2"/>
                   )}
                 </div>
                 <div className="pt-3 border-t border-[#F2EFE9] space-y-1 text-xs text-[#5C645D]">
@@ -896,8 +827,9 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
-      {/* 12. PENERIMAAN PESERTA DIDIK BARU (PPDB) */}
+      {isFeatureEnabled('ppdb') && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-6xl mx-auto bg-white rounded-3xl p-8 sm:p-12 border border-[#ECE7DD] shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -910,17 +842,17 @@ export const Home: React.FC = () => {
                 Penerimaan Peserta Didik Baru Resmi Dibuka
               </h2>
               <p className="text-xs sm:text-sm text-[#5C645D] leading-relaxed font-normal">
-                {ppdb?.overview || 'Mari bergabung membina generasi Qurani yang cerdas dan mandiri. Tersedia kuota beasiswa prestasi, pembebasan biaya bagi anak yatim, dan keringanan khusus bagi keluarga prasejahtera.'}
+                {ppdb?.overview || 'Penerimaan peserta didik baru mengikuti periode yang ditetapkan sekolah. Informasi persyaratan, jadwal, dan alur pendaftaran dapat disesuaikan melalui panel pengelola.'}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div className="flex items-center gap-2 text-xs text-[#2C332D]">
                   <CheckCircle2 className="w-4 h-4 text-[#2A5C40] shrink-0" />
-                  <span>Jalur Prestasi & Beasiswa Tahfidz</span>
+                  <span>Jalur Prestasi dan Beasiswa</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[#2C332D]">
                   <CheckCircle2 className="w-4 h-4 text-[#2A5C40] shrink-0" />
-                  <span>Bebas Infaq bagi Santri Yatim</span>
+                  <span>Bantuan pendidikan sesuai ketentuan sekolah</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[#2C332D]">
                   <CheckCircle2 className="w-4 h-4 text-[#2A5C40] shrink-0" />
@@ -952,62 +884,27 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+        )}
 
       {/* 13. CALL TO ACTION / HUBUNGI SEKOLAH (RESMI & HANGAT) */}
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#132A1E] text-white">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <ScrollReveal animation="fade-up" className="lg:col-span-8 space-y-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#E5C178]">
-              Layanan Informasi & Silaturahmi
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#FAF9F5] tracking-tight">
-              Kunjungi Kampus Kami atau Hubungi Sekretariat
-            </h2>
-            <p className="text-xs sm:text-sm text-[#D5E0D7] font-normal leading-relaxed max-w-xl">
-              Pintu silaturahmi SMP Islam Caruy senantiasa terbuka bagi calon wali santri, alumni, dan masyarakat luas yang ingin berkonsultasi mengenai pendidikan putra-putrinya.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-xs text-[#E6EFE9]">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#E5C178] shrink-0 mt-0.5" />
-                <span>{profile?.address || 'Desa Caruy, Kec. Cipari, Kabupaten Cilacap, Jawa Tengah 53262'}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <PhoneCall className="w-4 h-4 text-[#E5C178] shrink-0 mt-0.5" />
-                <span>WhatsApp / Telp: {profile?.phone || '0821-3297-2773'}</span>
-              </div>
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-12">
+          <div className="space-y-4 lg:col-span-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--school-secondary)]">Informasi Kontak</p>
+            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">Hubungi Sekolah</h2>
+            <div className="grid grid-cols-1 gap-4 pt-2 text-sm text-white/80 sm:grid-cols-2">
+              {profile?.address && <div className="flex items-start gap-3"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--school-secondary)]" /><span>{profile.address}</span></div>}
+              {profile?.phone && <div className="flex items-start gap-3"><PhoneCall className="mt-0.5 h-4 w-4 shrink-0 text-[var(--school-secondary)]" /><a href={`tel:${profile.phone}`} className="hover:text-white">{profile.phone}</a></div>}
+              {profile?.email && <div className="flex items-start gap-3"><FileText className="mt-0.5 h-4 w-4 shrink-0 text-[var(--school-secondary)]" /><a href={`mailto:${profile.email}`} className="hover:text-white">{profile.email}</a></div>}
             </div>
-
-            <div className="pt-2">
-              <a
-                href="https://maps.app.goo.gl/bXeheSRzzDqizqT6A"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-xs font-semibold text-[#E8CF94] hover:underline"
-              >
-                <span>Buka di Google Maps (Navigasi Rute)</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal animation="fade-up" delay={200} className="lg:col-span-4 flex flex-col gap-3.5">
-            <Link
-              to="/kontak"
-              className="inline-flex items-center justify-center gap-2 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-xs uppercase tracking-wider px-7 py-4 rounded-xl shadow-md transition-all text-center"
-            >
-              <span>Kirim Pesan ke Sekolah</span>
-              <ArrowRight className="w-4 h-4" />
+            {profile?.maps_embed_url && <a href={profile.maps_embed_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--school-secondary)] hover:underline"><MapPin className="h-4 w-4" />Lihat lokasi sekolah</a>}
+          </div>
+          <div className="flex flex-col gap-3 lg:col-span-4">
+            <Link to="/kontak" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--school-secondary)] px-6 py-4 text-sm font-semibold text-stone-950 transition-colors hover:opacity-90">
+              <span>Hubungi Sekolah</span><ArrowRight className="h-4 w-4" />
             </Link>
-            <a
-              href={`https://wa.me/${(profile?.whatsapp || '6282132972773').replace(/[^0-9]/g, '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/20 font-medium text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all text-center"
-            >
-              <span>Chat WhatsApp Resmi</span>
-            </a>
-          </ScrollReveal>
+            {profile?.whatsapp && <a href={`https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-white/15"><PhoneCall className="h-4 w-4" /><span>WhatsApp Sekolah</span></a>}
+          </div>
         </div>
       </section>
     </div>

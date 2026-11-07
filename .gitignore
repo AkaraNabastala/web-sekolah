@@ -24,6 +24,7 @@ backup_snapshot/
 # Runtime Uploads & Media
 uploads/
 */uploads/
+backend/private-admission-uploads/
 !uploads/.gitkeep
 !backend/uploads/.gitkeep
 
@@ -46,3 +47,11 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Generated production package
+deployment/
+
+# Local offline JSON store (MySQL remains the primary database)
+backend/database/data.json
+
+database/data.json

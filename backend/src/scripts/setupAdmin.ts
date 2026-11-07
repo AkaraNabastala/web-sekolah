@@ -15,7 +15,7 @@ function question(query: string): Promise<string> {
 
 async function main() {
   console.log('====================================================');
-  console.log('  SETUP ADMINISTRATOR PERTAMA - SMP ISLAM CARUY     ');
+  console.log('  SETUP ADMINISTRATOR PERTAMA - WEBSITE SEKOLAH     ');
   console.log('====================================================');
 
   const check = await checkConnection();

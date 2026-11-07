@@ -1,128 +1,47 @@
-# 🏫 Website Resmi SMP Islam Caruy
+# School Website CMS
 
-Portal Profil Sekolah, Sistem Informasi Terpadu, Layanan PPDB Online, dan Dashboard Administrator Interaktif SMP Islam Caruy, Cipari, Cilacap.
+Template website sekolah dan sistem manajemen konten (CMS) berbasis React, TypeScript, Node.js, Express, dan MySQL.
 
----
+Template ini dirancang sebagai produk generik yang dapat digunakan ulang untuk berbagai sekolah. Instalasi demo menggunakan identitas, konten, dan aset ilustrasi dummy. Tidak ada identitas sekolah atau data institusi nyata yang menjadi bawaan produk.
 
-## 🏗️ Arsitektur Proyek
+## Fitur utama
 
-Proyek ini telah direkonstruksi menjadi arsitektur modular yang memisahkan frontend dan backend secara profesional:
+- Website publik responsif dengan profil, sejarah, visi-misi, organisasi, guru/staf, berita, agenda, pengumuman, galeri, prestasi, fasilitas, kontak, dan modul penerimaan peserta didik.
+- Dashboard admin dengan pembagian peran pengelola.
+- Pengaturan identitas sekolah, logo, favicon, warna, hero, SEO, dan visibilitas modul.
+- Pengelolaan konten melalui CMS.
+- Editor rich text berbasis PrimeReact Editor dan Quill.
+- Autentikasi berbasis cookie HttpOnly, proteksi CSRF, serta pengelolaan profil dan password admin.
+- Backend API dan database MySQL dengan migrasi terkelola.
 
-```text
-web-sekolah/
-├── frontend/                     # Client Application (React 19, Vite 7, Tailwind CSS v4, TypeScript)
-│   ├── public/                   # Asset statis & favicon
-│   ├── src/
-│   │   ├── components/           # Komponen UI, Navbar dropdown & accordion mobile, Footer
-│   │   ├── context/              # AuthContext (JWT) & SchoolContext
-│   │   ├── pages/
-│   │   │   ├── public/           # Halaman publik (Beranda, Profil, Guru, Berita, Galeri, Fasilitas, PPDB, Kontak)
-│   │   │   └── admin/            # Dashboard Admin & Statistik Pengunjung
-│   │   └── services/             # Axios REST API Client
-│   ├── package.json              # Dependensi frontend
-│   └── vite.config.ts            # Proxy API development & build config
-│
-├── backend/                      # API Backend Service (Node.js, Express, TypeScript, Multer, ExcelJS)
-│   ├── src/
-│   │   ├── config/               # database.ts (MySQL2 Connection Pool & Health Check)
-│   │   ├── middleware/           # auth.ts (JWT Auth & Role Guard)
-│   │   ├── routes/               # api.ts (Endpoints publik, admin CRUD, upload, tracking)
-│   │   ├── services/             # StatisticsService.ts (Pengunjung unik, sesi, ekspor XLSX/CSV)
-│   │   ├── utils/                # privacy.ts (SHA-256 IP anonymization)
-│   │   ├── scripts/              # setupAdmin.ts (CLI setup superadmin pertama)
-│   │   └── server.ts             # Express server runtime
-│   ├── uploads/                  # Penyimpanan berkas terunggah (gambar & dokumen)
-│   └── package.json              # Dependensi backend
-│
-├── database/
-│   ├── schema.sql                # Skema DDL MySQL 8.0+ (20 tabel relasional)
-│   └── seeds/
-│       └── seed.sql              # Data inisialisasi awal (tanpa password default)
-│
-├── .env.example                  # Template variabel lingkungan
-├── .gitignore                    # Rule pengabaian file sensitif
-└── README.md                     # Dokumentasi panduan
-```
+## Struktur proyek
 
----
+- `frontend/`: aplikasi React dan Vite.
+- `backend/`: API Node.js/Express dan integrasi MySQL.
+- `backend/database/`: skema, migrasi, dan data demo.
+- `.github/workflows/`: pemeriksaan build dan validasi migrasi.
 
-## 🔒 Keamanan & Pembuatan Administrator Pertama
+## Menjalankan secara lokal
 
-Untuk menjaga integritas dan keamanan sistem, **tidak ada akun demo atau kata sandi bawaan** yang disimpan di dalam source code repository.
+1. Gunakan Node.js 22 atau versi LTS yang kompatibel.
+2. Salin `.env.example` menjadi `.env`, isi konfigurasi database lokal, lalu buat secret acak untuk `JWT_SECRET` dan `ADMIN_SETUP_TOKEN` (masing-masing minimal 32 karakter; gunakan `openssl rand -hex 32`). Jangan memakai secret contoh atau mengunggah `.env` ke Git.
+3. Buat database MySQL baru khusus demo. Jangan gunakan database yang berisi data sekolah nyata.
+4. Pasang dependensi root, backend, dan frontend menggunakan `npm ci` pada direktori masing-masing.
+5. Jalankan migrasi database sesuai panduan backend.
+6. Isi database demo menggunakan `backend/database/seeds/seed.sql`.
+7. Jalankan backend, buka halaman `/admin/login`, lalu gunakan token `ADMIN_SETUP_TOKEN` untuk membuat akun superadmin pertama. Setelah setup berhasil, kosongkan/nonaktifkan token setup dari environment dan restart backend.
+8. Jalankan frontend dan backend dalam mode pengembangan.
 
-### Pembuatan Administrator Pertama (Setup Mandiri):
-1. **Melalui Antarmuka Web**:  
-   Saat pertama kali membuka `/admin/login` ketika database belum memiliki akun administrator, antarmuka setup awal akan otomatis aktif. Pemilik sistem dapat memasukkan nama lengkap, email, username, dan kata sandi pilihan (minimal 8 karakter). Setelah berhasil dibuat, alur setup ini terkunci secara permanen.
-2. **Melalui Baris Perintah (CLI)**:
-   ```bash
-   cd backend
-   npm run setup-admin
-   ```
-   Ikuti instruksi interaktif di terminal untuk mendaftarkan akun Superadmin pertama Anda.
+## Identitas dan konten demo
 
----
+Data awal memakai nama generik `Nama Sekolah Anda`, alamat kosong/placeholder, dan contoh teks yang harus diganti melalui dashboard. Ilustrasi demo berada di `frontend/public/demo/` agar tidak bergantung pada layanan foto pihak ketiga.
 
-## 🛠️ Panduan Instalasi & Menjalankan
+Untuk penggunaan produksi, pemilik instalasi harus memasukkan data sekolahnya sendiri, mengunggah logo dan foto yang memiliki hak penggunaan, mengatur domain, serta mengamankan konfigurasi server dan database.
 
-### 1. Prasyarat Sistem
-- **Node.js**: Versi 20+ atau 24 LTS
-- **NPM**: Versi 10+
-- **Database**: MySQL 8.0+
+## Catatan keamanan
 
-### 2. Konfigurasi Environment (.env)
-Salin `.env.example` menjadi `.env` di root atau di dalam folder `backend/`:
-```bash
-cp .env.example .env
-```
-Sesuaikan konfigurasi koneksi MySQL (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) serta buat string acak yang kuat untuk `JWT_SECRET`. **Jangan meng-commit file `.env` ke Git!**
-
-### 3. Migrasi Database MySQL
-Jalankan skema basis data pada server MySQL Anda:
-```bash
-mysql -u root -p < database/schema.sql
-mysql -u root -p < database/seeds/seed.sql
-```
-
-### 4. Menjalankan Backend (Development)
-```bash
-cd backend
-npm install
-npm run dev
-```
-Backend akan aktif di `http://localhost:5000`.
-
-### 5. Menjalankan Frontend (Development)
-Buka terminal baru:
-```bash
-cd frontend
-npm install --legacy-peer-deps
-npm run dev
-```
-Frontend akan aktif di `http://localhost:5173`. Permintaan `/api` dan `/uploads` secara otomatis diteruskan (*proxy*) ke backend di port 5000.
-
----
-
-## 📦 Build Produksi & Deployment
-
-### Build Kompilasi:
-```bash
-# Build Frontend
-cd frontend
-npm run build
-
-# Build Backend
-cd ../backend
-npm run build
-```
-
-### Menjalankan Server Produksi:
-```bash
-cd backend
-npm start
-```
-
----
-
-## 📊 Statistik Pengunjung & Laporan
-- **Metrik Privasi**: Menggunakan *one-way SHA-256 daily salt hashing* pada IP pengunjung dan User-Agent, sehingga privasi pengunjung terlindungi tanpa menyimpan IP mentah.
-- **Ekspor Dokumen**: Laporan analitik kunjungan dapat diunduh langsung dalam format **Microsoft Excel (.xlsx)** dan **CSV** melalui Dashboard Admin pada menu `Statistik Pengunjung`.
+- Jangan menggunakan kredensial demo pada server publik.
+- Jangan menjalankan seed atau reset database terhadap database produksi.
+- Buat cadangan database sebelum menjalankan migrasi pada instalasi yang sudah berisi data.
+- Jangan menyimpan file dokumen pendaftar pada direktori publik.
+- Jangan commit file `.env`, kredensial, atau data pribadi.

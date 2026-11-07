@@ -4,6 +4,7 @@ import { PageHeader } from '../../components/common/PageHeader';
 import { schoolApi } from '../../services/api';
 import { Facility } from '../../types';
 import { SEO } from '../../components/common/SEO';
+import { RichTextContent } from '../../components/common/RichTextEditor';
 import { Building, Users, CheckCircle, Shield } from 'lucide-react';
 
 export const Facilities: React.FC = () => {
@@ -28,11 +29,11 @@ export const Facilities: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Sarana & Fasilitas Sekolah"
-        description="Daftar sarana dan prasarana belajar SMP Islam Caruy: Ruang Kelas Ber-AC, Laboratorium Komputer & IPA, Perpustakaan, Musholla At-Tarbiyah, dan Lapangan Olahraga."
+        description="Daftar sarana dan prasarana sekolah, seperti ruang kelas, laboratorium, perpustakaan, ruang kegiatan, dan area olahraga."
       />
       <PageHeader
         title="Sarana & Fasilitas Sekolah"
-        subtitle="Dukungan infrastruktur modern, representatif, dan aman untuk mengoptimalkan potensi belajar santri."
+        subtitle="Fasilitas sekolah untuk mendukung kegiatan belajar siswa."
         badge="Infrastruktur Kampus"
         breadcrumbs={[{ label: 'Fasilitas' }]}
       />
@@ -95,9 +96,7 @@ export const Facilities: React.FC = () => {
                   )}
                 </div>
 
-                <p className="text-xs text-stone-600 font-normal leading-relaxed">
-                  {fac.description}
-                </p>
+                <RichTextContent value={fac.description} className="text-xs text-stone-600 font-normal leading-relaxed"/>
               </div>
             </div>
           ))}

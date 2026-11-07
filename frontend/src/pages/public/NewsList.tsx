@@ -39,11 +39,11 @@ export const NewsList: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Berita & Artikel"
-        description="Kabar terkini, artikel edukatif, liputan prestasi, agenda kegiatan sekolah, dan pengumuman resmi SMP Islam Caruy."
+        description="Berita, artikel, liputan kegiatan, prestasi, dan pengumuman terbaru dari sekolah."
       />
       <PageHeader
         title="Berita, Artikel & Pengumuman"
-        subtitle="Seputar informasi terkini, agenda kegiatan, prestasi santri, dan pengumuman resmi SMP Islam Caruy."
+        subtitle="Informasi terbaru, kegiatan, prestasi peserta didik, dan pengumuman sekolah."
         badge="Warta Sekolah"
         breadcrumbs={[{ label: 'Berita & Artikel' }]}
       />
@@ -101,7 +101,7 @@ export const NewsList: React.FC = () => {
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
                   <img
-                    src={article.thumbnail || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800'}
+                    src={article.thumbnail || '/demo/demo-event.svg'}
                     alt={article.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />

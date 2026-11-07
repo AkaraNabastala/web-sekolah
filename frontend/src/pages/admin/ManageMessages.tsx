@@ -57,9 +57,6 @@ export const ManageMessages: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Kotak Masuk Pesan Pengunjung</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Daftar pertanyaan, pesan, dan permohonan informasi yang dikirimkan masyarakat melalui formulir kontak.
-          </p>
         </div>
       </div>
 
@@ -184,7 +181,7 @@ export const ManageMessages: React.FC = () => {
               <div className="flex gap-2">
                 {selectedMsg.phone && (
                   <a
-                    href={`https://wa.me/${selectedMsg.phone.replace(/[^0-9]/g, '')}?text=Halo%20${encodeURIComponent(selectedMsg.name)},%20kami%20dari%20SMP%20Islam%20Caruy%20merespons%20pesan%20Anda:`}
+                    href={`https://wa.me/${selectedMsg.phone.replace(/[^0-9]/g, '')}?text=Halo%20${encodeURIComponent(selectedMsg.name)},%20kami%20dari%20pihak%20sekolah%20merespons%20pesan%20Anda:`}
                     target="_blank"
                     rel="noreferrer"
                     className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm"

@@ -14,8 +14,9 @@ export const ManageOrganization: React.FC = () => {
     position: '',
     name: '',
     nip: '-',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300',
-    level: 3,
+    photo: '/demo/demo-person.svg',
+    level: 1,
+    parent_id: null,
     display_order: 1,
     description: ''
   });
@@ -40,8 +41,9 @@ export const ManageOrganization: React.FC = () => {
       position: '',
       name: '',
       nip: '-',
-      photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300',
-      level: 3,
+      photo: '/demo/demo-person.svg',
+      level: 1,
+      parent_id: null,
       display_order: members.length + 1,
       description: ''
     });
@@ -105,9 +107,6 @@ export const ManageOrganization: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">Manajemen Struktur Organisasi</h1>
-          <p className="text-xs text-stone-500 font-normal mt-0.5">
-            Atur hierarki komite sekolah, kepala sekolah, wakil kepala sekolah, dan staf pimpinan.
-          </p>
         </div>
 
         <button
@@ -115,7 +114,7 @@ export const ManageOrganization: React.FC = () => {
           className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Pejabat / Anggota</span>
+          <span>Anggota</span>
         </button>
       </div>
 
@@ -129,7 +128,7 @@ export const ManageOrganization: React.FC = () => {
               <tr className="border-b border-stone-200 bg-stone-50 text-stone-700 font-bold uppercase text-[10px] tracking-wider">
                 <th className="py-3 px-4">Urutan & Posisi</th>
                 <th className="py-3 px-4">Nama Lengkap & NIP</th>
-                <th className="py-3 px-4">Tingkat / Level</th>
+                <th className="py-3 px-4">Atasan</th>
                 <th className="py-3 px-4">Tugas / Deskripsi Singkat</th>
                 <th className="py-3 px-4 text-right">Aksi</th>
               </tr>
@@ -153,9 +152,7 @@ export const ManageOrganization: React.FC = () => {
                     <p className="text-[10px] text-stone-400 font-mono">NIP: {item.nip || '-'}</p>
                   </td>
                   <td className="py-3 px-4">
-                    <span className="bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded text-[10px]">
-                      Level {item.level} ({item.level === 1 ? 'Komite' : item.level === 2 ? 'Kepsek' : 'Waka/TU'})
-                    </span>
+                    <span className="text-stone-600 text-xs">{members.find(member => member.id === item.parent_id)?.position || 'Pimpinan tertinggi'}</span>
                   </td>
                   <td className="py-3 px-4 text-stone-500 max-w-xs truncate">{item.description || '-'}</td>
                   <td className="py-3 px-4 text-right space-x-2">
@@ -200,8 +197,7 @@ export const ManageOrganization: React.FC = () => {
                 <input
                   type="text"
                   required
-                  placeholder="Misal: Waka Kesiswaan, Ka. TU, dll."
-                  value={form.position}
+                  value={(form.position) ?? ''}
                   onChange={(e) => setForm({ ...form, position: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -212,34 +208,22 @@ export const ManageOrganization: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.name}
+                  value={(form.name) ?? ''}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">NIP (Opsional)</label>
-                  <input
-                    type="text"
-                    value={form.nip}
-                    onChange={(e) => setForm({ ...form, nip: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                  />
+                  <input type="text" value={(form.nip || '') ?? ''} onChange={(e) => setForm({ ...form, nip: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
                 </div>
-
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-stone-700">Tingkat Level</label>
-                  <select
-                    value={form.level}
-                    onChange={(e) => setForm({ ...form, level: parseInt(e.target.value) })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
-                  >
-                    <option value={1}>Level 1 - Komite Sekolah</option>
-                    <option value={2}>Level 2 - Kepala Sekolah</option>
-                    <option value={3}>Level 3 - Waka / Kepala TU</option>
-                    <option value={4}>Level 4 - Wali Kelas / Koordinator</option>
+                  <label className="text-xs font-bold text-stone-700">Atasan / Induk Jabatan</label>
+                  <select value={(form.parent_id ?? '') ?? ''} onChange={(e) => setForm({ ...form, parent_id: e.target.value ? Number(e.target.value) : null })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50">
+                    <option value="">Tidak memiliki atasan</option>
+                    {members.filter(member => member.id !== editingId).map(member => <option key={member.id} value={(member.id) ?? ''}>{member.position} — {member.name}</option>)}
                   </select>
                 </div>
               </div>
@@ -249,7 +233,7 @@ export const ManageOrganization: React.FC = () => {
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    value={form.photo}
+                    value={(form.photo) ?? ''}
                     onChange={(e) => setForm({ ...form, photo: e.target.value })}
                     className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -265,7 +249,7 @@ export const ManageOrganization: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Uraian Tugas / Deskripsi Singkat</label>
                 <textarea
                   rows={2}
-                  value={form.description}
+                  value={(form.description) ?? ''}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />

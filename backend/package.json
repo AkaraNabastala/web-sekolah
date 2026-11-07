@@ -1,5 +1,5 @@
 {
-  "name": "smp-islam-caruy-backend",
+  "name": "school-website-backend",
   "private": true,
   "version": "2.0.0",
   "type": "module",
@@ -30,5 +30,10 @@
     "@types/node": "^22.13.0",
     "tsx": "^4.23.15",
     "typescript": "^5.8.0"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "11.1.1"
+    }
   }
 }
