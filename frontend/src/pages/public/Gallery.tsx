@@ -6,6 +6,21 @@ import { GalleryMedia, GalleryAlbum } from '../../types';
 import { SEO } from '../../components/common/SEO';
 import { Image as ImageIcon, Play, X, ExternalLink, Filter } from 'lucide-react';
 
+const getYouTubeEmbedUrl = (value: string): string | null => {
+  try {
+    const url = new URL(value);
+    const host = url.hostname.replace(/^www\\./, '').toLowerCase();
+    const id = host === 'youtu.be'
+      ? url.pathname.split('/').filter(Boolean)[0] || ''
+      : host === 'youtube.com' || host === 'm.youtube.com'
+        ? url.searchParams.get('v') || url.pathname.split('/').filter(Boolean).pop() || ''
+        : '';
+    return /^[A-Za-z0-9_-]{11}$/.test(id) ? `https://www.youtube.com/embed/${id}` : null;
+  } catch {
+    return null;
+  }
+};
+
 export const Gallery: React.FC = () => {
   const [mediaList, setMediaList] = useState<GalleryMedia[]>([]);
   const [selectedMedia, setSelectedMedia] = useState<GalleryMedia | null>(null);
@@ -20,6 +35,8 @@ export const Gallery: React.FC = () => {
   }, [category]);
 
   const categories = ['Semua', ...Array.from(new Set(mediaList.map(item => item.category).filter(Boolean)))];
+  const isYouTubeUrl = Boolean(selectedMedia?.video_url && /(?:youtube\\.com|youtu\\.be)/i.test(selectedMedia.video_url));
+  const youtubeEmbedUrl = selectedMedia?.video_url ? getYouTubeEmbedUrl(selectedMedia.video_url) : null;
 
   useEffect(() => {
     if (!selectedMedia) return;
@@ -136,13 +153,21 @@ export const Gallery: React.FC = () => {
               <div className="w-full md:w-[62%] h-[42vh] md:h-[88vh] max-h-[88vh] bg-stone-950 flex items-center justify-center overflow-hidden shrink-0">
                 {selectedMedia.media_type === 'video' && selectedMedia.video_url ? (
                   <div className="w-full h-full aspect-video">
-                    {selectedMedia.video_url.includes('youtube.com') || selectedMedia.video_url.includes('youtu.be') ? (
-                      <iframe
-                        src={`https://www.youtube.com/embed/${selectedMedia.video_url.split('v=')[1] || 'dQw4w9WgXcQ'}`}
-                        title={selectedMedia.title}
-                        className="w-full h-full"
-                        allowFullScreen
-                      />
+                    {isYouTubeUrl ? (
+                      youtubeEmbedUrl ? (
+                        <iframe
+                          src={youtubeEmbedUrl}
+                          title={selectedMedia.title}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center p-6 text-center text-sm text-white/80">
+                          Tautan video YouTube tidak valid.
+                        </div>
+                      )
                     ) : (
                       <video src={selectedMedia.video_url} controls className="w-full h-full object-contain" />
                     )}
