@@ -46,7 +46,7 @@ export const Profile: React.FC = () => {
             </div>
             <div className="bg-[#E8EFEA] text-[#1D4A32] border border-[#D1E0D5] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-[#2A5C40]" />
-              <span>Status: {profile?.status || 'Swasta'}</span>
+              <span>Status: {profile?.status || 'Belum diisi'}</span>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ export const Profile: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
               <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400">Status Sekolah</p>
-              <p className="text-base font-bold text-stone-900">{profile?.status || 'Swasta'}</p>
+              <p className="text-base font-bold text-stone-900">{profile?.status || 'Belum diisi'}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100 space-y-1">
