@@ -69,7 +69,7 @@ app.use('/api', apiRouter);
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
-    school: 'SMP Islam Caruy',
+    school: 'Website Sekolah',
     server_time: new Date().toISOString()
   });
 });
@@ -114,7 +114,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 async function start() {
-  logger.info('ServerBootstrap', 'Starting SMP Islam Caruy Backend Service...');
+  logger.info('ServerBootstrap', 'Starting Website Sekolah Backend Service...');
 
   const dbCheck = await checkConnection();
   if (dbCheck.connected) {
