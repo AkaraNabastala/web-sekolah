@@ -268,20 +268,28 @@ export const Home: React.FC = () => {
               </div>
 
               {/* Data Kunci Resmi (Hanya yang Terkonfirmasi) */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#EAE5DC]">
-                <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
-                  <span className="text-[11px] text-[#7A827B] uppercase block">NPSN Resmi</span>
-                  <span className="text-sm font-bold text-[#1F2621] font-mono">{profile?.npsn || 'Belum diisi'}</span>
+              {(profile?.npsn || profile?.accreditation || profile?.education_level) && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#EAE5DC]">
+                  {profile?.npsn && (
+                    <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
+                      <span className="text-[11px] text-[#7A827B] uppercase block">NPSN</span>
+                      <span className="text-sm font-bold text-[#1F2621] font-mono">{profile.npsn}</span>
+                    </div>
+                  )}
+                  {profile?.accreditation && (
+                    <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
+                      <span className="text-[11px] text-[#7A827B] uppercase block">Akreditasi</span>
+                      <span className="text-sm font-bold text-[#2A5C40]">{profile.accreditation}</span>
+                    </div>
+                  )}
+                  {profile?.education_level && (
+                    <div className="p-3 bg-white rounded-xl border border-[#ECE7DD] col-span-2 sm:col-span-1">
+                      <span className="text-[11px] text-[#7A827B] uppercase block">Jenjang Pendidikan</span>
+                      <span className="text-sm font-bold text-[#1F2621]">{profile.education_level}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
-                  <span className="text-[11px] text-[#7A827B] uppercase block">Status Akreditasi</span>
-                  <span className="text-sm font-bold text-[#2A5C40]">{profile?.accreditation || 'Belum diisi'}</span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-[#ECE7DD] col-span-2 sm:col-span-1">
-                  <span className="text-[11px] text-[#7A827B] uppercase block">Jenjang Sekolah</span>
-                  <span className="text-sm font-bold text-[#1F2621]">Sekolah</span>
-                </div>
-              </div>
+              )}
 
               <div className="pt-2">
                 <Link
@@ -320,6 +328,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 3. SAMBUTAN KEPALA SEKOLAH */}
+      {profile?.headmaster_name && profile?.headmaster_welcome && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-white border-b border-[#EAE5DC]">
         <div className="max-w-6xl mx-auto">
           <div className="bg-[#FAF8F5] rounded-3xl p-8 sm:p-12 lg:p-16 border border-[#ECE7DD] grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -333,10 +342,10 @@ export const Home: React.FC = () => {
                 />
               </div>
               <h3 className="text-base sm:text-lg font-bold text-[#1F2621] mt-4">
-                {profile?.headmaster_name || 'Kepala Sekolah Nama Sekolah Anda'}
+                {profile.headmaster_name}
               </h3>
               <p className="text-xs text-[#2A5C40] font-semibold tracking-wide">
-                Kepala Sekolah Nama Sekolah Anda
+                Kepala Sekolah
               </p>
             </ScrollReveal>
 
@@ -352,13 +361,9 @@ export const Home: React.FC = () => {
               <div className="w-12 h-1 bg-[#DEBD7A] rounded-full"></div>
               
               <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed space-y-3 font-normal pt-2">
-                {profile?.headmaster_welcome ? (
-                  profile.headmaster_welcome.split('\n\n').slice(0, 3).map((par, i) => (
-                    <p key={i}>{par}</p>
-                  ))
-                ) : (
-                  <p>Selamat datang di website sekolah kami. Kami berkomitmen menyediakan lingkungan belajar yang aman, inklusif, dan inspiratif agar setiap peserta didik dapat berkembang sesuai potensinya.</p>
-                )}
+                {profile.headmaster_welcome.split('\n\n').slice(0, 3).map((par, i) => (
+                  <p key={i}>{par}</p>
+                ))}
               </div>
 
               <div className="pt-4 flex items-center gap-4">
@@ -374,6 +379,7 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+      )}
 
       {(isFeatureEnabled('vision') && Boolean(visionMission?.vision)) || (isFeatureEnabled('mission') && Boolean(visionMission?.missions?.length)) ? (
         <section className="bg-stone-50 px-6 py-16 sm:px-10 lg:px-16">
