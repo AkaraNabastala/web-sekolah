@@ -28,7 +28,7 @@ export const Achievements: React.FC = () => {
     <div className="font-poppins bg-stone-50 min-h-screen pb-24">
       <SEO
         title="Prestasi & Kejuaraan Siswa"
-        description="Dokumentasi prestasi dan penghargaan siswa SMP Islam Caruy di tingkat kabupaten, provinsi, dan nasional."
+        description="Dokumentasi prestasi dan penghargaan peserta didik di berbagai bidang dan tingkatan."
       />
       <PageHeader
         title="Prestasi & Penghargaan"
