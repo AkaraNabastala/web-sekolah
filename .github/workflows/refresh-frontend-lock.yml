@@ -6,6 +6,7 @@ on:
       - feat/comprehensive-school-cms-upgrade
     paths:
       - frontend/package.json
+      - .github/workflows/refresh-frontend-lock.yml
 
 permissions:
   contents: write
