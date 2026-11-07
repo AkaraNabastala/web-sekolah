@@ -10,7 +10,6 @@ import {
   Mail,
   Send,
   MessageSquare,
-  Clock,
   CheckCircle,
   AlertCircle,
   ExternalLink
@@ -65,62 +64,37 @@ export const Contact: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Kolom Kiri: Informasi Kontak & Jam Kerja (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
+            {(profile?.address || profile?.phone || profile?.whatsapp || profile?.email) && (
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#E7E2D8] space-y-6">
               <div className="space-y-1">
-                <span className="text-[#2A5C40] text-xs font-bold uppercase tracking-wider">
-                  Informasi Sekretariat
-                </span>
-                <h3 className="text-xl font-bold text-[#1F2621]">
-                  Kantor Nama Sekolah Anda
-                </h3>
+                <span className="text-[#2A5C40] text-xs font-bold uppercase tracking-wider">Informasi Sekretariat</span>
+                <h3 className="text-xl font-bold text-[#1F2621]">{profile?.name || 'Kontak Sekolah'}</h3>
               </div>
-
               <div className="space-y-5 text-xs sm:text-sm text-stone-600 font-normal">
-                <div className="flex items-start gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <MapPin className="w-4 h-4" />
+                {profile?.address && (
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5"><MapPin className="w-4 h-4" /></div>
+                    <div><p className="font-bold text-stone-900">Alamat Sekolah</p><p className="mt-0.5 leading-relaxed">{profile.address}</p></div>
                   </div>
-                  <div>
-                    <p className="font-bold text-stone-900">Alamat Sekolah:</p>
-                    <p className="mt-0.5 leading-relaxed">{profile?.address || 'Alamat sekolah belum diisi'}</p>
+                )}
+                {(profile?.phone || profile?.whatsapp) && (
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5"><Phone className="w-4 h-4" /></div>
+                    <div><p className="font-bold text-stone-900">Telepon / WhatsApp</p><p className="mt-0.5">{profile.phone || profile.whatsapp}</p></div>
                   </div>
-                </div>
-
-                <div className="flex items-start gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Phone className="w-4 h-4" />
+                )}
+                {profile?.email && (
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5"><Mail className="w-4 h-4" /></div>
+                    <div><p className="font-bold text-stone-900">Email</p><p className="mt-0.5">{profile.email}</p></div>
                   </div>
-                  <div>
-                    <p className="font-bold text-stone-900">Telepon & WhatsApp:</p>
-                    <p className="mt-0.5">{profile?.phone || '0821-3297-2773'}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Mail className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-stone-900">Email Resmi:</p>
-                    <p className="mt-0.5">{profile?.email || 'Email sekolah belum diisi'}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3.5 border-t border-stone-100 pt-4">
-                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Clock className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-stone-900">Waktu Layanan Administrasi:</p>
-                    <p className="mt-0.5 text-xs text-stone-500">Senin - Kamis & Sabtu: 07.00 - 14.00 WIB</p>
-                    <p className="text-xs text-stone-500">Jumat: 07.00 - 11.00 WIB</p>
-                    <p className="text-xs text-amber-700 font-semibold mt-0.5">Hari Ahad & Libur Nasional Tutup</p>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
+            )}
 
             {/* Direct WhatsApp Consultation Card */}
+            {profile?.whatsapp && (
             <div className="bg-gradient-to-br from-emerald-800 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
               <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-400 text-emerald-950 px-2.5 py-1 rounded-full">
                 Fast Response
@@ -129,8 +103,7 @@ export const Contact: React.FC = () => {
               <p className="text-xs text-emerald-100 font-normal leading-relaxed">
                 Butuh tanggapan cepat mengenai pendaftaran peserta didik baru atau informasi program sekolah? Tim kami siap melayani chat Anda.
               </p>
-              {profile?.whatsapp && (
-                <a
+              <a
                   href={`https://wa.me/${String(profile.whatsapp).replace(/\D/g, '')}?text=${encodeURIComponent(`Halo, saya ingin bertanya kepada ${profile?.name || 'pihak sekolah'}.`)}`}
                   target="_blank"
                   rel="noreferrer"
@@ -138,8 +111,8 @@ export const Contact: React.FC = () => {
                 >
                   <span>Buka WhatsApp</span>
                 </a>
-              )}
             </div>
+            )}
           </div>
 
           {/* Kolom Kanan: Formulir Kirim Pesan (7 cols) */}
