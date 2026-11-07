@@ -64,7 +64,7 @@ export const ManageNews: React.FC = () => {
       category_id: categories[0]?.id || 1,
       summary: '',
       content: '',
-      thumbnail: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800',
+      thumbnail: '/demo/demo-event.svg',
       author: 'Humas SMP Islam Caruy',
       status: 'published'
     });
