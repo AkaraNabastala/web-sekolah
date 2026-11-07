@@ -197,7 +197,7 @@ export const ManageOrganization: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.position}
+                  value={(form.position) ?? ''}
                   onChange={(e) => setForm({ ...form, position: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -208,7 +208,7 @@ export const ManageOrganization: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.name}
+                  value={(form.name) ?? ''}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -217,13 +217,13 @@ export const ManageOrganization: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">NIP (Opsional)</label>
-                  <input type="text" value={form.nip || ''} onChange={(e) => setForm({ ...form, nip: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
+                  <input type="text" value={(form.nip || '') ?? ''} onChange={(e) => setForm({ ...form, nip: e.target.value })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50" />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Atasan / Induk Jabatan</label>
-                  <select value={form.parent_id ?? ''} onChange={(e) => setForm({ ...form, parent_id: e.target.value ? Number(e.target.value) : null })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50">
+                  <select value={(form.parent_id ?? '') ?? ''} onChange={(e) => setForm({ ...form, parent_id: e.target.value ? Number(e.target.value) : null })} className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50">
                     <option value="">Tidak memiliki atasan</option>
-                    {members.filter(member => member.id !== editingId).map(member => <option key={member.id} value={member.id}>{member.position} — {member.name}</option>)}
+                    {members.filter(member => member.id !== editingId).map(member => <option key={member.id} value={(member.id) ?? ''}>{member.position} — {member.name}</option>)}
                   </select>
                 </div>
               </div>
@@ -233,7 +233,7 @@ export const ManageOrganization: React.FC = () => {
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    value={form.photo}
+                    value={(form.photo) ?? ''}
                     onChange={(e) => setForm({ ...form, photo: e.target.value })}
                     className="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -249,7 +249,7 @@ export const ManageOrganization: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Uraian Tugas / Deskripsi Singkat</label>
                 <textarea
                   rows={2}
-                  value={form.description}
+                  value={(form.description) ?? ''}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
