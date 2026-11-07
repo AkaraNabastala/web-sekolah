@@ -283,7 +283,7 @@ export const Contact: React.FC = () => {
             <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-6 py-10 text-center text-sm text-stone-500">
               Peta lokasi akan tampil setelah URL Google Maps diisi melalui profil sekolah.
             </div>
-          )}>
+          )}
         </div>
       </div>
     </div>
