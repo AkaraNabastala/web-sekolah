@@ -260,7 +260,7 @@ export const DesignPreview: React.FC = () => {
                     to="/ppdb"
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-slate-950 font-bold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-xl shadow-amber-500/20 active:scale-95 transition-all"
                   >
-                    <span>Daftar Santri Baru (PPDB)</span>
+                    <span>Daftar Siswa Baru (SPMB)</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                   <Link
@@ -286,7 +286,7 @@ export const DesignPreview: React.FC = () => {
                   <div className="h-8 w-px bg-white/20 hidden sm:block"></div>
                   <div className="text-center">
                     <p className="text-2xl font-black text-amber-300">Kurikulum Terpadu</p>
-                    <p className="text-xs text-emerald-200">Nasional & Pesantren</p>
+                    <p className="text-xs text-emerald-200">Kurikulum & Pengembangan Diri</p>
                   </div>
                 </div>
               </div>

@@ -210,7 +210,7 @@ export const DesignPreviewV2: React.FC = () => {
                     to="/ppdb"
                     className="inline-flex items-center justify-center gap-2.5 bg-[#E8CF94] hover:bg-[#DEBD7A] text-[#1B3B2B] font-bold text-sm px-7 py-3.5 rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:scale-95"
                   >
-                    <span>Informasi Pendaftaran Santri</span>
+                    <span>Informasi Pendaftaran Siswa</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
 
