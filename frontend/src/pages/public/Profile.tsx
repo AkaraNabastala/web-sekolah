@@ -100,7 +100,7 @@ export const Profile: React.FC = () => {
           <div className="mt-6 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100 space-y-1">
             <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Alamat Lengkap Sekolah</p>
             <p className="text-sm font-medium text-stone-800">
-              {profile?.address || 'Jl. Raya Caruy No. 12, Desa Caruy, Kec. Cipari, Kabupaten Cilacap, Jawa Tengah 53262'}
+              {profile?.address || 'Alamat sekolah belum diisi'}
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export const Profile: React.FC = () => {
           
           <div className="text-stone-600 text-sm sm:text-base leading-relaxed space-y-4 font-normal">
             <p>
-              {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di Desa Caruy, Kecamatan Cipari, Kabupaten Cilacap.'}
+              {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan yang berkomitmen memberikan layanan pembelajaran berkualitas dan mendukung perkembangan setiap peserta didik.'}
             </p>
             <p>
               Pendidikan di Nama Sekolah Anda mengikuti kurikulum nasional dengan penguatan pendidikan agama Islam, karakter, dan budi pekerti.
