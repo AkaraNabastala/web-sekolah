@@ -22,7 +22,7 @@ export const SEO: React.FC<SEOProps> = ({
 
   useEffect(() => {
     const fullTitle = title ? `${title} | ${schoolName}` : schoolName;
-    document.title = fullTitle;
+    if (document.title !== fullTitle) document.title = fullTitle;
 
     const setMetaTag = (selector: string, attr: string, value: string) => {
       let element = document.querySelector(selector);
