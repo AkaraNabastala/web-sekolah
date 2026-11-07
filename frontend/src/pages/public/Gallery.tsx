@@ -9,7 +9,7 @@ import { Image as ImageIcon, Play, X, ExternalLink, Filter } from 'lucide-react'
 const getYouTubeEmbedUrl = (value: string): string | null => {
   try {
     const url = new URL(value);
-    const host = url.hostname.replace(/^www\\./, '').toLowerCase();
+    const host = url.hostname.replace(/^www\./, '').toLowerCase();
     const id = host === 'youtu.be'
       ? url.pathname.split('/').filter(Boolean)[0] || ''
       : host === 'youtube.com' || host === 'm.youtube.com'
@@ -35,7 +35,7 @@ export const Gallery: React.FC = () => {
   }, [category]);
 
   const categories = ['Semua', ...Array.from(new Set(mediaList.map(item => item.category).filter(Boolean)))];
-  const isYouTubeUrl = Boolean(selectedMedia?.video_url && /(?:youtube\\.com|youtu\\.be)/i.test(selectedMedia.video_url));
+  const isYouTubeUrl = Boolean(selectedMedia?.video_url && /(?:youtube\.com|youtu\.be)/i.test(selectedMedia.video_url));
   const youtubeEmbedUrl = selectedMedia?.video_url ? getYouTubeEmbedUrl(selectedMedia.video_url) : null;
 
   useEffect(() => {
