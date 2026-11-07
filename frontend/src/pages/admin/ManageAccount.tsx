@@ -323,7 +323,7 @@ export const ManageAccount: React.FC = () => {
               {usersList.map((user) => (
                 <tr key={user.id} className="hover:bg-stone-50/50">
                   <td className="p-3 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full overflow-hidden border border-emerald-200 bg-emerald-50 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0">
+                    <div className="relative w-8 h-8 rounded-full overflow-hidden border border-emerald-200 bg-emerald-50 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0">
                       <span>{(user.full_name || 'A').trim().charAt(0).toUpperCase()}</span>
                       {user.avatar && (
                         <img
