@@ -12,7 +12,7 @@ export const ManageGallery: React.FC = () => {
   const [form, setForm] = useState<Partial<GalleryMedia>>({
     title: '',
     media_type: 'photo',
-    file_url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800',
+    file_url: '/demo/demo-event.svg',
     video_url: '',
     caption: '',
     category: 'Akademik'
@@ -63,7 +63,7 @@ export const ManageGallery: React.FC = () => {
       setForm({
         title: '',
         media_type: 'photo',
-        file_url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800',
+        file_url: '/demo/demo-event.svg',
         video_url: '',
         caption: '',
         category: 'Akademik'
