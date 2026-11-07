@@ -69,7 +69,7 @@ export const ManagePPDB: React.FC = () => {
               <input
                 type="text"
                 required
-                value={ppdb.academic_year}
+                value={ppdb.academic_year ?? ''}
                 onChange={(e) => setPpdb({ ...ppdb, academic_year: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -79,7 +79,7 @@ export const ManagePPDB: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">Nama Kontak Panitia</label>
               <input
                 type="text"
-                value={ppdb.contact_person}
+                value={ppdb.contact_person ?? ''}
                 onChange={(e) => setPpdb({ ...ppdb, contact_person: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -89,7 +89,7 @@ export const ManagePPDB: React.FC = () => {
               <label className="text-xs font-bold text-stone-700">WhatsApp Panitia</label>
               <input
                 type="text"
-                value={ppdb.contact_whatsapp}
+                value={ppdb.contact_whatsapp ?? ''}
                 onChange={(e) => setPpdb({ ...ppdb, contact_whatsapp: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
               />
@@ -100,7 +100,7 @@ export const ManagePPDB: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Ringkasan Pendaftaran</label>
             <textarea
               rows={3}
-              value={ppdb.overview}
+              value={ppdb.overview ?? ''}
               onChange={(e) => setPpdb({ ...ppdb, overview: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
             />
@@ -127,7 +127,7 @@ export const ManagePPDB: React.FC = () => {
                 <span className="w-6 text-xs text-stone-400 font-bold">{idx + 1}.</span>
                 <input
                   type="text"
-                  value={req}
+                  value={req ?? ''}
                   onChange={(e) => {
                     const newR = [...ppdb.requirements];
                     newR[idx] = e.target.value;
@@ -174,7 +174,7 @@ export const ManagePPDB: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Keterangan Biaya & Kebijakan Angsuran</label>
                 <textarea
                   rows={2}
-                  value={ppdb.fees_description}
+                  value={ppdb.fees_description ?? ''}
                   onChange={(e) => setPpdb({ ...ppdb, fees_description: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal"
                 />
@@ -197,7 +197,7 @@ export const ManagePPDB: React.FC = () => {
                   <div key={idx} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-stone-50 p-2.5 rounded-xl border border-stone-200">
                     <input
                       type="text"
-                      value={fee.item}
+                      value={fee.item ?? ''}
                       onChange={(e) => {
                         const newF = [...ppdb.fees_items];
                         newF[idx].item = e.target.value;
@@ -207,7 +207,7 @@ export const ManagePPDB: React.FC = () => {
                     />
                     <input
                       type="text"
-                      value={fee.nominal}
+                      value={fee.nominal ?? ''}
                       onChange={(e) => {
                         const newF = [...ppdb.fees_items];
                         newF[idx].nominal = e.target.value;
