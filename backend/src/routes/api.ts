@@ -53,8 +53,8 @@ const requireTrustedOrigin = (req: Request, res: Response, next: NextFunction) =
   return next();
 };
 
-const SESSION_COOKIE = 'caruy_admin_session';
-const CSRF_COOKIE = 'caruy_csrf';
+const SESSION_COOKIE = 'school_admin_session';
+const CSRF_COOKIE = 'school_csrf';
 const SESSION_MAX_AGE = 8 * 60 * 60 * 1000;
 const cookieBase = {
   secure: process.env.NODE_ENV === 'production',
@@ -67,7 +67,7 @@ const setAdminSession = (res: Response, admin: { id: number; username: string; r
   const token = jwt.sign(
     { id: admin.id, username: admin.username, role: admin.role, auth_version: Number(admin.auth_version || 0) },
     JWT_SECRET,
-    { expiresIn: '8h', algorithm: 'HS256', issuer: 'smp-islam-caruy', audience: 'admin-panel' }
+    { expiresIn: '8h', algorithm: 'HS256', issuer: 'school-website-cms', audience: 'admin-panel' }
   );
   const csrfToken = randomBytes(32).toString('hex');
   res.cookie(SESSION_COOKIE, token, { ...cookieBase, httpOnly: true });
@@ -318,7 +318,7 @@ apiRouter.post('/setup/first-admin', requireTrustedOrigin, firstAdminSetupRateLi
     connection = await getPool().getConnection();
     const [lockRows]: any = await connection.query(
       'SELECT GET_LOCK(?, 10) AS acquired',
-      ['smp_islam_caruy_first_admin_setup']
+      ['school_website_first_admin_setup']
     );
     lockAcquired = Number(lockRows?.[0]?.acquired) === 1;
     if (!lockAcquired) {
@@ -342,7 +342,7 @@ apiRouter.post('/setup/first-admin', requireTrustedOrigin, firstAdminSetupRateLi
 
     return res.json({
       success: true,
-      message: 'Administrator utama SMP Islam Caruy berhasil dibuat. Setup telah terkunci.'
+      message: 'Administrator utama Nama Sekolah Anda berhasil dibuat. Setup telah terkunci.'
     });
   } catch (err: any) {
     logger.error('SetupRoute', 'Gagal membuat administrator pertama.', { code: err?.code, sqlState: err?.sqlState, message: err?.message });
@@ -350,7 +350,7 @@ apiRouter.post('/setup/first-admin', requireTrustedOrigin, firstAdminSetupRateLi
   } finally {
     if (connection) {
       if (lockAcquired) {
-        await connection.query('SELECT RELEASE_LOCK(?)', ['smp_islam_caruy_first_admin_setup']).catch(() => undefined);
+        await connection.query('SELECT RELEASE_LOCK(?)', ['school_website_first_admin_setup']).catch(() => undefined);
       }
       connection.release();
     }
@@ -536,7 +536,7 @@ apiRouter.get('/admin/statistics/export/xlsx', requireSuperadmin, async (req: Re
   try {
     const buffer = await StatisticsService.generateExcelReport(days);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename=statistik_smp_islam_caruy_${days}hari.xlsx`);
+    res.setHeader('Content-Disposition', `attachment; filename=statistik_website_sekolah_${days}hari.xlsx`);
     res.send(buffer);
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
@@ -548,7 +548,7 @@ apiRouter.get('/admin/statistics/export/csv', requireSuperadmin, async (req: Req
   try {
     const csv = await StatisticsService.generateCsvReport(days);
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename=statistik_smp_islam_caruy_${days}hari.csv`);
+    res.setHeader('Content-Disposition', `attachment; filename=statistik_website_sekolah_${days}hari.csv`);
     res.send(csv);
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
@@ -886,7 +886,7 @@ apiRouter.put('/admin/school-profile', requireContentAdmin, async (req: Request,
     await pool.query(
       `UPDATE school_profile SET name = ?, npsn = ?, education_level = ?, status = ?, accreditation = ?, founding_year = ?, headmaster_name = ?, headmaster_photo = ?, headmaster_welcome = ?, description = ?, address = ?, village = ?, district = ?, regency = ?, province = ?, postal_code = ?, phone = ?, whatsapp = ?, email = ?, maps_embed_url = ?, updated_at = NOW() WHERE id = (SELECT id FROM (SELECT id FROM school_profile ORDER BY id ASC LIMIT 1) AS selected_profile)`,
       [
-        req.body.name || 'SMP Islam Caruy', req.body.npsn || null, req.body.education_level || 'Sekolah Menengah Pertama (SMP)',
+        req.body.name || 'Nama Sekolah Anda', req.body.npsn || null, req.body.education_level || 'Sekolah Menengah Pertama (SMP)',
         req.body.status || 'Swasta', req.body.accreditation || null, req.body.founding_year || null,
         req.body.headmaster_name || '', req.body.headmaster_photo || null, req.body.headmaster_welcome || '',
         req.body.description || '', req.body.address || '', req.body.village || '', req.body.district || '',
@@ -1297,7 +1297,7 @@ apiRouter.post('/admin/agendas', requireContentAdmin, requireFeatureEnabled('age
     const [ins]: any = await pool.query(
       `INSERT INTO agendas (title, slug, description, event_date, start_time, end_time, location, organizer, is_published)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [req.body.title, slug, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Kampus SMP Islam Caruy', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1]
+      [req.body.title, slug, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Lokasi Sekolah', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1]
     );
     return res.json({ success: true, message: 'Agenda berhasil ditambahkan.', data: { id: ins.insertId, ...req.body, slug } });
   } catch (err: any) {
@@ -1319,7 +1319,7 @@ apiRouter.put('/admin/agendas/:id', requireContentAdmin, requireFeatureEnabled('
   try {
     await pool.query(
       `UPDATE agendas SET title = ?, description = ?, event_date = ?, start_time = ?, end_time = ?, location = ?, organizer = ?, is_published = ? WHERE id = ?`,
-      [req.body.title, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Kampus SMP Islam Caruy', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1, id]
+      [req.body.title, req.body.description || '', req.body.event_date, req.body.start_time || '08:00', req.body.end_time || 'Selesai', req.body.location || 'Lokasi Sekolah', req.body.organizer || 'Panitia Sekolah', req.body.is_published ?? 1, id]
     );
     return res.json({ success: true, message: 'Agenda berhasil diperbarui.' });
   } catch (err: any) {
@@ -1479,7 +1479,7 @@ apiRouter.put('/admin/settings', requireSuperadmin, async (req: Request, res: Re
          stats_students = ?, stats_teachers = ?, stats_alumni = ?, stats_achievements = ?, updated_at = NOW()
        WHERE id = (SELECT id FROM (SELECT id FROM website_settings ORDER BY id ASC LIMIT 1) AS selected_settings)`,
       [
-        req.body.school_name || 'SMP Islam Caruy', req.body.tagline || '', req.body.logo_url || '',
+        req.body.school_name || 'Nama Sekolah Anda', req.body.tagline || '', req.body.logo_url || '',
         req.body.favicon_url || '', req.body.hero_title || '', req.body.hero_subtitle || '', req.body.hero_image || '',
         JSON.stringify(Array.isArray(req.body.hero_slides) ? req.body.hero_slides : []),
         req.body.primary_color || '#1B3B2B', req.body.secondary_color || '#E5C178',
