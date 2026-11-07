@@ -254,7 +254,7 @@ export const Home: React.FC = () => {
                 Sekilas Sekolah
               </div>
               <h2 className="text-2xl sm:text-4xl font-bold text-[#1F2621] tracking-tight leading-tight">
-                Membangun Pondasi Generasi Berkarakter di Pedesaan yang Asri
+                Membangun Generasi Unggul, Berkarakter, dan Berprestasi
               </h2>
               <div className="w-16 h-1 bg-[#DEBD7A] rounded-full"></div>
               
