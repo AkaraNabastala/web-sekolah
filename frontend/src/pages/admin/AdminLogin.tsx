@@ -108,7 +108,7 @@ export const AdminLogin: React.FC = () => {
 
   return (
     <>
-      <SEO title="SMP Islam Caruy" />
+      <SEO title="Masuk Admin" />
       <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 z-0 opacity-10 bg-[radial-gradient(#15803d_1px,transparent_1px)] [background-size:16px_16px]"></div>
@@ -118,7 +118,7 @@ export const AdminLogin: React.FC = () => {
           <SchoolLogo size="xl" showText={false} />
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
-          SMP ISLAM CARUY
+          PANEL ADMIN SEKOLAH
         </h2>
         <p className="mt-1 text-center text-sm font-medium text-emerald-800">
           Portal Masuk Dashboard Pengelolaan Sistem
