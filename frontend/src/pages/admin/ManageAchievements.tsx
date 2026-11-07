@@ -177,7 +177,7 @@ export const ManageAchievements: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.title}
+                  value={(form.title) ?? ''}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -189,7 +189,7 @@ export const ManageAchievements: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={form.student_or_team}
+                    value={(form.student_or_team) ?? ''}
                     onChange={(e) => setForm({ ...form, student_or_team: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -200,7 +200,7 @@ export const ManageAchievements: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={form.rank}
+                    value={(form.rank) ?? ''}
                     onChange={(e) => setForm({ ...form, rank: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -211,7 +211,7 @@ export const ManageAchievements: React.FC = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Tingkat</label>
                   <select
-                    value={form.level}
+                    value={(form.level) ?? ''}
                     onChange={(e) => setForm({ ...form, level: e.target.value as any })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   >
@@ -226,7 +226,7 @@ export const ManageAchievements: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Kategori</label>
                   <input
                     type="text"
-                    value={form.category}
+                    value={(form.category) ?? ''}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -236,7 +236,7 @@ export const ManageAchievements: React.FC = () => {
                   <label className="text-xs font-bold text-stone-700">Tahun</label>
                   <input
                     type="text"
-                    value={form.year}
+                    value={(form.year) ?? ''}
                     onChange={(e) => setForm({ ...form, year: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                   />
@@ -247,7 +247,7 @@ export const ManageAchievements: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Instansi Penyelenggara</label>
                 <input
                   type="text"
-                  value={form.organizer}
+                  value={(form.organizer) ?? ''}
                   onChange={(e) => setForm({ ...form, organizer: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -257,7 +257,7 @@ export const ManageAchievements: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">URL Foto Dokumentasi</label>
                 <input
                   type="text"
-                  value={form.photo}
+                  value={(form.photo) ?? ''}
                   onChange={(e) => setForm({ ...form, photo: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
@@ -267,7 +267,7 @@ export const ManageAchievements: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Keterangan Tambahan</label>
                 <textarea
                   rows={2}
-                  value={form.description}
+                  value={(form.description) ?? ''}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
                 />
