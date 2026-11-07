@@ -1,4 +1,6 @@
-import React, { useRef } from 'react';
+import React from 'react';
+import DOMPurify from 'dompurify';
+import { Editor } from 'primereact/editor';
 
 type EditorProps = {
   value?: string | null;
@@ -7,82 +9,19 @@ type EditorProps = {
   placeholder?: string;
 };
 
-type FormatAction = { label: string; before: string; after?: string; linePrefix?: string };
-
 export const RichTextEditor: React.FC<EditorProps> = ({ value, onChange, rows = 6, placeholder }) => {
-  const ref = useRef<HTMLTextAreaElement>(null);
   const safeValue = value ?? '';
-
-  const insert = (action: FormatAction) => {
-    const element = ref.current;
-    if (!element) return;
-    const start = element.selectionStart;
-    const end = element.selectionEnd;
-    const selected = safeValue.slice(start, end);
-
-    if (action.linePrefix) {
-      const lineStart = safeValue.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
-      const lineEndIndex = safeValue.indexOf('\n', end);
-      const lineEnd = lineEndIndex === -1 ? safeValue.length : lineEndIndex;
-      const block = safeValue.slice(lineStart, lineEnd);
-      const formatted = block.split('\n').map(line => line ? action.linePrefix + line : line).join('\n');
-      const next = safeValue.slice(0, lineStart) + formatted + safeValue.slice(lineEnd);
-      onChange(next);
-      requestAnimationFrame(() => {
-        element.focus();
-        element.setSelectionRange(lineStart, lineStart + formatted.length);
-      });
-      return;
-    }
-
-    const text = selected || 'teks';
-    const before = action.before;
-    const after = action.after || '';
-    const next = safeValue.slice(0, start) + before + text + after + safeValue.slice(end);
-    onChange(next);
-    requestAnimationFrame(() => {
-      element.focus();
-      const cursor = start + before.length + text.length + after.length;
-      element.setSelectionRange(cursor, cursor);
-    });
-  };
-
-  const actions: FormatAction[] = [
-    { label: 'Tebal', before: '**', after: '**' },
-    { label: 'Miring', before: '*', after: '*' },
-    { label: 'Judul', before: '## ' },
-    { label: 'Poin', before: '', linePrefix: '- ' },
-    { label: 'Nomor', before: '', linePrefix: '1. ' },
-    { label: 'Kutipan', before: '', linePrefix: '> ' },
-    { label: 'Tautan', before: '[teks tautan](', after: ')' }
-  ];
+  const editorHeight = Math.max(5, rows) * 42;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-stone-200 bg-white focus-within:border-emerald-500">
-      <div className="flex flex-wrap gap-1 border-b border-stone-100 bg-stone-50 p-2" aria-label="Pemformatan teks">
-        {actions.map(action => (
-          <button
-            key={action.label}
-            type="button"
-            onClick={() => insert(action)}
-            aria-label={`Sisipkan format ${action.label.toLowerCase()}`}
-            className="rounded-md border border-stone-200 bg-white px-2.5 py-1.5 text-xs font-medium text-stone-700 transition-colors hover:bg-emerald-50 hover:text-emerald-800"
-          >
-            {action.label}
-          </button>
-        ))}
-      </div>
-      <textarea
-        ref={ref}
-        rows={rows}
+    <div className="school-rich-editor overflow-hidden rounded-xl border border-stone-200 bg-white focus-within:border-emerald-500">
+      <Editor
         value={safeValue}
-        onChange={event => onChange(event.target.value)}
-        placeholder={placeholder}
-        className="w-full resize-y border-0 px-3.5 py-3 text-sm leading-6 outline-none focus:ring-0"
+        onTextChange={(event) => onChange(event.htmlValue ?? '')}
+        placeholder={placeholder || 'Tulis konten di sini...'}
+        style={{ height: `${editorHeight}px` }}
+        className="w-full"
       />
-      <div className="border-t border-stone-100 bg-stone-50 px-3.5 py-2 text-[11px] text-stone-500">
-        Pilih teks lalu gunakan tombol format. Tautan harus diawali http:// atau https://.
-      </div>
     </div>
   );
 };
@@ -111,7 +50,17 @@ const isSpecialLine = (line: string) =>
   /^(#{1,3} |[-*] |\d+\. |> )/.test(line);
 
 export const RichTextContent: React.FC<{ value?: string | null; className?: string }> = ({ value, className = '' }) => {
-  const lines = String(value || '').replace(/\r/g, '').split('\n');
+  const content = String(value || '');
+  const containsHtml = /<(p|h[1-6]|ul|ol|li|strong|em|a|blockquote|br|span|div)\\b/i.test(content);
+  if (containsHtml) {
+    const cleanHtml = DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'blockquote', 'a', 'span', 'div'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+      FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form']
+    });
+    return <div className={className} dangerouslySetInnerHTML={{ __html: cleanHtml }} />;
+  }
+  const lines = content.replace(/\r/g, '').split('\n');
   const blocks: React.ReactNode[] = [];
   let index = 0;
 
