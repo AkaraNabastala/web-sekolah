@@ -43,7 +43,7 @@ export const ManageHistory: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Judul Artikel Sejarah</label>
             <input
               type="text"
-              value={history.title}
+              value={(history.title) ?? ''}
               onChange={(e) => setHistory({ ...history, title: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
             />
@@ -60,7 +60,7 @@ export const ManageHistory: React.FC = () => {
               <div className="flex-1 space-y-2 w-full">
                 <input
                   type="text"
-                  value={history.featured_image || ''}
+                  value={(history.featured_image || '') ?? ''}
                   onChange={(e) => setHistory({ ...history, featured_image: e.target.value })}
                   placeholder="URL Foto Sejarah"
                   className="w-full px-3.5 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50"
@@ -83,7 +83,7 @@ export const ManageHistory: React.FC = () => {
             <label className="text-xs font-bold text-stone-700">Uraian Artikel Sejarah</label>
             <textarea
               rows={8}
-              value={history.content}
+              value={(history.content) ?? ''}
               onChange={(e) => setHistory({ ...history, content: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-emerald-600 bg-stone-50 font-normal leading-relaxed"
             />
@@ -120,7 +120,7 @@ export const ManageHistory: React.FC = () => {
                     <input
                       type="text"
                       placeholder="Tahun (e.g. 2005)"
-                      value={ms.year}
+                      value={(ms.year) ?? ''}
                       onChange={(e) => {
                         const newMs = [...(history.milestones || [])];
                         newMs[idx] = { ...newMs[idx], year: e.target.value };
@@ -131,7 +131,7 @@ export const ManageHistory: React.FC = () => {
                     <input
                       type="text"
                       placeholder="Judul Peristiwa Penting"
-                      value={ms.title}
+                      value={(ms.title) ?? ''}
                       onChange={(e) => {
                         const newMs = [...(history.milestones || [])];
                         newMs[idx] = { ...newMs[idx], title: e.target.value };
@@ -154,7 +154,7 @@ export const ManageHistory: React.FC = () => {
                   <textarea
                     rows={2}
                     placeholder="Deskripsi singkat peristiwa..."
-                    value={ms.desc}
+                    value={(ms.desc) ?? ''}
                     onChange={(e) => {
                       const newMs = [...(history.milestones || [])];
                       newMs[idx] = { ...newMs[idx], desc: e.target.value };
