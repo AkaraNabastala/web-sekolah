@@ -263,7 +263,7 @@ export const Home: React.FC = () => {
                   {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan yang berkomitmen memberikan layanan pembelajaran berkualitas dan mendukung perkembangan setiap peserta didik.'}
                 </p>
                 <p>
-                  Nama Sekolah Anda mengutamakan pembelajaran akademik, pendidikan agama, dan pembentukan karakter. Lingkungan belajar yang nyaman mendukung siswa untuk berkembang, mandiri, dan berprestasi.
+                  Lingkungan belajar yang nyaman, program yang terarah, dan pendampingan pendidik membantu setiap peserta didik berkembang, mandiri, dan berprestasi.
                 </p>
               </div>
 
@@ -271,11 +271,11 @@ export const Home: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#EAE5DC]">
                 <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
                   <span className="text-[11px] text-[#7A827B] uppercase block">NPSN Resmi</span>
-                  <span className="text-sm font-bold text-[#1F2621] font-mono">{profile?.npsn || '20301988'}</span>
+                  <span className="text-sm font-bold text-[#1F2621] font-mono">{profile?.npsn || 'Belum diisi'}</span>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-[#ECE7DD]">
                   <span className="text-[11px] text-[#7A827B] uppercase block">Status Akreditasi</span>
-                  <span className="text-sm font-bold text-[#2A5C40]">{profile?.accreditation || 'A (Unggul)'}</span>
+                  <span className="text-sm font-bold text-[#2A5C40]">{profile?.accreditation || 'Belum diisi'}</span>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-[#ECE7DD] col-span-2 sm:col-span-1">
                   <span className="text-[11px] text-[#7A827B] uppercase block">Jenjang Sekolah</span>
@@ -300,7 +300,7 @@ export const Home: React.FC = () => {
                 <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-[#EAE5DC]">
                   <img
                     src="/demo/demo-classroom.svg"
-                    alt="Lingkungan Kampus Nama Sekolah Anda"
+                    alt="Ilustrasi lingkungan belajar sekolah"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -309,7 +309,7 @@ export const Home: React.FC = () => {
                     <SchoolLogo size="sm" showText={false} />
                     <div>
                       <p className="text-xs font-bold text-[#FAF9F5]">Pendidikan Holistik</p>
-                      <p className="text-[11px] text-[#D5E0D7] leading-tight mt-0.5">Berakar pada adab & sains modern</p>
+                      <p className="text-[11px] text-[#D5E0D7] leading-tight mt-0.5">Belajar, bertumbuh, dan berprestasi</p>
                     </div>
                   </div>
                 </div>
@@ -328,7 +328,7 @@ export const Home: React.FC = () => {
               <div className="relative w-48 sm:w-56 aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-4 border-white bg-[#EAE5DC]">
                 <img
                   src={profile?.headmaster_photo || '/demo/demo-classroom.svg'}
-                  alt={profile?.headmaster_name || 'Kepala Sekolah Nama Sekolah Anda'}
+                  alt={profile?.headmaster_name || 'Kepala Sekolah'}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -347,7 +347,7 @@ export const Home: React.FC = () => {
                 Sambutan Pimpinan
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-3xl font-bold text-[#1F2621] tracking-tight">
-                Mendidik dengan Hati, Merajut Generasi Beradab
+                Mendampingi Setiap Langkah Menuju Masa Depan
               </h2>
               <div className="w-12 h-1 bg-[#DEBD7A] rounded-full"></div>
               
@@ -357,7 +357,7 @@ export const Home: React.FC = () => {
                     <p key={i}>{par}</p>
                   ))
                 ) : (
-                  <p>Selamat datang di portal resmi Nama Sekolah Anda. Kami berkomitmen mendampingi setiap peserta didik agar berkembang secara intelektual, emosional, dan spiritual dalam iklim belajar yang hangat dan berkarakter.</p>
+                  <p>Selamat datang di website sekolah kami. Kami berkomitmen menyediakan lingkungan belajar yang aman, inklusif, dan inspiratif agar setiap peserta didik dapat berkembang sesuai potensinya.</p>
                 )}
               </div>
 
@@ -798,21 +798,21 @@ export const Home: React.FC = () => {
             {(agendas && agendas.length > 0 ? agendas : [
               {
                 id: 1,
-                title: 'Masa Pengenalan Lingkungan Sekolah (MPLS) 2026',
-                event_date: '2026-07-15',
+                title: 'Contoh: Masa Pengenalan Lingkungan Sekolah',
+                event_date: '2026-12-10',
                 start_time: '07:30',
                 end_time: '12:00',
-                location: 'Aula & Lapangan Kampus',
-                organizer: 'Kesiswaan'
+                location: 'Aula Sekolah',
+                organizer: 'Tim Kesiswaan'
               },
               {
                 id: 2,
-                title: 'Kegiatan Pendidikan Agama',
-                event_date: '2026-08-10',
+                title: 'Contoh: Pameran Karya dan Kreativitas Siswa',
+                event_date: '2026-12-18',
                 start_time: '08:00',
                 end_time: '11:30',
-                location: 'Musholla At-Tarbiyah',
-                organizer: 'Bidang Keagamaan'
+                location: 'Aula Sekolah',
+                organizer: 'Tim Kesiswaan'
               }
             ]).slice(0, 3).map((ag, idx) => (
               <ScrollReveal key={ag.id || idx} animation="fade-up" delay={idx * 150} className="bg-white rounded-2xl p-6 border border-[#ECE7DD] shadow-sm flex flex-col justify-between space-y-4">

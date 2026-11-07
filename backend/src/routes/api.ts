@@ -573,6 +573,7 @@ const publicQueryError = (res: Response, route: string, err: any, message: strin
 };
 
 apiRouter.get('/school-profile', async (_req: Request, res: Response) => {
+  res.set({ 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', Pragma: 'no-cache', Expires: '0' });
   try {
     const [rows]: any = await getPool().query('SELECT * FROM school_profile LIMIT 1');
     if (!rows.length) return res.status(404).json({ success: false, message: 'Profil sekolah belum dikonfigurasi.' });
@@ -751,6 +752,8 @@ apiRouter.get('/programs', requireFeatureEnabled('programs'), async (req: Reques
 });
 
 apiRouter.get('/settings', async (_req: Request, res: Response) => {
+  // Identitas dan logo harus selalu dibaca dari konfigurasi terbaru, bukan cache browser/proxy.
+  res.set({ 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate', Pragma: 'no-cache', Expires: '0' });
   const pool = getPool();
   try {
     const [rows]: any = await pool.query('SELECT * FROM website_settings LIMIT 1');

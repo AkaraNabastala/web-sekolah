@@ -32,7 +32,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="text-white font-poppins relative overflow-hidden border-t-4" style={{ backgroundColor: 'var(--school-primary)', borderTopColor: 'var(--school-secondary)' }}>
-      {/* Decorative Islamic Arch Background Pattern */}
+      {/* Subtle neutral geometric background pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
       {/* Main Footer Container */}
