@@ -90,7 +90,7 @@ export const Home: React.FC = () => {
     id: 1,
     image: settings?.hero_image || '/demo/demo-classroom.svg',
     tag: '',
-    title: settings?.hero_title || 'Selamat Datang di SMP Islam Caruy',
+    title: settings?.hero_title || 'Selamat Datang di Nama Sekolah Anda',
     subtitle: settings?.hero_subtitle || '',
     badge: ''
   }];
@@ -153,7 +153,7 @@ export const Home: React.FC = () => {
     <div className="font-['Poppins',sans-serif] bg-[#FAF8F5] text-[#2C332D] selection:bg-[#E2EBE4] selection:text-[#1B3B2B] overflow-x-hidden">
       <SEO
         title="Beranda Resmi"
-        description="Portal resmi SMP Islam Caruy, sekolah menengah pertama di Desa Caruy, Kecamatan Cipari, Kabupaten Cilacap."
+        description="Portal resmi Nama Sekolah Anda, sekolah menengah pertama di lokasi sesuai alamat sekolah."
       />
 
       {/* 1. HERO / COVER FULL-WIDTH (DESAIN V2) */}
@@ -260,10 +260,10 @@ export const Home: React.FC = () => {
               
               <div className="text-[#5C645D] text-sm sm:text-base leading-relaxed space-y-4 font-normal">
                 <p>
-                  {profile?.description || 'SMP Islam Caruy adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di Kecamatan Cipari, Kabupaten Cilacap.'}
+                  {profile?.description || 'Nama Sekolah Anda adalah lembaga pendidikan menengah pertama swasta bernuansa Islami yang berlokasi di lokasi sekolah.'}
                 </p>
                 <p>
-                  SMP Islam Caruy mengutamakan pembelajaran akademik, pendidikan agama, dan pembentukan karakter. Lingkungan belajar yang nyaman mendukung siswa untuk berkembang, mandiri, dan berprestasi.
+                  Nama Sekolah Anda mengutamakan pembelajaran akademik, pendidikan agama, dan pembentukan karakter. Lingkungan belajar yang nyaman mendukung siswa untuk berkembang, mandiri, dan berprestasi.
                 </p>
               </div>
 
@@ -300,7 +300,7 @@ export const Home: React.FC = () => {
                 <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-[#EAE5DC]">
                   <img
                     src="/demo/demo-classroom.svg"
-                    alt="Lingkungan Kampus SMP Islam Caruy"
+                    alt="Lingkungan Kampus Nama Sekolah Anda"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -328,15 +328,15 @@ export const Home: React.FC = () => {
               <div className="relative w-48 sm:w-56 aspect-[4/5] rounded-2xl overflow-hidden shadow-md border-4 border-white bg-[#EAE5DC]">
                 <img
                   src={profile?.headmaster_photo || '/demo/demo-classroom.svg'}
-                  alt={profile?.headmaster_name || 'Kepala Sekolah SMP Islam Caruy'}
+                  alt={profile?.headmaster_name || 'Kepala Sekolah Nama Sekolah Anda'}
                   className="w-full h-full object-cover"
                 />
               </div>
               <h3 className="text-base sm:text-lg font-bold text-[#1F2621] mt-4">
-                {profile?.headmaster_name || 'Kepala Sekolah SMP Islam Caruy'}
+                {profile?.headmaster_name || 'Kepala Sekolah Nama Sekolah Anda'}
               </h3>
               <p className="text-xs text-[#2A5C40] font-semibold tracking-wide">
-                Kepala Sekolah SMP Islam Caruy
+                Kepala Sekolah Nama Sekolah Anda
               </p>
             </ScrollReveal>
 
@@ -357,7 +357,7 @@ export const Home: React.FC = () => {
                     <p key={i}>{par}</p>
                   ))
                 ) : (
-                  <p>Selamat datang di portal resmi SMP Islam Caruy. Kami berkomitmen mendampingi setiap peserta didik agar berkembang secara intelektual, emosional, dan spiritual dalam iklim belajar yang hangat dan berkarakter.</p>
+                  <p>Selamat datang di portal resmi Nama Sekolah Anda. Kami berkomitmen mendampingi setiap peserta didik agar berkembang secara intelektual, emosional, dan spiritual dalam iklim belajar yang hangat dan berkarakter.</p>
                 )}
               </div>
 
@@ -626,7 +626,7 @@ export const Home: React.FC = () => {
                 <div className="aspect-[16/10] overflow-hidden bg-[#EAE5DC] relative">
                   <img
                     src={album.cover_image || '/demo/demo-classroom.svg'}
-                    alt={album.name || 'Galeri SMP Islam Caruy'}
+                    alt={album.name || 'Galeri Nama Sekolah Anda'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <span className="absolute top-3 left-3 bg-[#132A1E]/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
