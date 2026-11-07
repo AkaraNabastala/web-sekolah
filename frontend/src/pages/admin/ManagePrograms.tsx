@@ -149,7 +149,7 @@ export const ManagePrograms: React.FC = () => {
         <Search className="w-4 h-4 text-stone-400" />
         <input
           type="text"
-          value={search}
+          value={search ?? ''}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full text-xs bg-transparent focus:outline-none text-stone-800"
         />
@@ -241,7 +241,7 @@ export const ManagePrograms: React.FC = () => {
                 <input
                   type="text"
                   required
-                  value={form.name}
+                  value={form.name ?? ''}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
@@ -253,19 +253,19 @@ export const ManagePrograms: React.FC = () => {
                   <input
                     type="text"
                     list="program-category-options"
-                    value={form.category}
+                    value={form.category ?? ''}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <datalist id="program-category-options">
-                    {categoryOptions.map(category => <option key={category.id} value={category.name} />)}
+                    {categoryOptions.map(category => <option key={category.id} value={category.name ?? ''} />)}
                   </datalist>
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-stone-700">Instruktur / Pembina</label>
                   <input
                     type="text"
-                    value={form.instructor}
+                    value={form.instructor ?? ''}
                     onChange={(e) => setForm({ ...form, instructor: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
@@ -276,7 +276,7 @@ export const ManagePrograms: React.FC = () => {
                 <label className="text-xs font-bold text-stone-700">Jadwal & Waktu Pelaksanaan</label>
                 <input
                   type="text"
-                  value={form.schedule_info}
+                  value={form.schedule_info ?? ''}
                   onChange={(e) => setForm({ ...form, schedule_info: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
@@ -287,7 +287,7 @@ export const ManagePrograms: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <input
                     type="text"
-                    value={form.photo}
+                    value={form.photo ?? ''}
                     onChange={(e) => setForm({ ...form, photo: e.target.value })}
                     className="flex-1 px-3.5 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none"
                   />
