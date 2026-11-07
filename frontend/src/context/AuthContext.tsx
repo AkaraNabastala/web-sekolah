@@ -21,8 +21,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Hapus token lama dari versi sebelumnya; sesi baru diverifikasi melalui cookie HttpOnly.
-    localStorage.removeItem('caruy_admin_token');
-    localStorage.removeItem('caruy_admin_user');
+    localStorage.removeItem('school_admin_token');
+    localStorage.removeItem('school_admin_user');
 
     // Pengunjung publik dan halaman login tidak membutuhkan sesi admin.
     // Periksa cookie hanya ketika URL awal memang berada di area dashboard.
@@ -59,8 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Bersihkan state segera; penghapusan cookie dilakukan server.
     setAdmin(null);
     schoolApi.logout().catch(() => undefined);
-    localStorage.removeItem('caruy_admin_token');
-    localStorage.removeItem('caruy_admin_user');
+    localStorage.removeItem('school_admin_token');
+    localStorage.removeItem('school_admin_user');
   };
 
   const updateAdminUser = (user: AdminUser) => setAdmin(user);
