@@ -187,6 +187,19 @@ export const ManageSettings: React.FC = () => {
                 <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
               </label>
             </div>
+            <div className="flex items-center gap-3 rounded-xl border border-dashed border-stone-200 bg-stone-50 p-3">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-stone-200 bg-white">
+                {settings.logo_url ? (
+                  <img key={settings.logo_url} src={settings.logo_url} alt="Pratinjau logo sekolah" className="h-full w-full object-contain p-1" />
+                ) : (
+                  <span className="text-[10px] font-semibold text-stone-400">Logo</span>
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-stone-700">Pratinjau logo</p>
+                <p className="text-[11px] text-stone-500">Logo ini digunakan pada navbar, footer, dan ikon tab browser.</p>
+              </div>
+            </div>
           </div>
         </div>
 
