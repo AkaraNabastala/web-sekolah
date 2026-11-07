@@ -62,7 +62,7 @@ export const VisitorStats: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `statistik_smp_islam_caruy_${days}hari.xlsx`);
+      link.setAttribute('download', `statistik_website_sekolah_${days}hari.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -83,7 +83,7 @@ export const VisitorStats: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `statistik_smp_islam_caruy_${days}hari.csv`);
+      link.setAttribute('download', `statistik_website_sekolah_${days}hari.csv`);
       document.body.appendChild(link);
       link.click();
       link.remove();
