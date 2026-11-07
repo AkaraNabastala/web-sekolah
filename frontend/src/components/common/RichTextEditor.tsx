@@ -74,7 +74,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({ value, onChange, rows = 
       <textarea
         ref={ref}
         rows={rows}
-        value={value}
+        value={(value) ?? ''}
         onChange={event => onChange(event.target.value)}
         placeholder={placeholder}
         className="w-full resize-y border-0 px-3.5 py-3 text-sm leading-6 outline-none focus:ring-0"
