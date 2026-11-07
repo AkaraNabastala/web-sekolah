@@ -17,13 +17,13 @@ const escapeHtml = (text: string) => text
   .replace(/'/g, '&#39;');
 
 const markdownToEditorHtml = (value: string) => {
-  if (/<(p|h[1-6]|ul|ol|li|strong|em|a|blockquote|br|div)\\b/i.test(value)) return value;
+  if (/<(p|h[1-6]|ul|ol|li|strong|em|a|blockquote|br|div)\b/i.test(value)) return value;
   const inline = (text: string) => escapeHtml(text)
-    .replace(/\\[([^\\]]+)\\]\\((https?:\\/\\/[^)]+)\\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-    .replace(/\\*\\*([^*]+)\\*\\*/g, '<strong>$1</strong>')
-    .replace(/\\*([^*]+)\\*/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
     .replace(/`([^`]+)`/g, '<code>$1</code>');
-  const lines = value.replace(/\\r/g, '').split('\\n');
+  const lines = value.replace(/\r/g, '').split('\n');
   const blocks: string[] = [];
   let index = 0;
   while (index < lines.length) {
@@ -42,9 +42,9 @@ const markdownToEditorHtml = (value: string) => {
       blocks.push(`<ul>${items.join('')}</ul>`);
       continue;
     }
-    if (/^\\d+\\. /.test(line)) {
+    if (/^\d+\. /.test(line)) {
       const items: string[] = [];
-      while (index < lines.length && /^\\d+\\. /.test(lines[index])) items.push(`<li>${inline(lines[index++].replace(/^\\d+\\. /, ''))}</li>`);
+      while (index < lines.length && /^\d+\. /.test(lines[index])) items.push(`<li>${inline(lines[index++].replace(/^\d+\. /, ''))}</li>`);
       blocks.push(`<ol>${items.join('')}</ol>`);
       continue;
     }
@@ -56,7 +56,7 @@ const markdownToEditorHtml = (value: string) => {
     }
     const paragraph = [line];
     index += 1;
-    while (index < lines.length && lines[index].trim() && !/^(#{1,3} |[-*] |\\d+\\. |> )/.test(lines[index])) paragraph.push(lines[index++]);
+    while (index < lines.length && lines[index].trim() && !/^(#{1,3} |[-*] |\d+\. |> )/.test(lines[index])) paragraph.push(lines[index++]);
     blocks.push(`<p>${paragraph.map(inline).join('<br>')}</p>`);
   }
   return blocks.join('') || '<p><br></p>';
