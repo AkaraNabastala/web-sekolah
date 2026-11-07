@@ -77,7 +77,7 @@ async function buildProduction() {
 
     const backendPkg = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'backend', 'package.json'), 'utf8'));
     const deployPkg = {
-      name: 'smp-islam-caruy-production',
+      name: 'school-website-cms-production',
       version: '2.0.0',
       private: true,
       type: 'module',
@@ -163,7 +163,7 @@ app.use('/api', apiRouter);
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
-    school: 'SMP Islam Caruy',
+    school: 'Website Sekolah',
     mode: 'production',
     timestamp: new Date().toISOString()
   });
@@ -212,7 +212,7 @@ app.use((err, req, res, next) => {
 
 // Boot & Lifecycle
 async function startProductionServer() {
-  logger.info('ProductionServer', 'Memulai Server Produksi SMP Islam Caruy...');
+  logger.info('ProductionServer', 'Memulai Server Produksi Website Sekolah...');
 
   const dbCheck = await testMySQLConnection();
   if (!dbCheck.connected) {
@@ -258,7 +258,7 @@ startProductionServer().catch((err) => {
     fs.writeFileSync(path.join(DEPLOY_DIR, 'server.js'), prodServerCode, 'utf8');
 
     // Buat README instruksi hosting
-    const hostingReadme = `# Panduan Deployment SMP Islam Caruy
+    const hostingReadme = `# Panduan Deployment Website Sekolah
 
 Paket ini dirancang untuk hosting berbasis Node.js (cPanel Node.js Selector, VPS Ubuntu/Debian, Docker, Railway, dsb.).
 
