@@ -17,7 +17,7 @@ export const ManagePrograms: React.FC = () => {
     name: '',
     category: 'unggulan',
     description: '',
-    photo: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800',
+    photo: '/demo/demo-classroom.svg',
     schedule_info: '',
     instructor: '',
     display_order: 1,
@@ -45,7 +45,7 @@ export const ManagePrograms: React.FC = () => {
       name: '',
       category: 'unggulan',
       description: '',
-      photo: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800',
+      photo: '/demo/demo-classroom.svg',
       schedule_info: '',
       instructor: '',
       display_order: programs.length + 1,
@@ -170,7 +170,7 @@ export const ManagePrograms: React.FC = () => {
               <div>
                 <div className="aspect-[16/9] overflow-hidden bg-stone-100 relative">
                   <img
-                    src={item.photo || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800'}
+                    src={item.photo || '/demo/demo-classroom.svg'}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
