@@ -128,7 +128,7 @@ async function start() {
     if (process.env.NODE_ENV === 'production') {
       throw new Error(`MySQL wajib tersedia pada production: ${dbCheck.message}`);
     }
-    logger.warn('Database', `${dbCheck.message} Mode fallback JSON hanya diizinkan untuk development offline.`);
+    logger.warn('Database', `${dbCheck.message} Endpoint yang membutuhkan data tidak akan tersedia sampai MySQL terhubung.`);
   }
 
   const server = app.listen(PORT, '0.0.0.0', () => {
