@@ -773,7 +773,7 @@ export const Home: React.FC = () => {
       </section>
         )}
 
-      {isFeatureEnabled('agenda') && (
+      {isFeatureEnabled('agenda') && agendas.length > 0 && (
       <section className="py-20 px-6 sm:px-10 lg:px-16 bg-[#FAF8F5] border-b border-[#EAE5DC]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#EAE5DC] pb-4">
@@ -795,26 +795,7 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(agendas && agendas.length > 0 ? agendas : [
-              {
-                id: 1,
-                title: 'Contoh: Masa Pengenalan Lingkungan Sekolah',
-                event_date: '2026-12-10',
-                start_time: '07:30',
-                end_time: '12:00',
-                location: 'Aula Sekolah',
-                organizer: 'Tim Kesiswaan'
-              },
-              {
-                id: 2,
-                title: 'Contoh: Pameran Karya dan Kreativitas Siswa',
-                event_date: '2026-12-18',
-                start_time: '08:00',
-                end_time: '11:30',
-                location: 'Aula Sekolah',
-                organizer: 'Tim Kesiswaan'
-              }
-            ]).slice(0, 3).map((ag, idx) => (
+            {agendas.slice(0, 3).map((ag, idx) => (
               <ScrollReveal key={ag.id || idx} animation="fade-up" delay={idx * 150} className="bg-white rounded-2xl p-6 border border-[#ECE7DD] shadow-sm flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
