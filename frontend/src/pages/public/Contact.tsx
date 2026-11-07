@@ -102,7 +102,7 @@ export const Contact: React.FC = () => {
                   </div>
                   <div>
                     <p className="font-bold text-stone-900">Email Resmi:</p>
-                    <p className="mt-0.5">{profile?.email || 'info@smpislamcaruy.sch.id'}</p>
+                    <p className="mt-0.5">{profile?.email || 'Email sekolah belum diisi'}</p>
                   </div>
                 </div>
 
@@ -127,7 +127,7 @@ export const Contact: React.FC = () => {
               </span>
               <h4 className="text-lg font-bold">Konsultasi via WhatsApp</h4>
               <p className="text-xs text-emerald-100 font-normal leading-relaxed">
-                Butuh tanggapan cepat mengenai pendaftaran santri baru atau persyaratan beasiswa? Tim kami siap melayani chat Anda.
+                Butuh tanggapan cepat mengenai pendaftaran peserta didik baru atau informasi program sekolah? Tim kami siap melayani chat Anda.
               </p>
               {profile?.whatsapp && (
                 <a
