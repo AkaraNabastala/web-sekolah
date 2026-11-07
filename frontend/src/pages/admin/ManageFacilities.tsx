@@ -16,7 +16,7 @@ export const ManageFacilities: React.FC = () => {
     name: '',
     category: 'Ruang Belajar',
     description: '',
-    photo: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=800',
+    photo: '/demo/demo-classroom.svg',
     capacity: '32 Siswa',
     condition_status: 'Sangat Baik',
     display_order: 1
@@ -43,7 +43,7 @@ export const ManageFacilities: React.FC = () => {
       name: '',
       category: 'Ruang Belajar',
       description: '',
-      photo: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=800',
+      photo: '/demo/demo-classroom.svg',
       capacity: '32 Siswa',
       condition_status: 'Sangat Baik',
       display_order: facilities.length + 1
